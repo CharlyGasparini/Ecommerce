@@ -1,1 +1,92 @@
-[]
+[
+	{
+		"title": "producto1",
+		"description": "lorem ipsum",
+		"price": 65.11,
+		"code": "abc120",
+		"stock": 10,
+		"category": "lorem",
+		"status": true,
+		"id": 1
+	},
+	{
+		"title": "producto2",
+		"description": "lorem ipsum",
+		"price": 70.94,
+		"code": "abc121",
+		"stock": 10,
+		"category": "lorem",
+		"status": true,
+		"id": 2
+	},
+	{
+		"title": "titulo modificado",
+		"description": "lorem ipsum",
+		"price": 32.5,
+		"code": "abc122",
+		"stock": 2,
+		"category": "lorem",
+		"status": true,
+		"id": 3
+	},
+	{
+		"title": "producto4",
+		"description": "lorem ipsum",
+		"price": 85.58,
+		"code": "abc123",
+		"stock": 2,
+		"category": "lorem",
+		"status": true,
+		"id": 4
+	},
+	{
+		"title": "producto5",
+		"description": "lorem ipsum",
+		"price": 80.95,
+		"code": "abc124",
+		"stock": 2,
+		"category": "lorem",
+		"status": true,
+		"id": 5
+	},
+	{
+		"title": "producto6",
+		"description": "lorem ipsum",
+		"price": 16.57,
+		"code": "abc125",
+		"stock": 1,
+		"category": "lorem",
+		"status": true,
+		"id": 6
+	},
+	{
+		"title": "producto7",
+		"description": "lorem ipsum",
+		"price": 40.4,
+		"code": "abc126",
+		"stock": 8,
+		"category": "lorem",
+		"status": true,
+		"id": 7
+	},
+	{
+		"title": "producto8",
+		"description": "lorem ipsum",
+		"price": 4.25,
+		"code": "abc127",
+		"stock": 4,
+		"category": "lorem",
+		"status": true,
+		"id": 8
+	},
+	{
+		"title": "producto10",
+		"description": "lorem ipsum",
+		"price": 56.15,
+		"code": "abc129",
+		"stock": 2,
+		"category": "lorem",
+		"status": true,
+		"id": 10
+	}
+]
