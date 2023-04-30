@@ -5,7 +5,7 @@ export default class ProductManager {
         this.path = path;
     }
 
-    async getProducts () {
+    async getProducts() {
         try {
             // Validación de existencia del archivo de productos
             if(fs.existsSync(this.path)){
@@ -20,7 +20,7 @@ export default class ProductManager {
         }
     }
 
-    async addProducts (product) {
+    async addProduct(product) {
         try {
             const products = await this.getProducts();
             product.status = true; // Aplico parametro status valor true por defecto
@@ -47,7 +47,7 @@ export default class ProductManager {
             if(prodIndex !== -1){
                 return console.log("Error: El código ingresado ya existe");
             }
-            // Creación del id
+            // Genero el id autoincrementable
             if(products.length === 0){
                 product.id = 1; // Si no existe ningun producto en el archivo el id será 1
             } else {
@@ -60,7 +60,7 @@ export default class ProductManager {
         }
     }
 
-    async getProductById (pid) {
+    async getProductById(pid) {
         try {
             const products = await this.getProducts(); // Traigo el array de productos
             const product = products.find(prod => prod.id === pid); // Busco el producto en el array de productos
@@ -70,7 +70,7 @@ export default class ProductManager {
         }
     }
 
-    async updateProduct (modification) {
+    async updateProduct(modification) {
         try {
             const products = await this.getProducts(); // Traigo el array de productos
             const pid = modification.id; // Extraigo el id del producto que se desea modificar
@@ -87,7 +87,7 @@ export default class ProductManager {
         }
     }
 
-    async deleteProduct (pid) {
+    async deleteProduct(pid) {
         try {
             const products = await this.getProducts(); // Traigo el array de productos
             const productIndex = products.findIndex(prod => prod.id === pid); // Busco el índice del producto que deseo modificar
