@@ -22,9 +22,8 @@ const env = async () => {
     products = await productManager.getProducts();
     console.log(products);
 
-    await productManager.updateProduct(
+    await productManager.updateProduct(3,
         {
-            id: 3,
             title: "titulo modificado",
             price: 32.5
         }
