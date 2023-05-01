@@ -1,10 +1,10 @@
 import { fileURLToPath } from "url";
-import { __dirname } from "path";
+import { dirname } from "path";
 import multer from "multer";
 
 // Convención nomenclatura: para temas de paths __nombre
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = __dirname(__filename);
+const __dirname = dirname(__filename);
 
 // Implementación de multer
 // Almacenamiento:
