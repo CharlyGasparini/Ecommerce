@@ -1,0 +1,32 @@
+<div class="container my-5">
+    <h1>Productos en stock</h1>
+    <h2 class="my-3">Formulario</h2>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="post">
+        <label class="form-check-label" for="inlineRadio1">POST</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="delete">
+        <label class="form-check-label" for="inlineRadio2">DELETE</label>
+    </div>
+    <form id="form" class="my-3">
+
+    </form>
+    <h2 class="my-3">Listado</h2>
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Code</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+</div>
+<script src="/socket.io/socket.io.js"></script> {{!Importo dependencia de socket.io}}
+<script src="/js/index.js"></script>{{!Importo archivo .js del cliente}}

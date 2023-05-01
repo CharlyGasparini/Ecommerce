@@ -70,23 +70,13 @@
 		"id": 7
 	},
 	{
-		"title": "producto8",
+		"title": "producto 8",
+		"price": 70.32,
 		"description": "lorem ipsum",
-		"price": 4.25,
 		"code": "abc127",
-		"stock": 4,
-		"category": "lorem",
+		"stock": 2,
+		"category": "cosa",
 		"status": true,
 		"id": 8
-	},
-	{
-		"title": "tituloModificado",
-		"description": "lorem ipsum",
-		"price": 5000,
-		"code": "abc129",
-		"stock": 2,
-		"category": "lorem",
-		"status": true,
-		"id": 10
 	}
 ]
