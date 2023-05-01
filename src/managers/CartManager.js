@@ -53,10 +53,10 @@ export default class CartManager {
             const cartIndex = carts.findIndex(cart => cart.id === cid); // Busco el índice del carrito al que deseo agregar un producto
             const product = new ProductManager().getProductById(pid); // Busco el producto que se desea agregar
             if(cartIndex === -1){
-                return console.log("Error: El carrito no existe");
+                return "Error: El carrito no existe";
             }
             if(!product){
-                return console.log("Error: el producto que desea añadir no existe");
+                return "Error: el producto que desea añadir no existe";
             }
             const cartToModify = carts[cartIndex]; // Obtengo el carrito a modificar
             const productInCart = cartToModify.products.find(object => object.product.id === pid); // Busco si el producto que quiero agregar ya existe en el carrito
@@ -65,8 +65,8 @@ export default class CartManager {
             } else {
                 cartToModify.products.push({product:{id:pid}, quantity: 1}); // Si no existe, lo agrego con cantidad 1
             }
-
             await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t")); // Creo un nuevo archivo .json con el nuevo array de carritos
+            return true;
         } catch (error) {
             console.log(error);
         }

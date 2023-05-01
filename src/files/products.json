@@ -80,9 +80,9 @@
 		"id": 8
 	},
 	{
-		"title": "producto10",
+		"title": "tituloModificado",
 		"description": "lorem ipsum",
-		"price": 56.15,
+		"price": 5000,
 		"code": "abc129",
 		"stock": 2,
 		"category": "lorem",

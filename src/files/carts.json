@@ -55,5 +55,28 @@
 			}
 		],
 		"id": 3
+	},
+	{
+		"products": [
+			{
+				"product": {
+					"id": 1
+				},
+				"quantity": 4
+			},
+			{
+				"product": {
+					"id": 3
+				},
+				"quantity": 5
+			},
+			{
+				"product": {
+					"id": 5
+				},
+				"quantity": 10
+			}
+		],
+		"id": 4
 	}
 ]
