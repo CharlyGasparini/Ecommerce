@@ -27,13 +27,13 @@ export default class ProductManager {
             let { title, price, stock, description, category, code } = product; // Desestructuro el producto recibido por parámetro
             // Validación de los parámetros del producto
             if(!title || !price || !stock || !description || !category || !code){
-                return console.log("Error: Debe completar todos los campos obligatorios");
+                return "Error: Debe completar todos los campos obligatorios";
             }
             if(price <= 0){
-                return console.log("Error: El precio no puede ser menor a 1");
+                return "Error: El precio no puede ser menor a 1";
             }
-            if(stock < 0){
-                return console.log("Error: El stock no puede ser menor a 1");
+            if(stock <= 0){
+                return "Error: El stock no puede ser menor a 1";
             }
             // Conversión a number de stock y price
             if(typeof price === "string"){
@@ -45,7 +45,7 @@ export default class ProductManager {
             // Validación del code
             const prodIndex = products.findIndex(prod => prod.code === code);
             if(prodIndex !== -1){
-                return console.log("Error: El código ingresado ya existe");
+                return "Error: El código ingresado ya existe";
             }
             // Genero el id autoincrementable
             if(products.length === 0){
@@ -55,6 +55,7 @@ export default class ProductManager {
             }
             products.push(product); // Agrego al array de productos el nuevo producto
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); // Creo un nuevo archivo .json que contenga el nuevo array de productos modificado
+            return true;
         } catch (error) {
             console.log(error);
         }
@@ -70,18 +71,19 @@ export default class ProductManager {
         }
     }
 
-    async updateProduct(modification) {
+    async updateProduct(pid, modification) {
         try {
             const products = await this.getProducts(); // Traigo el array de productos
-            const pid = modification.id; // Extraigo el id del producto que se desea modificar
             const productIndex = products.findIndex(prod => prod.id === pid); // Busco el índice del producto que deseo modificar
+            console.log(productIndex)
             if(productIndex === -1){
-                return console.log("Error: El producto que desea modificar no existe");
+                return "Error: El producto que desea modificar no existe";
             }
             const productToModify = products[productIndex]; // Si existe, lo traigo
             const modifiedProduct = Object.assign(productToModify, modification); // Creo el producto con las modificaciones
             products.splice(productIndex, 1,modifiedProduct); // Reemplazo el producto original por el modificado
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); // Creo un nuevo archivo .json con la modificación
+            return true
         } catch (error) {
             console.log(error);
         }
@@ -92,10 +94,11 @@ export default class ProductManager {
             const products = await this.getProducts(); // Traigo el array de productos
             const productIndex = products.findIndex(prod => prod.id === pid); // Busco el índice del producto que deseo modificar
             if(productIndex === -1){
-                return console.log("Error: El producto que desea eliminar no existe");
+                return "Error: El producto que desea eliminar no existe";
             }
             products.splice(productIndex, 1); // Si existe, lo elimino del arreglo
             await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); // Creo un nuevo archivo .json con la modificación
+            return true;
         } catch (error) {
             console.log(error);
         }
