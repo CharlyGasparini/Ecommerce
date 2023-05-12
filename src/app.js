@@ -5,11 +5,10 @@ import { __dirname } from "./utils.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import ProductManager from "./managers/ProductManager.js";
+import dbProductManager from "./dao/dbManagers/dbProductManager.js";
+import mongoose from "mongoose";
 
 const app = express(); // Creación de server HTTP
-const httpServer = app.listen(8080, () => console.log("Listening on port 8080"));
-const io = new Server(httpServer); // Creación de server Websockets
 
 app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
@@ -25,20 +24,41 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
+const httpServer = app.listen(8080, () => console.log("Listening on port 8080"));
+const io = new Server(httpServer); // Creación de server Websockets
+// Conexión a base de datos con mongoose
+try {
+    await mongoose.connect("mongodb+srv://crgasparini32:GSNltCfSNvAcw1xd@cluster39760cg.jgxfm1z.mongodb.net/ecommerce?retryWrites=true&w=majority")
+} catch (error) {
+    console.log(error);
+}
+
 // Handshake entre servidor y socket del cliente
 io.on("connection", async socket => {
     console.log("Nuevo cliente conectado");
-    const productManager = new ProductManager("./src/files/products.json");
-
-    socket.emit("showProducts", await productManager.getProducts()); // Envia los productos al socket del cliente
+    const manager = new dbProductManager();
+    try {
+        const products = await manager.getProducts();
+        socket.emit("showProducts", products); // Envia los productos al socket del cliente
+    } catch (error) {
+        console.log(error);
+    }
     // Recibe el producto recopilado del form y lo agrega al array de productos
     socket.on("post", async data => {
-        await productManager.addProduct(data);
+        try {
+            await manager.addProduct(data);
+        } catch (error) {
+            console.log(error);
+        }
     })
     // Recibe el id del producto y lo elimina del array de productos
     socket.on("delete", async data => {
-        const pid = Number(data);
-        await productManager.deleteProduct(pid);
+        const pid = data;
+        try {
+            await manager.deleteProduct(pid);
+        } catch (error) {
+            console.log(error);
+        }
     })
 })
 
