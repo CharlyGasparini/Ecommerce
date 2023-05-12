@@ -1,60 +1,72 @@
 import { Router } from "express";
-import ProductManager from "../managers/ProductManager.js";
-import { uploader } from "../utils.js/";
+import dbProductManager from "../dao/dbManagers/dbProductManager.js";
+import { uploader, parseToNumber } from "../utils.js/";
 
 const router = Router();
-const productManager = new ProductManager("./src/files/products.json");
+const manager = new dbProductManager();
 
 router.get("/", async (req, res) => {
-    let products = await productManager.getProducts(); // Traigo el array de productos
-    const { limit } = req.query;
-    if(limit){
-        products = products.slice(0,Number(limit)); // Si se pasó un límite por query params se modifica el array obtenido
+    try {
+        const products = await manager.getProducts(); // Traigo el array de productos
+        const { limit } = req.query;
+        if(limit){
+            products = products.slice(0,Number(limit)); // Si se pasó un límite por query params se modifica el array obtenido
+        }
+        res.send({status: "success", payload: products});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
-    res.send({status: "success", products});
 })
 
 router.get("/:pid", async (req, res) => {
     const pid = Number(req.params.pid); // Traigo el id del producto desde los parametros del path
-    const product = await productManager.getProductById(pid); // Busco el producto con el id correspondiente
-    if(!product){
-        res.status(404).send({status:"error", message: "Error: No se ha encontrado el producto"});
-    } else {
-        res.send({status: "success", product})
+    try {
+        const product = await manager.getProductById(pid); // Busco el producto con el id correspondiente
+        res.send({status: "success", payload: product});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
 })
 
-router.post("/", uploader.array("files"), async (req, res) => {
-    const product = req.body; // Traigo el producto a agregar desde el body
+router.post("/",parseToNumber, uploader.array("files"), async (req, res) => {
+    const product = req.body;
+    const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
+    if(!title, !description, !price, !code, !stock, !category){
+        return res.status(400).send({status: "error", error: "Incomplete values"});
+    }
     if(req.files){
         product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
     }
-    const result = await productManager.addProduct(product); // Agrego el producto
-    if(result === true){
-        res.send({status: "success", message: "El producto ha sido agregado correctamente"});
-    } else {
-        res.status(404).send({status: "error", message: result});
+    try {
+        const result = await manager.addProduct(product); // Agrego el producto
+        res.send({status: "successs", payload: result});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
 })
 
 router.put("/:pid", async (req, res) => {
     const pid = Number(req.params.pid); // Traigo el id del producto de los parametros del path
-    const modification = req.body; // Traigo los parametros a modificar desde el body
-    const result = await productManager.updateProduct(pid, modification); // Modifico el producto
-    if(result === true){
-        res.send({status: "success", message: "El producto ha sido modificado correctamente"});
-    } else {
-        res.status(404).send({status: "error", message: result});
+    const product = req.body; // Traigo los parametros a modificar desde el body
+    const {title, description, price, code, stock, category} = product;
+    if(!title, !description, !price, !code, !stock, !category){
+        return res.status(400).send({status: "error", error: "Incomplete values"});
+    }
+    try {
+        const result = await manager.updateProduct(pid, product); // Modifico el producto
+        res.send({status: "success", payload: result})
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
 })
 
 router.delete("/:pid", async (req, res) => {
     const pid = Number(req.params.pid); // Traigo el id del producto de los parametros del path
-    const result = await productManager.deleteProduct(pid); // Borro el producto
-    if(result === true){
-        res.send({status: "success", message: "El producto ha sido borrado correctamente"});
-    } else {
-        res.status(404).send({status: "error", message: result});
+    try {
+        const result = await manager.deleteProduct(pid); // Borro el producto
+        res.send({status: "success", payload: result});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
 })
 

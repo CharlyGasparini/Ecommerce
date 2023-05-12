@@ -1,34 +1,37 @@
 import { Router } from "express";
-import CartManager from "../managers/CartManager.js";
+import dbCartManager from "../dao/dbManagers/dbCartManager.js";
 
 const router = Router();
-const cartManager = new CartManager("./src/files/carts.json");
+const manager = new dbCartManager();
 
 router.post("/", async (req, res) => {
     const cart = req.body; // Traigo el carrito a agregar desde el body
-    await cartManager.addCart(cart); // Agrego el carrito
-    res.send({status: "success", message: "El carrito se agregó correctamente"});
+    try {
+        const result = await manager.addCart(cart); // Agrego el carrito
+        res.send({status: "success", payload: result});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
+    }
 })
 
 router.get("/:cid", async (req, res) => {
     const cid = Number(req.params.cid); // Traigo el id del carrito desde los parametros del path
-    const cart = await cartManager.getCartById(cid); // Busco el carrito
-    if(!cart){
-        res.status(404).send({status: "error", message: "Error, el carrito no existe"});
-    } else {
-        const products = cart.products; // Muestro los productos del carrito
-        res.send({status: "success", products});
+    try {
+        const cart = await manager.getCartById(cid); // Busco el carrito
+    } catch (error) {
+        res.status(500).send({status: "error", error});    
     }
 })
 
 router.post("/:cid/product/:pid", async (req, res) => {
-    const cid = Number(req.params.cid); // Traigo los id del carrito y del producto de los parametros del path
+    // Traigo los id del carrito y del producto de los parametros del path
+    const cid = Number(req.params.cid);
     const pid = Number(req.params.pid);
-    const result = await cartManager.addProductInCart(cid, pid); // Agrego el producto al carrito
-    if(result === true){
-        res.send({status: "success", message: "El producto se agregó correctamente al carrito"});
-    } else {
-        res.status(404).send({status: "error", message: result});
+    try {
+        const result = await manager.addProductInCart(cid, pid); // Agrego el producto al carrito
+        res.send({status: "success", payload: result});
+    } catch (error) {
+        res.status(500).send({status: "error", error});   
     }
 })
 
