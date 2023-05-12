@@ -34,9 +34,12 @@ const productSchema = new mongoose.Schema(
             default: true
         },
         thumbnails: {
-            type: Array
+            type: Array,
+            required: false
         }
     }
 )
 
-export const productsModel = mongoose.model(productsCollection, productSchema);
+const productsModel = mongoose.model(productsCollection, productSchema);
+
+export default productsModel;
