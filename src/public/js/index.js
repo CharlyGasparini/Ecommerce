@@ -52,7 +52,7 @@ radioDelete.addEventListener("change", e => {
         <div class="col-6">
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">ID</span>
-                <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="id">
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="_id">
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@ form.addEventListener("submit", async e => {
         if(method === "post"){
             socket.emit("post", product);
         } else {
-            socket.emit("delete", product.id)
+            socket.emit("delete", product._id)
         }
     } catch (error) {
         console.log(error);
@@ -87,7 +87,7 @@ socket.on("showProducts", data => {
         if(prod.status){
             tbody.innerHTML += `
             <tr>
-            <td>${prod.id}</td>
+            <td>${prod._id}</td>
             <td>${prod.title}</td>
             <td>$${prod.price}</td>
             <td>${prod.category}</td>
