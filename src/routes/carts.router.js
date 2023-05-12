@@ -15,18 +15,19 @@ router.post("/", async (req, res) => {
 })
 
 router.get("/:cid", async (req, res) => {
-    const cid = Number(req.params.cid); // Traigo el id del carrito desde los parametros del path
+    const cid = req.params.cid; // Traigo el id del carrito desde los parametros del path
     try {
         const cart = await manager.getCartById(cid); // Busco el carrito
+        res.send({status: "success", payload: cart});
     } catch (error) {
         res.status(500).send({status: "error", error});    
     }
 })
 
-router.post("/:cid/product/:pid", async (req, res) => {
+router.post("/:cid/products/:pid", async (req, res) => {
     // Traigo los id del carrito y del producto de los parametros del path
-    const cid = Number(req.params.cid);
-    const pid = Number(req.params.pid);
+    const cid = req.params.cid;
+    const pid = req.params.pid;
     try {
         const result = await manager.addProductInCart(cid, pid); // Agrego el producto al carrito
         res.send({status: "success", payload: result});

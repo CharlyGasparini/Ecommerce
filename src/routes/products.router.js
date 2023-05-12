@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 })
 
 router.get("/:pid", async (req, res) => {
-    const pid = Number(req.params.pid); // Traigo el id del producto desde los parametros del path
+    const pid = req.params.pid; // Traigo el id del producto desde los parametros del path
     try {
         const product = await manager.getProductById(pid); // Busco el producto con el id correspondiente
         res.send({status: "success", payload: product});
@@ -28,7 +28,7 @@ router.get("/:pid", async (req, res) => {
     }
 })
 
-router.post("/",parseToNumber, uploader.array("files"), async (req, res) => {
+router.post("/", parseToNumber, uploader.array("files"), async (req, res) => {
     const product = req.body;
     const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
     if(!title, !description, !price, !code, !stock, !category){
@@ -39,14 +39,14 @@ router.post("/",parseToNumber, uploader.array("files"), async (req, res) => {
     }
     try {
         const result = await manager.addProduct(product); // Agrego el producto
-        res.send({status: "successs", payload: result});
+        res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});
     }
 })
 
 router.put("/:pid", async (req, res) => {
-    const pid = Number(req.params.pid); // Traigo el id del producto de los parametros del path
+    const pid = req.params.pid; // Traigo el id del producto de los parametros del path
     const product = req.body; // Traigo los parametros a modificar desde el body
     const {title, description, price, code, stock, category} = product;
     if(!title, !description, !price, !code, !stock, !category){
@@ -61,7 +61,7 @@ router.put("/:pid", async (req, res) => {
 })
 
 router.delete("/:pid", async (req, res) => {
-    const pid = Number(req.params.pid); // Traigo el id del producto de los parametros del path
+    const pid = req.params.pid; // Traigo el id del producto de los parametros del path
     try {
         const result = await manager.deleteProduct(pid); // Borro el producto
         res.send({status: "success", payload: result});
