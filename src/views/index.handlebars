@@ -15,15 +15,17 @@
         </thead>
         <tbody>
             {{#each products}}
-                <tr>
-                    <td>{{this.id}}</td>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>${{this.price}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.stock}}</td>
-                    <td>{{this.code}}</td>
-                </tr>
+                {{#if status}}
+                    <tr>
+                        <td>{{this.id}}</td>
+                        <td>{{this.title}}</td>
+                        <td>{{this.description}}</td>
+                        <td>${{this.price}}</td>
+                        <td>{{this.category}}</td>
+                        <td>{{this.stock}}</td>
+                        <td>{{this.code}}</td>
+                    </tr>
+                {{/if}}
             {{/each}}
         </tbody>
     </table>

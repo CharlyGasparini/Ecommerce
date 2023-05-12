@@ -84,15 +84,17 @@ form.addEventListener("submit", async e => {
 socket.on("showProducts", data => {
     tbody.innerHTML = "";
     data.forEach(prod => {
-        tbody.innerHTML += `
-        <tr>
-        <td>${prod.id}</td>
-        <td>${prod.title}</td>
-        <td>$${prod.price}</td>
-        <td>${prod.category}</td>
-        <td>${prod.stock}</td>
-        <td>${prod.code}</td>
-        </tr> 
-        `
+        if(prod.status){
+            tbody.innerHTML += `
+            <tr>
+            <td>${prod.id}</td>
+            <td>${prod.title}</td>
+            <td>$${prod.price}</td>
+            <td>${prod.category}</td>
+            <td>${prod.stock}</td>
+            <td>${prod.code}</td>
+            </tr> 
+            `
+        }
     });
 })
