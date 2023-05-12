@@ -22,21 +22,19 @@ export default class dbCartManager {
 
     addProductInCart = async (cid, pid) => {
         let result;
-        const cart = await cartsModel.find({_id: cid, "products.$.product": {_id: pid}});
+        const cart = await cartsModel.find({"products.product._id": pid});
         console.log(cart);
-
-        // if(cart){
-        //     result = await cartsModel.updateOne(
-        //         {_id: cid, "products.product": {_id: pid}}, 
-        //         {$set: {"products.$.quantity": quantity + 1}}
-        //         )
-        // }else {
-        //     result = await cartsModel.updateOne(
-        //         {_id: cid}, 
-        //         {$push: {products: {product: {_id: pid}, quantity: 1}}}
-        //         );
-        // }
-        // return result;
-        
+        if(cart.length === 0){
+            result = await cartsModel.updateOne(
+                {_id: cid},
+                {$push: {products: {product: {_id: pid}, quantity: 1}}}
+            )
+        } else{
+            result = await cartsModel.updateOne(
+                {_id: cid, "products.product._id": pid},
+                {$inc: {"products.$.quantity": 1}}
+            )
+        }
+        return result;
     }
 }
