@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
     },
 });
 
-// Middleware:
+// Middlewares:
 const uploader = multer({
     storage,
     onError: (err, next) => {
@@ -26,7 +26,18 @@ const uploader = multer({
     }
 });
 
+const parseToNumber = (req, res, next) => {
+    if(typeof req.body.price === "string"){
+        req.body.price === Number(req.body.price);
+    }
+    if(typeof req.body.stock === "string"){
+        req.body.stock === Number(req.body.stock);
+    }
+    next();
+}
+
 export {
     __dirname,
-    uploader
+    uploader,
+    parseToNumber
 };
