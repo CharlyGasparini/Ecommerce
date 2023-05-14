@@ -52,5 +52,3 @@ app.set("view engine", "handlebars"); // Que motor se debe usar para renderizar
 app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
-
-app.set('socketio', io);
