@@ -22,17 +22,18 @@ io.on("connection", async socket => {
     console.log("Nuevo cliente conectado");
     const manager = new dbProductManager();
     try {
-        const products = await manager.getProducts();
-        socket.emit("showProducts", products); // Envia los productos al socket del cliente
+        socket.emit("showProducts", await manager.getProducts()); // Envia los productos al socket del cliente
         // Recibe el producto recopilado del form y lo agrega al array de productos
         socket.on("post", async data => {
             const product = data;
             await manager.addProduct(product);
+            socket.emit("showProducts", await manager.getProducts());
         })
         // Recibe el id del producto y lo elimina del array de productos
         socket.on("delete", async data => {
             const pid = data;
             await manager.deleteProduct(pid);
+            socket.emit("showProducts", await manager.getProducts());
         })
     } catch (error) {
         console.log(error);
