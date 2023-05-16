@@ -7,6 +7,7 @@ import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import dbProductManager from "./dao/dbManagers/dbProductManager.js";
 import mongoose from "mongoose";
+import dbMessageManager from "./dao/dbManagers/dbMessagesManager.js";
 
 const app = express(); // Creación de server HTTP
 const httpServer = app.listen(8080, () => console.log("Listening on port 8080"));
@@ -20,20 +21,32 @@ try {
 // Handshake entre servidor y socket del cliente
 io.on("connection", async socket => {
     console.log("Nuevo cliente conectado");
-    const manager = new dbProductManager();
+    const productManager = new dbProductManager();
+    const messageManager = new dbMessageManager();
     try {
-        socket.emit("showProducts", await manager.getProducts()); // Envia los productos al socket del cliente
+        socket.emit("showProducts", await productManager.getProducts()); // Envia los productos al socket del cliente
         // Recibe el producto recopilado del form y lo agrega al array de productos
         socket.on("post", async data => {
             const product = data;
-            await manager.addProduct(product);
-            socket.emit("showProducts", await manager.getProducts());
+            await productManager.addProduct(product);
+            socket.emit("showProducts", await productManager.getProducts());
         })
         // Recibe el id del producto y lo elimina del array de productos
         socket.on("delete", async data => {
             const pid = data;
-            await manager.deleteProduct(pid);
-            socket.emit("showProducts", await manager.getProducts());
+            await productManager.deleteProduct(pid);
+            socket.emit("showProducts", await productManager.getProducts());
+        })
+
+        socket.on("message", async data => {
+            await messageManager.addMessage(data);
+            io.emit("messageLogs", await messageManager.getMessages());
+        });
+
+        socket.on("authenticated", async data => {
+            const messages = await messageManager.getMessages();
+            socket.emit("messageLogs", messages);
+            socket.broadcast.emit("newUserConnected", data);
         })
     } catch (error) {
         console.log(error);

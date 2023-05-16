@@ -10,9 +10,15 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/realtimeproducts", async (req, res) => {
+router.get("/realtimeproducts", (req, res) => {
     res.render("realTimeProducts", {
         title: "Planilla de productos (tiempo real)"
+    })
+})
+
+router.get("/chat", (req, res) => {
+    res.render("chat", {
+        title: "Chat"
     })
 })
 
