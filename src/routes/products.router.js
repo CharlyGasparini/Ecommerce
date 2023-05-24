@@ -6,13 +6,21 @@ const router = Router();
 const manager = new dbProductManager();
 
 router.get("/", async (req, res) => {
+    const {query={}, limit=10, page=1, sort={price: 0}} = req.query;
     try {
-        const products = await manager.getProducts(); // Traigo el array de productos
-        const { limit } = req.query;
-        if(limit){
-            products = products.slice(0,Number(limit)); // Si se pasó un límite por query params se modifica el array obtenido
-        }
-        res.send({status: "success", payload: products});
+        const {docs:payload, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage} = await manager.getProducts(query, limit, page, sort); // Traigo el array de productos
+        res.send({
+            status: "success",
+            payload,
+            totalPages,
+            prevPage,
+            nextPage,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink: !hasPrevPage ? null : `/api/products?limit=${limit}&page=${prevPage}&query=${query}&sort=${sort}`,
+            nextLink: !hasNextPage ? null : `/api/products?limit=${limit}&page=${nextPage}&query=${query}&sort=${sort}`
+        })
     } catch (error) {
         res.status(500).send({status: "error", error});
     }

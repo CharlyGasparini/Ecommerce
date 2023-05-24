@@ -5,8 +5,8 @@ export default class dbProductManager {
         console.log("Working products with DB");
     }
 
-    getProducts = async () => {
-        const products = await productsModel.find().lean(); // Traigo de la DB los productos y luego convierto el archivo en formato .bson a un objeto plano para poder utilizar
+    getProducts = async (query, limit, page, sort) => {
+        const products = await productsModel.paginate(query, {limit, page, lean: true, sort: {price: Number(sort)}}); // Traigo de la DB los productos y luego convierto el archivo en formato .bson a un objeto plano para poder utilizar
         return products;
     }
 
