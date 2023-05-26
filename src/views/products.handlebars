@@ -1,24 +1,9 @@
 <div class="container my-5">
     <h1>Productos en stock</h1>
-    <form action="/products" method="get" class="row row-cols-4 my-5 gap-2" id="filter-form">
-        <select name="query" id="query">
-            <option value="">Select a Category</option>
-            <option value="consolas">Consolas</option>
-            <option value="accesorios">Accesorios</option>
-            <option value="juegos">Juegos</option>
-        </select>
-        <select name="sort" id="sort">
-            <option value="">Sort by price</option>
-            <option value="1">Ascendente</option>
-            <option value="-1">Descendente</option>
-        </select>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
     <div class="row row-cols-4 gap-2">
         {{#each payload}}
             {{#if this.status}}
-                <div class="card" style="width: 18rem;">
-                    <img src={{this.thumbnails}} class="card-img-top" alt="...">
+                <div class="card" style="width: 18rem">
                     <div class="card-body">
                         <h5 class="card-title">{{this.title}}</h5>
                         <p class="card-text">{{this.category}}</p>

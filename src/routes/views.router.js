@@ -26,7 +26,7 @@ router.get("/chat", (req, res) => {
 })
 
 router.get("/products", async (req, res) => {
-    const {query, limit=10, page=1, sort} = req.query;
+    const {query="{}", limit= 10, page= 1, sort="{}"} = req.query;
     try {
         const result = await productManager.getProducts(query, Number(limit), page, sort);
         const {docs:payload, hasPrevPage, hasNextPage, totalPages, prevPage, nextPage} = result;
@@ -34,8 +34,8 @@ router.get("/products", async (req, res) => {
         if(query) urlParams += `query=${query}&`;
         if(limit) urlParams += `limit=${limit}&`;
         if(sort) urlParams += `sort=${sort}&`;
-        const prevLink = hasPrevPage ? `/products${urlParams}page=${prevPage}` : null;
-        const nextLink = hasNextPage ? `/products${urlParams}page=${nextPage}` : null;
+        const prevLink = hasPrevPage ? `${urlParams}page=${prevPage}` : null;
+        const nextLink = hasNextPage ? `${urlParams}page=${nextPage}` : null;
         res.render("products", {
             payload,
             totalPages,
@@ -59,11 +59,11 @@ router.get("/carts/:cid", async (req, res) => {
     const cid = req.params.cid;
     try {
         const result = await cartManager.getCartById(cid);
+        console.log(result[0].products)
         res.render("carts", {
             products: result[0].products,
             title: "Carrito de compras",
             cid,
-
         })
     } catch (error) {
         res.render("error", {
