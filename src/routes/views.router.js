@@ -59,11 +59,24 @@ router.get("/carts/:cid", async (req, res) => {
     const cid = req.params.cid;
     try {
         const result = await cartManager.getCartById(cid);
-        console.log(result[0].products)
+        // del resultado obtenido mapeo un array nuevo con los datos que necesito mostrar
+        const products = result[0].products.map(item => {
+            const result = {};
+            result._id = item.product._id;
+            result.title = item.product.title;
+            result.quantity = item.quantity;
+            result.price = item.product.price;
+            result.status = item.product.status;
+            result.subtotal = (result.quantity * result.price).toFixed(2);
+            return result;
+        })
+        // a partir del arreglo de productos obtenido reduzco hasta obtener el precio total de todo el carrito
+        const total = products.map(prod => Number(prod.subtotal)).reduce((acc, curr) => acc + curr).toFixed(2);
         res.render("carts", {
-            products: result[0].products,
             title: "Carrito de compras",
             cid,
+            products,
+            total
         })
     } catch (error) {
         res.render("error", {

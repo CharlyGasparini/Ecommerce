@@ -1,15 +1,20 @@
 <div class="container my-5">
-    <h1>Productos en stock</h1>
-    <div class="row row-cols-4 gap-2">
+    <h1 class="display-4">Productos en stock</h1>
+    <a href="/carts/646b6b2e019903b533c9eae5
+" class="btn btn-primary my-3">Ir al carrito</a>
+    <div class="row row-cols-4 text-center gap-2" id="card-group">
         {{#each payload}}
             {{#if this.status}}
                 <div class="card" style="width: 18rem">
                     <div class="card-body">
-                        <h5 class="card-title">{{this.title}}</h5>
+                        <h4 class="card-title">{{this.title}}</h4>
+                        <p>{{this._id}}</p>
                         <p class="card-text">{{this.category}}</p>
                         <p class="card-text">{{this.description}}</p>
-                        <p class="card-text">${{this.price}}</p>
-                        <a href="#" class="btn btn-primary">Agregar al carrito</a>
+                        <p class="card-text fw-bold">${{this.price}}</p>
+                        <form action="api/carts/646b6b2e019903b533c9eae5/products/{{this._id}}" method="post">
+                            <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                        </form>
                     </div>
                 </div>
             {{/if}}

@@ -29,7 +29,8 @@ router.post("/:cid/products/:pid", async (req, res) => {
     const {pid, cid} = req.params;
     try {
         const result = await manager.addProductInCart(cid, pid); // Agrego el producto al carrito
-        res.send({status: "success", payload: result});
+        res.redirect("/carts/646b6b2e019903b533c9eae5");
+        // res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});   
     }
@@ -39,6 +40,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     const {pid, cid} = req.params;
     try {
         const result = await manager.deleteProductInCart(cid, pid);
+        res.redirect("/carts/646b6b2e019903b533c9eae5");
         res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});
@@ -71,6 +73,7 @@ router.delete("/:cid", async (req, res) => {
     const cid = req.params.cid;
     try {
         const result = await manager.emptyCart(cid);
+        res.redirect("/carts/646b6b2e019903b533c9eae5");
         res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});
