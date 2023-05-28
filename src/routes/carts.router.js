@@ -40,7 +40,6 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     const {pid, cid} = req.params;
     try {
         const result = await manager.deleteProductInCart(cid, pid);
-        res.redirect("/carts/646b6b2e019903b533c9eae5");
         res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});
@@ -72,8 +71,7 @@ router.put("/:cid/products/:pid", async (req, res) => {
 router.delete("/:cid", async (req, res) => {
     const cid = req.params.cid;
     try {
-        const result = await manager.emptyCart(cid);
-        res.redirect("/carts/646b6b2e019903b533c9eae5");
+        await manager.emptyCart(cid);
         res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});

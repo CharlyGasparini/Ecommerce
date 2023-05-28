@@ -10,24 +10,26 @@
                 <th>Unit price</th>
                 <th>Quantity</th>
                 <th>Subtotal</th>
-                <th>
-                    <a href="#" class="btn btn-danger">Vaciar carrito</a>
-                </th>
+                {{#if isFull}}
+                    <th>
+                        <button id="empty-btn" class="btn btn-danger">Vaciar carrito</button>
+                    </th>
+                {{/if}}
             </tr>
             </thead>
         <tbody>
             {{#each products}}
                 {{#if this.status}}
-                    <tr>
+                    <tr class="product-row">
                         <td>{{this._id}}</td>
                         <td>{{this.title}}</td>
                         <td>${{this.price}}</td>
                         <td>x{{this.quantity}}</td>
                         <td>${{this.subtotal}}</td>
                         <td>
-                            <a href="#" class="btn btn-danger">
+                            <button class="btn btn-danger del-btn">
                                 <i class="fa-sharp fa-solid fa-trash"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 {{/if}}
@@ -44,3 +46,5 @@
         </tfoot>
     </table>
 </div>
+
+<script src="/js/carts.js"></script>
