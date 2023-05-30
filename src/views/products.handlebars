@@ -1,11 +1,20 @@
 <div class="container my-5">
-    <h1 class="display-4">Productos en stock</h1>
+    <div class="mb-3 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
+        <h1 class="display-4">Bienvenido {{user.name}}</h1>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        {{#if user.age}}
+            <p><strong>Edad:</strong> {{user.age}}</p>
+        {{/if}}
+        <p><strong>Rol:</strong> {{user.role}}</p>
+        <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+    </div>
+    <h2 class="display-5">Productos en stock</h2>
     <a href="/carts/646b6b2e019903b533c9eae5
 " class="btn btn-primary my-3">Ir al carrito</a>
-    <div class="row row-cols-4 text-center gap-2" id="card-group">
+    <div class="row row-cols-4 text-center g-1" id="card-group">
         {{#each payload}}
             {{#if this.status}}
-                <div class="card" style="width: 18rem">
+                <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">{{this.title}}</h4>
                         <p>{{this._id}}</p>

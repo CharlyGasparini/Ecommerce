@@ -1,6 +1,6 @@
 import express from "express";
 import { Server } from "socket.io";
-import handlbars from "express-handlebars";
+import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -8,6 +8,9 @@ import viewsRouter from "./routes/views.router.js";
 import dbProductManager from "./dao/dbManagers/dbProductManager.js";
 import mongoose from "mongoose";
 import dbMessageManager from "./dao/dbManagers/dbMessagesManager.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import sessionsRouter from "./routes/sessions.router.js";
 
 const app = express(); // Creación de server HTTP
 const httpServer = app.listen(8080, () => console.log("Listening on port 8080"));
@@ -52,13 +55,25 @@ io.on("connection", async socket => {
         console.log(error);
     }
 })
+// Configuración de sesiones con persistencia de datos en DB
+app.use(session({
+    store: MongoStore.create(
+        {
+            client: mongoose.connection.getClient(),
+            ttl: 1800
+        }
+    ),
+    secret: "password",
+    resave: true,
+    saveUninitialized: false
+}))
 
 app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__dirname}/public`)); // Acceso a archivos estáticos
 
 // Configuración de handlebars
-app.engine("handlebars", handlbars.engine()); // Inicializa el motor
+app.engine("handlebars", handlebars.engine()); // Inicializa el motor
 app.set("views", `${__dirname}/views`); // Ruta de la vistas
 app.set("view engine", "handlebars"); // Que motor se debe usar para renderizar
 
@@ -66,3 +81,4 @@ app.set("view engine", "handlebars"); // Que motor se debe usar para renderizar
 app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/sessions", sessionsRouter);

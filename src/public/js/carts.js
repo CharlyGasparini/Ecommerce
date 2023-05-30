@@ -2,9 +2,12 @@ const emptyBtn = document.getElementById("empty-btn");
 const deleteBtns = document.getElementsByClassName("del-btn");
 
 
-emptyBtn.addEventListener("click", e => {
+emptyBtn?.addEventListener("click", e => {
     fetch("/api/carts/646b6b2e019903b533c9eae5", {
         method: "DELETE"
+    })
+    .then(result => {
+        if(result.status === 200) window.location.replace("/carts/646b6b2e019903b533c9eae5");
     })
 })
 
@@ -15,6 +18,9 @@ for (const btn of deleteBtns) {
         const pid = td.textContent;
         fetch(`/api/carts/646b6b2e019903b533c9eae5/products/${pid}`, {
             method: "DELETE"
+        })
+        .then(result => {
+            if(result.status === 200) window.location.replace("/carts/646b6b2e019903b533c9eae5");
         })
     })
 }

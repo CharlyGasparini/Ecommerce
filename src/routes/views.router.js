@@ -1,31 +1,37 @@
 import { Router } from "express";
 import dbProductManager from "../dao/dbManagers/dbProductManager.js";
 import dbCartManager from "../dao/dbManagers/dbCartManager.js";
+import { privateAccess, publicAccess } from "../utils.js";
 
 const router = Router();
 const productManager = await new dbProductManager();
 const cartManager = await new dbCartManager();
 
+// router.get("/", async (req, res) => {
+//     res.render("index", {
+//         title: "Planilla de productos",
+//         products: await productManager.getProducts()
+//     });
+// });
+
+// router.get("/realtimeproducts", (req, res) => {
+//     res.render("realTimeProducts", {
+//         title: "Planilla de productos (tiempo real)"
+//     })
+// })
+
+// router.get("/chat", (req, res) => {
+//     res.render("chat", {
+//         title: "Chat"
+//     })
+// })
+
 router.get("/", async (req, res) => {
-    res.render("index", {
-        title: "Planilla de productos",
-        products: await productManager.getProducts()
-    });
-});
-
-router.get("/realtimeproducts", (req, res) => {
-    res.render("realTimeProducts", {
-        title: "Planilla de productos (tiempo real)"
-    })
+    if(res.session?.user) return res.redirect("/products")
+    res.redirect("/login");
 })
 
-router.get("/chat", (req, res) => {
-    res.render("chat", {
-        title: "Chat"
-    })
-})
-
-router.get("/products", async (req, res) => {
+router.get("/products", privateAccess, async (req, res) => {
     const {query="{}", limit= 10, page= 1, sort="{}"} = req.query;
     try {
         const result = await productManager.getProducts(query, Number(limit), page, sort);
@@ -45,7 +51,8 @@ router.get("/products", async (req, res) => {
             hasPrevPage,
             hasNextPage,
             prevLink,
-            nextLink
+            nextLink,
+            user: req.session.user
         })
     } catch (error) {
         res.render("error", {
@@ -55,7 +62,7 @@ router.get("/products", async (req, res) => {
     }
 })
 
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", privateAccess, async (req, res) => {
     const cid = req.params.cid;
     let products = [];
     let total = 0;
@@ -89,5 +96,14 @@ router.get("/carts/:cid", async (req, res) => {
         })
     }
 })
+
+router.get("/login", publicAccess, (req, res) => {
+    res.render("login", {title: "Formulario de login"});
+})
+
+router.get("/register", publicAccess, (req, res) => {
+    res.render("register", {title: "Formulario de registro"})
+})
+
 
 export default router;

@@ -36,8 +36,20 @@ const parseToNumber = (req, res, next) => {
     next();
 }
 
+const privateAccess = (req, res, next) => {
+    if(!req.session.user) return res.redirect("/login");
+    next();
+}
+
+const publicAccess = (req, res, next) => {
+    if(req.session?.user) return res.redirect("/products");
+    next();
+}
+
 export {
     __dirname,
     uploader,
-    parseToNumber
+    parseToNumber,
+    privateAccess,
+    publicAccess
 };

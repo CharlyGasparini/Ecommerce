@@ -71,7 +71,7 @@ router.put("/:cid/products/:pid", async (req, res) => {
 router.delete("/:cid", async (req, res) => {
     const cid = req.params.cid;
     try {
-        await manager.emptyCart(cid);
+        const result = await manager.emptyCart(cid);
         res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});

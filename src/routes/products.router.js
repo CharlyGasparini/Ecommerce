@@ -8,7 +8,7 @@ const manager = new dbProductManager();
 router.get("/", async (req, res) => {
     const {query="{}", limit=10, page=1, sort="{}"} = req.query;
     try {
-        const {docs:payload, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage} = await manager.getProducts(query, limit, page, sort); // Traigo el array de productos
+        const {docs:payload, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage} = await manager.getProducts(query, Number(limit), page, sort); // Traigo el array de productos
         res.send({
             status: "success",
             payload,
