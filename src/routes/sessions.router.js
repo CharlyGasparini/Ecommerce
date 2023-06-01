@@ -47,13 +47,13 @@ router.post("/register", async (req, res) => {
     const {email} = req.body;
     try {
         if(email === "adminCoder@coder.com"){
-            return res.status(401).send({status: "error", message: "El email ingresado corresponde a un admin"});
+            return res.status(400).send({status: "error", message: "El email ingresado corresponde a un admin"});
         }
         
         const exist = await manager.getUser(email);
         
         if(exist){
-            return res.status(401).send({status: "error", message: "El usuario ya existe"});
+            return res.status(400).send({status: "error", message: "El usuario ya existe"});
         } 
             
         await manager.createUser(req.body);
