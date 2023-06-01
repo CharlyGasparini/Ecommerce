@@ -20,11 +20,11 @@ const storage = multer.diskStorage({
 
 // Funciones de bcrypt
 const createHash = password => {
-    bcrypt.hashSync(password, genSaltSync(10));
+    return bcrypt.hashSync(password, genSaltSync(10));
 }
 
 const isValidPassword = (user, password) => {
-    bcrypt.compareSync(password, user.password);
+    return bcrypt.compareSync(password, user.password);
 }
 
 
