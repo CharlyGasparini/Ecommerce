@@ -1,5 +1,5 @@
 import userModel from "../models/users.models.js";
-import crypto from "crypto";
+import { createHash, isValidPassword } from "../../utils.js";
 
 export default class dbUserManager {
     constructor() {
@@ -19,26 +19,20 @@ export default class dbUserManager {
             last_name,
             email,
             age,
-            password,
+            password: createHash(password),
             role: email === "adminCoder@coder.com" ? "admin" : "user"
         }
-
-        user.salt = crypto.randomBytes(128).toString("base64");
-        user.password = crypto.createHmac("sha256", user.salt)
-        .update(user.password).digest("hex");
 
         await userModel.create(user);
     }
 
     validateUser = async (email, password) => {
         const user = await this.getUser(email);
-        
+
         if(!user) return {status: false, payload: "Usuario no encontrado"};
+        
+        if(!isValidPassword(user, password)) return {status: false, payload: "Contraseña incorrecta"};
 
-        const newHash = crypto.createHmac("sha256", user.salt)
-        .update(password).digest("hex");
-
-        if(newHash === user.password)  return {status: true, payload: user};
-        else return {status: false, payload: "Contraseña incorrecta"};;
+        return {status: true, payload: user};
     }
 }

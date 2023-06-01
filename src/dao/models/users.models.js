@@ -25,11 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "usuario"
-    },
-    salt: {
-        type: String,
-        required: true
+        default: "user"
     }
 });
 
