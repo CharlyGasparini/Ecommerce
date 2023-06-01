@@ -1,6 +1,7 @@
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import multer from "multer";
+import bcrypt from "bcrypt";
 
 // Convención nomenclatura: para temas de paths __nombre
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +17,16 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}-${file.originalname}`);
     },
 });
+
+// Funciones de bcrypt
+const createHash = password => {
+    bcrypt.hashSync(password, genSaltSync(10));
+}
+
+const isValidPassword = (user, password) => {
+    bcrypt.compareSync(password, user.password);
+}
+
 
 // Middlewares:
 const uploader = multer({
@@ -51,5 +62,7 @@ export {
     uploader,
     parseToNumber,
     privateAccess,
-    publicAccess
+    publicAccess,
+    createHash,
+    isValidPassword
 };
