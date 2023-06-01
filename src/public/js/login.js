@@ -21,10 +21,30 @@ form.addEventListener("submit", e =>{
                 'Content-Type': 'application/json'
             }
         })
-        .then(result => {
-            if(result.status === 200) window.location.replace("/products");
+        .then(async result => {
+            const res = await result.json();
+            if(result.status === 200){
+                window.location.replace("/products");
+            } 
+            else{
+                Swal.fire({
+                    toast: true,
+                    position: "center",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: `${res.message}`,
+                    icon: "error"
+                })
+            }
         })
     } else{
-        console.log("Los campos no pueden quedar vacios")
+        Swal.fire({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 1500,
+            title: "No puede haber campos vacios",
+            icon: "error"
+        })
     }
 })

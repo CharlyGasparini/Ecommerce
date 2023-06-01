@@ -13,14 +13,14 @@ router.post("/login", async (req, res) => {
             email,
             role: "admin"
         }
-        return res.send({status: "success", message: "Login successfull"})
+        return res.send({status: "success", message: "Login exitoso, bienvenido"})
     }
     
     try {
         const validate = await manager.validateUser(email, password);
         
         if(!validate.status){
-            res.status(400).send({status: "error", message: validate.payload});
+            return res.status(400).send({status: "error", message: validate.payload});
         }
         
         req.session.user = {
@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
             role: validate.payload.role
         }
     
-        res.send({status: "success", message: "Login successfull"});
+        res.send({status: "success", message: "Login exitoso, bienvenido"});
     } catch (error) {
         res.status(500).send({status: "error", error});
     }
@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/logout", (req, res) => {
     req.session.destroy( err => {
-        if(err) res.status(400).send({status: "error", message: "Logout fail"});
+        if(err) res.status(400).send({status: "error", message: "Sesión finalizada"});
         res.redirect("/login");
     })
 })
@@ -47,15 +47,17 @@ router.post("/register", async (req, res) => {
     const {email} = req.body;
     try {
         if(email === "adminCoder@coder.com"){
-            return res.status(400).send({status: "error", message: "User is admin"});
+            return res.status(400).send({status: "error", message: "El usuario es admin"});
         }
         
         const exist = await manager.getUser(email);
         
-        if(exist) res.status(400).send({status: "error", message: "User already exists"});
-
+        if(exist){
+            return res.status(400).send({status: "error", message: "El usuario ya existe"});
+        } 
+            
         await manager.createUser(req.body);
-        res.send({status: "success", message: "User registered"});
+        res.send({status: "success", message: "Registro exitoso"});
     } catch (error) {
         res.status(500).send({status: "error", error});
     }

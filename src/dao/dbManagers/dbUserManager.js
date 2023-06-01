@@ -33,12 +33,12 @@ export default class dbUserManager {
     validateUser = async (email, password) => {
         const user = await this.getUser(email);
         
-        if(!user) return {status: false, payload: "User not found"};
+        if(!user) return {status: false, payload: "Usuario no encontrado"};
 
         const newHash = crypto.createHmac("sha256", user.salt)
         .update(password).digest("hex");
 
         if(newHash === user.password)  return {status: true, payload: user};
-        else return {status: false, payload: "Incorrect password"};;
+        else return {status: false, payload: "Contraseña incorrecta"};;
     }
 }
