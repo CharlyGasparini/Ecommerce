@@ -1,10 +1,11 @@
 import { Router } from "express";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
+import passport from "passport";
 
 const router = Router();
 const manager = new dbUserManager();
 
-router.post("/login", async (req, res) => {    
+router.post("/login", passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
     const {email, password} = req.body;
 
     if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
@@ -15,26 +16,20 @@ router.post("/login", async (req, res) => {
         }
         return res.send({status: "success", message: "Login exitoso, bienvenido"})
     }
-    
-    try {
-        const validate = await manager.validateUser(email, password);
-        
-        if(!validate.status){
-            return res.status(401).send({status: "error", message: validate.payload});
-        }
-        
-        req.session.user = {
-            name: `${validate.payload.first_name} ${validate.payload.last_name}`,
-            email: validate.payload.email,
-            age: validate.payload.age,
-            role: validate.payload.role
-        }
-    
-        res.send({status: "success", message: "Login exitoso, bienvenido"});
-    } catch (error) {
-        res.status(500).send({status: "error", error});
+
+    req.session.user = {
+        name: `${req.user.first_name} ${req.user.last_name}`,
+        email: req.user.email,
+        age: req.user.age,
+        role: req.user.role
     }
+
+    res.send({status: "success", message: "Login exitoso, bienvenido"});
 })
+
+router.get('/fail-login', async (req, res) => {
+    res.send({ status: 'error', message: 'Login fallido' });
+});
 
 router.get("/logout", (req, res) => {
     req.session.destroy( err => {
@@ -43,24 +38,12 @@ router.get("/logout", (req, res) => {
     })
 })
 
-router.post("/register", async (req, res) => {
-    const {email} = req.body;
-    try {
-        if(email === "adminCoder@coder.com"){
-            return res.status(400).send({status: "error", message: "El email ingresado corresponde a un admin"});
-        }
-        
-        const exist = await manager.getUser(email);
-        
-        if(exist){
-            return res.status(400).send({status: "error", message: "El usuario ya existe"});
-        } 
-            
-        await manager.createUser(req.body);
-        res.send({status: "success", message: "Registro exitoso"});
-    } catch (error) {
-        res.status(500).send({status: "error", message: JSON.stringify(error)});
-    }
+router.post("/register", passport.authenticate("register", {failureRedirect: "fail-register"}), async (req, res) => {
+    res.send({status: "success", message: "Registro exitoso"});
 })
+
+router.get('/fail-register', async (req, res) => {
+    res.send({ status: 'error', message: 'Registro fallido' });
+});
 
 export default router;

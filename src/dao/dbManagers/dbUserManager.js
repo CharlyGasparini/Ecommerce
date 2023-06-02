@@ -23,16 +23,16 @@ export default class dbUserManager {
             role: email === "adminCoder@coder.com" ? "admin" : "user"
         }
 
-        await userModel.create(user);
+        return await userModel.create(user);
     }
 
     validateUser = async (email, password) => {
         const user = await this.getUser(email);
-
-        if(!user) return {status: false, payload: "Usuario no encontrado"};
         
-        if(!isValidPassword(user, password)) return {status: false, payload: "Contraseña incorrecta"};
+        if(!user) return false;
+        
+        if(!isValidPassword(user, password)) return false;
 
-        return {status: true, payload: user};
+        return user;
     }
 }

@@ -11,6 +11,8 @@ import dbMessageManager from "./dao/dbManagers/dbMessagesManager.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionsRouter from "./routes/sessions.router.js";
+import initializePassport from "./config/passport.config.js";
+import passport from "passport";
 
 const app = express(); // Creación de server HTTP
 const httpServer = app.listen(8080, () => console.log("Listening on port 8080"));
@@ -67,6 +69,10 @@ app.use(session({
     resave: true,
     saveUninitialized: false
 }))
+// Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
