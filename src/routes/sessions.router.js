@@ -1,9 +1,7 @@
 import { Router } from "express";
-import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 import passport from "passport";
 
 const router = Router();
-const manager = new dbUserManager();
 
 router.post("/login", passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
     const {email, password} = req.body;
@@ -45,5 +43,14 @@ router.post("/register", passport.authenticate("register", {failureRedirect: "fa
 router.get('/fail-register', async (req, res) => {
     res.send({ status: 'error', message: 'Registro fallido' });
 });
+
+router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {
+    res.send({status: "success", message: "Usuario registrado"});
+})
+
+router.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/products");
+})
 
 export default router;
