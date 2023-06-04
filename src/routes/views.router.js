@@ -105,5 +105,9 @@ router.get("/register", publicAccess, (req, res) => {
     res.render("register", {title: "Formulario de registro"})
 })
 
+router.get("/reset", (req, res) => {
+    res.render("reset", {title: "Formulario de recuperación de clave"})
+})
+
 
 export default router;

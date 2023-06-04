@@ -46,12 +46,11 @@ const initializePassport = () => {
         scope: ["user:email"]
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log(profile);
             const email = profile.emails[0].value;
             const user = await manager.getUser(email);
             if(!user){
                 const newUser = {
-                    first_name: profile._json.name && profile.username,
+                    first_name: profile._json.name || profile.username,
                     last_name: "",
                     age: "",
                     email,

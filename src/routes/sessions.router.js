@@ -1,7 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
+import { createHash } from "../utils.js";
+import userModel from "../dao/models/users.models.js";
+import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 
 const router = Router();
+const manager = new dbUserManager();
 
 router.post("/login", passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
     const {email, password} = req.body;
@@ -14,7 +18,6 @@ router.post("/login", passport.authenticate("login", {failureRedirect: "fail-log
         }
         return res.send({status: "success", message: "Login exitoso, bienvenido"})
     }
-
     req.session.user = {
         name: `${req.user.first_name} ${req.user.last_name}`,
         email: req.user.email,
@@ -49,8 +52,32 @@ router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), 
 })
 
 router.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
-    req.session.user = req.user;
+    req.session.user = {
+        name: `${req.user.first_name} ${req.user.last_name}`,
+        email: req.user.email,
+        age: req.user.age,
+        role: req.user.role
+    };
     res.redirect("/products");
+})
+
+router.post("/reset", async (req, res) => {
+    const {email, password} = req.body;
+    try {
+        if(!email || !password) return res.status(400).send({status: "error", message: "No puede haber campos vacios"});
+
+        const user = await manager.getUser(email);
+
+        if(!user) return res.status(400).send({status: "error", message: "El usuario no existe"});
+
+        user.password = createHash(password);
+
+        await userModel.updateOne({email}, user);
+
+        res.send({status: "success", message: "Modificación exitosa"});
+    } catch (error) {
+        res.status(500).send({status: "error", message: error});
+    }
 })
 
 export default router;
