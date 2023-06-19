@@ -13,15 +13,20 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true,
     },
     age: {
-        type: String,
-        default: ""
+        type: Number,
+        default: 18
     },
     password: {
         type: String,
         required: true
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
     },
     role: {
         type: String,

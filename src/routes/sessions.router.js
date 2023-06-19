@@ -22,10 +22,11 @@ router.post("/login", passport.authenticate("login", {failureRedirect: "fail-log
         name: `${req.user.first_name} ${req.user.last_name}`,
         email: req.user.email,
         age: req.user.age,
+        cart: req.user.cart,
         role: req.user.role
     }
 
-    res.send({status: "success", message: "Login exitoso, bienvenido"});
+    res.cookie("cartId", `${req.user.cart}`).send({status: "success", message: "Login exitoso, bienvenido"});
 })
 
 router.get('/fail-login', async (req, res) => {
@@ -35,7 +36,7 @@ router.get('/fail-login', async (req, res) => {
 router.get("/logout", (req, res) => {
     req.session.destroy( err => {
         if(err) res.status(500).send({status: "error", message: "Sesión finalizada"});
-        res.redirect("/login");
+        res.clearCookie("cartId").redirect("/login");
     })
 })
 
@@ -56,9 +57,11 @@ router.get("/github-callback", passport.authenticate("github", {failureRedirect:
         name: `${req.user.first_name} ${req.user.last_name}`,
         email: req.user.email,
         age: req.user.age,
+        cart: req.user.cart,
         role: req.user.role
     };
-    res.redirect("/products");
+    
+    res.cookie("cartId", `${req.user.cart}`).redirect("/products");
 })
 
 router.post("/reset", async (req, res) => {

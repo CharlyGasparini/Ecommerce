@@ -87,7 +87,8 @@ router.get("/carts/:cid", privateAccess, async (req, res) => {
             cid,
             products,
             total,
-            isFull: products.length > 0 ? true : false
+            isFull: products.length > 0 ? true : false,
+            user: req.session.user
         })
     } catch (error) {
         res.render("error", {

@@ -9,7 +9,7 @@
         <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
     </div>
     <h2 class="display-5">Productos en stock</h2>
-    <a href="/carts/646b6b2e019903b533c9eae5
+    <a href="/carts/{{user.cart}}
 " class="btn btn-primary my-3">Ir al carrito</a>
     <div class="row row-cols-4 text-center g-1" id="card-group">
         {{#each payload}}
@@ -21,9 +21,7 @@
                         <p class="card-text">{{this.category}}</p>
                         <p class="card-text">{{this.description}}</p>
                         <p class="card-text fw-bold">${{this.price}}</p>
-                        <form action="api/carts/646b6b2e019903b533c9eae5/products/{{this._id}}" method="post">
-                            <button type="submit" class="btn btn-primary">Agregar al carrito</button>
-                        </form>
+                        <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
                     </div>
                 </div>
             {{/if}}
@@ -39,3 +37,5 @@
         {{/if}}
     </div>
 </div>
+
+<script src="/js/products.js"></script>

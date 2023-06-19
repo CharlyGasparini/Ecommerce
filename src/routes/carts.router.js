@@ -29,7 +29,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
     const {pid, cid} = req.params;
     try {
         const result = await manager.addProductInCart(cid, pid); // Agrego el producto al carrito
-        res.redirect("/carts/646b6b2e019903b533c9eae5");
+        res.redirect(`/carts/${req.session.user.cart}`);
         // res.send({status: "success", payload: result});
     } catch (error) {
         res.status(500).send({status: "error", error});   

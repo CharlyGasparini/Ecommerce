@@ -52,8 +52,8 @@ const initializePassport = () => {
                 const newUser = {
                     first_name: profile._json.name || profile.username,
                     last_name: "",
-                    age: "",
                     email,
+                    age: 18,
                     password: ""
                 }
                 const result = await manager.createUser(newUser);
