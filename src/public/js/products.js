@@ -1,5 +1,6 @@
 const btns = document.getElementsByClassName("add-btn");
 
+// Función que consulta con endpoint para obtener el cid de una cookie firmada
 const getCid = async () => {
     const response = await fetch("/api/sessions/current", {
         method: "GET"
@@ -10,6 +11,7 @@ const getCid = async () => {
     return data.payload.cartId
 }
 
+// Evento de los botones que agregan productos al carrito
 for (const btn of btns) {
     btn.addEventListener("click", async e => {
         e.preventDefault();
