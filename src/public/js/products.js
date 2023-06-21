@@ -1,10 +1,20 @@
 const btns = document.getElementsByClassName("add-btn");
 
+const getCid = async () => {
+    const response = await fetch("/api/sessions/current", {
+        method: "GET"
+    })
+
+    const data = await response.json();
+
+    return data.payload.cartId
+}
+
 for (const btn of btns) {
-    btn.addEventListener("click", e => {
+    btn.addEventListener("click", async e => {
         e.preventDefault();
         const pid = btn.value;
-        const cid = document.cookie.split("=")[1];
+        const cid = await getCid();
 
         fetch(`/api/carts/${cid}/products/${pid}`, {
             method: "POST",

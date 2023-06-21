@@ -1,13 +1,13 @@
 import { Router } from "express";
 import passport from "passport";
-import { createHash } from "../utils.js";
+import { createHash, passportCall } from "../utils.js";
 import userModel from "../dao/models/users.models.js";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 
 const router = Router();
 const manager = new dbUserManager();
 
-router.post("/login", passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
+router.post("/login", passportCall("login"), passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
     const {email, password} = req.body;
 
     if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
@@ -26,7 +26,7 @@ router.post("/login", passport.authenticate("login", {failureRedirect: "fail-log
         role: req.user.role
     }
 
-    res.cookie("cartId", `${req.user.cart}`).send({status: "success", message: "Login exitoso, bienvenido"});
+    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).send({status: "success", message: "Login exitoso, bienvenido"});
 })
 
 router.get('/fail-login', async (req, res) => {
@@ -40,7 +40,7 @@ router.get("/logout", (req, res) => {
     })
 })
 
-router.post("/register", passport.authenticate("register", {failureRedirect: "fail-register"}), async (req, res) => {
+router.post("/register", passportCall("register"), passport.authenticate("register", {failureRedirect: "fail-register"}), async (req, res) => {
     res.send({status: "success", message: "Registro exitoso"});
 })
 
@@ -61,7 +61,7 @@ router.get("/github-callback", passport.authenticate("github", {failureRedirect:
         role: req.user.role
     };
     
-    res.cookie("cartId", `${req.user.cart}`).redirect("/products");
+    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).redirect("/products");
 })
 
 router.post("/reset", async (req, res) => {
@@ -81,6 +81,10 @@ router.post("/reset", async (req, res) => {
     } catch (error) {
         res.status(500).send({status: "error", message: error});
     }
+})
+
+router.get("/current", async (req, res) => {
+    res.send({status: "success", payload: req.signedCookies});
 })
 
 export default router;

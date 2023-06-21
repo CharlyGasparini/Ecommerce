@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import multer from "multer";
 import bcrypt from "bcrypt";
+import passport from "passport";
 
 // Convención nomenclatura: para temas de paths __nombre
 const __filename = fileURLToPath(import.meta.url);
@@ -37,6 +38,20 @@ const uploader = multer({
     }
 });
 
+// Custom passport
+const passportCall = (strategy) => {
+    return async(req, res, next) => {
+        passport.authenticate(strategy, function(err, user, info) {
+            if(err) return next(err);
+            if(!user) {
+                return res.status(401).send({error: info.messages ? info.messages : info.toString()});
+            }
+            req.user = user;
+            next();
+        }) (req, res, next);
+    }
+}
+
 const parseToNumber = (req, res, next) => {
     if(typeof req.body.price === "string"){
         req.body.price === Number(req.body.price);
@@ -64,5 +79,6 @@ export {
     privateAccess,
     publicAccess,
     createHash,
-    isValidPassword
+    isValidPassword, 
+    passportCall
 };

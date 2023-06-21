@@ -16,7 +16,7 @@ const initializePassport = () => {
         try {
             const user = await manager.getUser(username);
 
-            if(user) return done(null, false);
+            if(user) return done(null, false, {messages: "Usuario no encontrado"});
 
             const result = await manager.createUser(req.body);
             return done(null, result);
@@ -31,7 +31,7 @@ const initializePassport = () => {
         try {
             const result = await manager.validateUser(username, password);
             
-            if(!result) return done(null, false);
+            if(!result) return done(null, false, {messages: "Usuario no válido"});
             
             return done(null, result);
         } catch (error) {

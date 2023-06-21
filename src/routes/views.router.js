@@ -7,25 +7,6 @@ const router = Router();
 const productManager = await new dbProductManager();
 const cartManager = await new dbCartManager();
 
-// router.get("/", async (req, res) => {
-//     res.render("index", {
-//         title: "Planilla de productos",
-//         products: await productManager.getProducts()
-//     });
-// });
-
-// router.get("/realtimeproducts", (req, res) => {
-//     res.render("realTimeProducts", {
-//         title: "Planilla de productos (tiempo real)"
-//     })
-// })
-
-// router.get("/chat", (req, res) => {
-//     res.render("chat", {
-//         title: "Chat"
-//     })
-// })
-
 router.get("/", async (req, res) => {
     if(res.session?.user) return res.redirect("/products")
     res.redirect("/login");
