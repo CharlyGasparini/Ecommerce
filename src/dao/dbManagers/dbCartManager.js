@@ -11,7 +11,7 @@ export default class dbCartManager {
     }
 
     getCartById = async (cid) => {
-        const result = await cartsModel.find({_id: cid});
+        const result = await cartsModel.find({_id: cid}).lean();
         return result;
     }
 
@@ -22,7 +22,7 @@ export default class dbCartManager {
 
     addProductInCart = async (cid, pid) => {
         let result;
-        const cart = await cartsModel.find({_id: cid, products: {$elemMatch: {product: pid}}});
+        const cart = await cartsModel.find({_id: cid, products: {$elemMatch: {product: pid}}}).lean();
         if(cart.length === 0){
             result = await cartsModel.updateOne(
                 {_id: cid},

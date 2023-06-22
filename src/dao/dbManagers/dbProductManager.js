@@ -17,7 +17,7 @@ export default class dbProductManager {
     }
 
     getProductById = async (pid) => {
-        const result = await productsModel.find({_id: pid});
+        const result = await productsModel.find({_id: pid}).lean();
         return result;
     }
 
