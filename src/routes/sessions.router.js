@@ -1,90 +1,101 @@
-import { Router } from "express";
-import passport from "passport";
-import { createHash, passportCall } from "../utils.js";
+import { createHash, generateToken, isValidPassword } from "../utils.js";
 import userModel from "../dao/models/users.models.js";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
+import Router from "./router.js";
+import { passportStrategiesEnum } from "../config/enums.js";
 
-const router = Router();
 const manager = new dbUserManager();
 
-router.post("/login", passportCall("login"), passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
-    const {email, password} = req.body;
-
-    if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
-        req.session.user = {
-            name: "CoderHouse",
-            email,
-            role: "admin"
-        }
-        return res.send({status: "success", message: "Login exitoso, bienvenido"})
-    }
-    req.session.user = {
-        name: `${req.user.first_name} ${req.user.last_name}`,
-        email: req.user.email,
-        age: req.user.age,
-        cart: req.user.cart,
-        role: req.user.role
-    }
-
-    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).send({status: "success", message: "Login exitoso, bienvenido"});
-})
-
-router.get('/fail-login', async (req, res) => {
-    res.send({ status: 'error', message: 'Login fallido' });
-});
-
-router.get("/logout", (req, res) => {
-    req.session.destroy( err => {
-        if(err) res.status(500).send({status: "error", message: "Sesión finalizada"});
-        res.clearCookie("cartId").redirect("/login");
-    })
-})
-
-router.post("/register", passportCall("register"), passport.authenticate("register", {failureRedirect: "fail-register"}), async (req, res) => {
-    res.send({status: "success", message: "Registro exitoso"});
-})
-
-router.get('/fail-register', async (req, res) => {
-    res.send({ status: 'error', message: 'Registro fallido' });
-});
-
-router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {
-    res.send({status: "success", message: "Usuario registrado"});
-})
-
-router.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
-    req.session.user = {
-        name: `${req.user.first_name} ${req.user.last_name}`,
-        email: req.user.email,
-        age: req.user.age,
-        cart: req.user.cart,
-        role: req.user.role
-    };
+export default class SessionsRouter extends Router {
+    init() {
+        // Lógica de login
+        this.post("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, async (req, res) => {    
+            try {
+                const {email, password} = req.body;
+                
+                if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
+                    const accessToken = generateToken({
+                        first_name: "Coder",
+                        last_name: "House",
+                        email,
+                        cart: "649363298362c08342b2e989",
+                        role: "admin"
+                    })
     
-    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).redirect("/products");
-})
+                    return res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
+                }
+    
+                const user = await manager.getUser(email);
 
-router.post("/reset", async (req, res) => {
-    const {email, password} = req.body;
-    try {
-        if(!email || !password) return res.status(400).send({status: "error", message: "No puede haber campos vacios"});
+                if(!user) return res.sendUserError("Credenciales incorrectas");
+                
+                const comparePassword = isValidPassword(user, password);
 
-        const user = await manager.getUser(email);
+                if(!comparePassword) {
+                    return res.sendUserError("Credenciales incorrectas");
+                }
+    
+                const accessToken = generateToken(user);
+                res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
+            } catch (error) {
+                res.sendServerError(error.message);
+            }
+        })
+        // Lógica de logout
+        this.get("/logout", ["USER", "ADMIN"], passportStrategiesEnum.JWT ,(req, res) => {
+            res.clearCookie("cookieToken");
+        })
+        // Lógica de registro
+        this.post("/register", ["PUBLIC"], passportStrategiesEnum.NOTHING, async (req, res) => {
+            try {
+                const { first_name, last_name, age, email, password} = req.body;
+    
+                if(!first_name || !last_name || !age || !email || !password)
+                    return res.sendUserError("Valores incompletos");
+    
+                const user = await manager.getUser(email);
+    
+                if(user) return res.sendUserError("El usuario ya existe");
+    
+                const result = await manager.createUser(req.body);
+    
+                res.sendSuccess(result);
+            } catch (error) {
+                res.sendServerError(error.message);
+            }
+        })
+        // // revisar y adaptar al formato class Router
+        // this.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {
+        //     res.send({status: "success", message: "Usuario registrado"});
+        // })
+        // // revisar y adaptar al formato class Router
+        // this.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
+        //     const accessToken = generateToken(req.user);
+        //     res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
+        // })
+        // Lógica de reseteo de clave
+        this.post("/reset", ["PUBLIC"], passportStrategiesEnum.NOTHING,async (req, res) => {
+            try {
+                const {email, password} = req.body;
 
-        if(!user) return res.status(400).send({status: "error", message: "El usuario no existe"});
-
-        user.password = createHash(password);
-
-        await userModel.updateOne({email}, user);
-
-        res.send({status: "success", message: "Modificación exitosa"});
-    } catch (error) {
-        res.status(500).send({status: "error", message: error});
+                if(!email || !password) return res.sendUserError("Valores incompletos")
+        
+                const user = await manager.getUser(email);
+        
+                if(!user) return res.sendUserError("El usuario no existe");
+        
+                user.password = createHash(password);
+        
+                const result = await userModel.updateOne({email}, user);
+        
+                res.sendSuccess(result);
+            } catch (error) {
+                res.sendServerError(error.message);
+            }
+        })
+        // Lógica que retorna contenido del token
+        this.get('/current', ["USER", "ADMIN"], passportStrategiesEnum.JWT, (req, res) => {
+            res.sendSuccess(req.user);
+        });
     }
-})
-
-router.get("/current", async (req, res) => {
-    res.send({status: "success", payload: req.signedCookies});
-})
-
-export default router;
+}

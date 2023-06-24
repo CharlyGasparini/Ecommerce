@@ -22,20 +22,9 @@ export default class dbUserManager {
             email,
             age,
             cart: cartId,
-            password: createHash(password),
-            role: email === "adminCoder@coder.com" ? "admin" : "user"
+            password: createHash(password)
         }
 
         return await userModel.create(user);
-    }
-
-    validateUser = async (email, password) => {
-        const user = await this.getUser(email);
-        
-        if(!user) return false;
-        
-        if(!isValidPassword(user, password)) return false;
-
-        return user;
     }
 }

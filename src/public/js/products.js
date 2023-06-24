@@ -6,9 +6,8 @@ const getCid = async () => {
         method: "GET"
     })
 
-    const data = await response.json();
-
-    return data.payload.cartId
+    const user = await response.json();
+    return user.cart;
 }
 
 // Evento de los botones que agregan productos al carrito
@@ -26,7 +25,16 @@ for (const btn of btns) {
             }
         })
         .then(result => {
-            if(result.status === 200) window.location.replace(`/carts/${cid}`);
+            if(result.status === 200) {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: "El producto fue agregado al carrito",
+                    icon: "success"
+                })
+            }
         })
     })
 }

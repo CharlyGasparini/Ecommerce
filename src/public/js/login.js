@@ -18,18 +18,28 @@ form.addEventListener("submit", e =>{
             method: "POST",
             body: JSON.stringify(obj),
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-        .then(async result => {
+        .then(result => {
             if(result.status === 200){
                 window.location.replace("/products");
-            } 
+            } else{
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: "Falló",
+                    icon: "error"
+                })
+            }
         })
     } else{
         Swal.fire({
             toast: true,
-            position: "center",
+            position: "top-end",
             showConfirmButton: false,
             timer: 1500,
             title: "No puede haber campos vacios",
