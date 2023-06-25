@@ -17,7 +17,7 @@ export default class Router{
     get(path, policies, passportStrategy, ...callbacks) {
         this.router.get(
             path,
-            this.applyCustomPassportCall(passportStrategy, path),
+            this.applyCustomPassportCall(passportStrategy),
             this.handlePolicies(policies),
             this.generateCustomReponse,
             this.applyCallbacks(callbacks)
@@ -27,7 +27,7 @@ export default class Router{
     post(path, policies, passportStrategy, ...callbacks){
         this.router.post(
             path,
-            this.applyCustomPassportCall(passportStrategy, path),
+            this.applyCustomPassportCall(passportStrategy),
             this.handlePolicies(policies), 
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -37,7 +37,7 @@ export default class Router{
     put(path, policies, passportStrategy, ...callbacks){
         this.router.put(
             path,
-            this.applyCustomPassportCall(passportStrategy, path),
+            this.applyCustomPassportCall(passportStrategy),
             this.handlePolicies(policies),
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -47,7 +47,7 @@ export default class Router{
     delete(path, policies, passportStrategy, ...callbacks){
         this.router.delete(
             path,
-            this.applyCustomPassportCall(passportStrategy, path),
+            this.applyCustomPassportCall(passportStrategy),
             this.handlePolicies(policies),
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -88,7 +88,7 @@ export default class Router{
         next();
     }
 
-    applyCustomPassportCall = (strategy, path) => (req, res, next) => {
+    applyCustomPassportCall = (strategy) => (req, res, next) => {
             if(strategy === passportStrategiesEnum.JWT){
                 passport.authenticate(strategy, function (err, user, info) {
                     if(err) return next(err);
@@ -99,12 +99,15 @@ export default class Router{
                     req.user = user;
                     next();
                 }) (req, res, next);
-            } else if(strategy === passportStrategiesEnum.GITHUB){
-                if(path === "/github-callback") {
-                    passport.authenticate(strategy, {failureRedirect: "/login"})
-                } else {
-                    passport.authenticate(strategy, {scope: ["user:email"]})
-                }
+            } else if(strategy === passportStrategiesEnum.GITHUB){                
+                passport.authenticate(strategy, {scope: ["user:email"]}, function(err, user, info) {
+                    if(err) return next(err);
+
+                    if(!user)
+                    return res.status(401).send({error: info.messages ? info.messages : info.toString()});
+                    req.user = user;
+                    next();
+                }) (req, res, next);
             } else  {
                 next();
             }
