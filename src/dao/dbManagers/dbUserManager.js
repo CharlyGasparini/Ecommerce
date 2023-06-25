@@ -23,7 +23,7 @@ export default class dbUserManager {
             age,
             cart: cartId,
             password: createHash(password),
-            role: email === "adminCoder@coder.com" ? "admin" : "user"
+            role: "user"
         }
 
         return await userModel.create(user);

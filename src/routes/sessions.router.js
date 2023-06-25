@@ -1,67 +1,76 @@
 import { Router } from "express";
 import passport from "passport";
-import { createHash, passportCall } from "../utils.js";
+import { authorization, createHash, passportCall, isValidPassword } from "../utils.js";
 import userModel from "../dao/models/users.models.js";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
+import { generateToken } from "../utils.js";
 
 const router = Router();
 const manager = new dbUserManager();
 
-router.post("/login", passportCall("login"), passport.authenticate("login", {failureRedirect: "fail-login"}), async (req, res) => {    
-    const {email, password} = req.body;
+router.post("/login", async (req, res) => {    
+    try {
+        const {email, password} = req.body;
+        
+        if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
+            const accessToken = generateToken({
+                first_name: "Coder",
+                last_name: "House",
+                email,
+                cart: "649363298362c08342b2e989",
+                role: "admin"
+            })
 
-    if(email === "adminCoder@coder.com" && password === "adminCod3r123"){
-        req.session.user = {
-            name: "CoderHouse",
-            email,
-            role: "admin"
+            return res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
         }
-        return res.send({status: "success", message: "Login exitoso, bienvenido"})
+
+        const user = await manager.getUser(email);
+
+        if(!user) return res.status(400).send({status: "error", message: "Credenciales incorrectas"});
+        
+        const comparePassword = isValidPassword(user, password);
+
+        if(!comparePassword) {
+            return res.status(400).send({status: "error", message: "Credenciales incorrectas"});
+        }
+
+        const accessToken = generateToken(user);
+        res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
-    req.session.user = {
-        name: `${req.user.first_name} ${req.user.last_name}`,
-        email: req.user.email,
-        age: req.user.age,
-        cart: req.user.cart,
-        role: req.user.role
+})
+
+router.get("/logout", passportCall("jwt"), (req, res) => {
+    res.clearCookie("cookieToken").redirect("/login");
+})
+
+router.post("/register", async (req, res) => {
+    try {
+        const { first_name, last_name, age, email, password} = req.body;
+
+        if(!first_name || !last_name || !age || !email || !password)
+            return res.send(400).status({status: "error", message: "Valores incompletos"})
+
+        const user = await manager.getUser(email);
+
+        if(user) return res.status(400).status({status: "error", message: "El usuario ya existe"});
+
+        const result = await manager.createUser(req.body);
+
+        res.send({status: "success", payload: result});
+    } catch (error) {
+        res.status(500).send({status: "error", error});
     }
-
-    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).send({status: "success", message: "Login exitoso, bienvenido"});
 })
-
-router.get('/fail-login', async (req, res) => {
-    res.send({ status: 'error', message: 'Login fallido' });
-});
-
-router.get("/logout", (req, res) => {
-    req.session.destroy( err => {
-        if(err) res.status(500).send({status: "error", message: "Sesión finalizada"});
-        res.clearCookie("cartId").redirect("/login");
-    })
-})
-
-router.post("/register", passportCall("register"), passport.authenticate("register", {failureRedirect: "fail-register"}), async (req, res) => {
-    res.send({status: "success", message: "Registro exitoso"});
-})
-
-router.get('/fail-register', async (req, res) => {
-    res.send({ status: 'error', message: 'Registro fallido' });
-});
 
 router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {
     res.send({status: "success", message: "Usuario registrado"});
 })
 
-router.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
-    req.session.user = {
-        name: `${req.user.first_name} ${req.user.last_name}`,
-        email: req.user.email,
-        age: req.user.age,
-        cart: req.user.cart,
-        role: req.user.role
-    };
-    
-    res.cookie("cartId", `${req.user.cart}`, {httpOnly: true, signed: true}).redirect("/products");
+router.get("/github-callback", passport.authenticate("github", {failureRedirect: "/login", session: false}), authorization("user"), async (req, res) => {
+    const accessToken = generateToken(req.user);
+    res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
 })
 
 router.post("/reset", async (req, res) => {
@@ -79,12 +88,12 @@ router.post("/reset", async (req, res) => {
 
         res.send({status: "success", message: "Modificación exitosa"});
     } catch (error) {
-        res.status(500).send({status: "error", message: error});
+        res.status(500).send({status: "error", error});
     }
 })
 
-router.get("/current", async (req, res) => {
-    res.send({status: "success", payload: req.signedCookies});
+router.get("/current", passportCall("jwt"), async (req, res) => {
+    res.send({status: "success", payload: req.user});
 })
 
 export default router;

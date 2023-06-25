@@ -70,15 +70,16 @@ app.use(session({
     resave: true,
     saveUninitialized: false
 }))
-// Passport
-initializePassport();
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__dirname}/public`)); // Acceso a archivos estáticos
-app.use(cookieParser("secretCookie"));
+app.use(cookieParser());
+
+// Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Configuración de handlebars
 app.engine("handlebars", handlebars.engine()); // Inicializa el motor

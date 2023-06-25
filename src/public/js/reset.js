@@ -1,16 +1,9 @@
 const form = document.getElementById("form-restore");
 
-const hasEmptyValues = (formData) => {
-    for(const [key, value] of formData) {
-        if(!value) return true
-    }
-    return false
-}
-
 form.addEventListener("submit", e => {
     e.preventDefault();
     const data = new FormData(form);
-    const isEmpty = hasEmptyValues(data);
+    const isEmpty = hasEmptyValues();
     if(!isEmpty){
         const obj = {};
         data.forEach((value, key) => obj[key]= value);

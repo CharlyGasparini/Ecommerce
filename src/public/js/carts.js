@@ -1,9 +1,10 @@
 const emptyBtn = document.getElementById("empty-btn");
 const deleteBtns = document.getElementsByClassName("del-btn");
-const cartId = document.cookie.split("=")[1];
 
-emptyBtn?.addEventListener("click", e => {
-    fetch(`/api/carts/${cartId}`, {
+emptyBtn?.addEventListener("click", async e => {
+    const user = await getUser();
+    const cid = user.cart;
+    fetch(`/api/carts/${cid}`, {
         method: "DELETE"
     })
     .then(result => {
@@ -12,15 +13,17 @@ emptyBtn?.addEventListener("click", e => {
 })
 
 for (const btn of deleteBtns) {
-    btn.addEventListener("click", e =>{
+    btn.addEventListener("click", async e =>{
+        const user = await getUser();
         const row = btn.parentElement.parentElement;
         const td = row.children[0];
         const pid = td.textContent;
-        fetch(`/api/carts/${cartId}/products/${pid}`, {
+        const cid = user.cart;
+        fetch(`/api/carts/${cid}/products/${pid}`, {
             method: "DELETE"
         })
         .then(result => {
-            if(result.status === 200) window.location.replace(`/carts/${cartId}`);
+            if(result.status === 200) window.location.replace(`/carts/${cid}`);
         })
     })
 }

@@ -4,5 +4,3 @@ const hasEmptyValues = (formData) => {
     }
     return false
 }
-
-export default hasEmptyValues;

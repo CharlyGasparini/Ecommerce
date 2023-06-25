@@ -1,18 +1,18 @@
 import { Router } from "express";
 import dbProductManager from "../dao/dbManagers/dbProductManager.js";
 import dbCartManager from "../dao/dbManagers/dbCartManager.js";
-import { privateAccess, publicAccess } from "../utils.js";
+import { passportCall } from "../utils.js";
 
 const router = Router();
 const productManager = await new dbProductManager();
 const cartManager = await new dbCartManager();
 
 router.get("/", async (req, res) => {
-    if(res.session?.user) return res.redirect("/products")
-    res.redirect("/login");
+    if(req.cookies["cookieToken"]) return res.redirect("/products");
+    res.redirect("/login")
 })
 
-router.get("/products", privateAccess, async (req, res) => {
+router.get("/products", passportCall("jwt"), async (req, res) => {
     const {query="{}", limit= 10, page= 1, sort="{}"} = req.query;
     try {
         const result = await productManager.getProducts(query, Number(limit), page, sort);
@@ -33,7 +33,7 @@ router.get("/products", privateAccess, async (req, res) => {
             hasNextPage,
             prevLink,
             nextLink,
-            user: req.session.user
+            user: req.user
         })
     } catch (error) {
         res.render("error", {
@@ -43,7 +43,7 @@ router.get("/products", privateAccess, async (req, res) => {
     }
 })
 
-router.get("/carts/:cid", privateAccess, async (req, res) => {
+router.get("/carts/:cid", passportCall("jwt"), async (req, res) => {
     const cid = req.params.cid;
     let products = [];
     let total = 0;
@@ -69,7 +69,7 @@ router.get("/carts/:cid", privateAccess, async (req, res) => {
             products,
             total,
             isFull: products.length > 0 ? true : false,
-            user: req.session.user
+            user: req.user
         })
     } catch (error) {
         res.render("error", {
@@ -79,17 +79,19 @@ router.get("/carts/:cid", privateAccess, async (req, res) => {
     }
 })
 
-router.get("/login", publicAccess, (req, res) => {
+router.get("/login", (req, res) => {
+    if(req.cookies["cookieToken"]) return res.redirect("/products");
     res.render("login", {title: "Formulario de login"});
 })
 
-router.get("/register", publicAccess, (req, res) => {
+router.get("/register", (req, res) => {
+    if(req.cookies["cookieToken"]) return res.redirect("/products");
     res.render("register", {title: "Formulario de registro"})
 })
 
 router.get("/reset", (req, res) => {
+    if(req.cookies["cookieToken"]) return res.redirect("/products");
     res.render("reset", {title: "Formulario de recuperación de clave"})
 })
-
 
 export default router;

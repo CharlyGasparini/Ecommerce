@@ -1,12 +1,5 @@
 const form = document.getElementById("register-form");
 
-const hasEmptyValues = (formData) => {
-    for(const [key, value] of formData) {
-        if(!value) return true
-    }
-    return false
-}
-
 form.addEventListener("submit", e =>{
     e.preventDefault();
     const data = new FormData(form);
@@ -24,7 +17,7 @@ form.addEventListener("submit", e =>{
         .then(async result => {
             const res = await result.json();
             if(result.status === 200){
-                window.location.replace("/products");
+                window.location.replace("/login");
             } 
             else{
                 Swal.fire({

@@ -1,43 +1,26 @@
 import passport from "passport";
-import local from "passport-local";
+import jwt from 'passport-jwt';
 import GitHubStrategy from "passport-github2";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
+import { PRIVATE_KEY } from "./constants.js";
 
 const manager = new dbUserManager();
-const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
-    // registro con estrategia local
-    passport.use("register", new LocalStrategy({
-        passReqToCallback: true,
-        usernameField: "email"
-    }, async (req, username, password, done) => {
-        req.body.password = password;
+    // Estrategia con jwt
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY
+    }, async (jwt_payload, done) => {
         try {
-            const user = await manager.getUser(username);
-
-            if(user) return done(null, false, {messages: "Usuario no encontrado"});
-
-            const result = await manager.createUser(req.body);
-            return done(null, result);
+            return done(null, jwt_payload.user);
         } catch (error) {
-            return done(`Error al obtener el usuario: ${error}`);
+            return done(error);
         }
-    }));
-    // login con estrategia local
-    passport.use("login", new LocalStrategy({
-        usernameField: "email"
-    }, async (username, password, done) => {
-        try {
-            const result = await manager.validateUser(username, password);
-            
-            if(!result) return done(null, false, {messages: "Usuario no válido"});
-            
-            return done(null, result);
-        } catch (error) {
-            return done(`Error al obtener el usuario: ${error}`);
-        }
-    }));
+    }))
+
     // registro/login con estrategia github
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.cd735444c94379d6",
@@ -66,14 +49,14 @@ const initializePassport = () => {
         }
     }))
 
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
-    });
+}
 
-    passport.deserializeUser(async (id, done) => {
-        const user = await manager.getUser(id);
-        done(null, user);
-    })
+const cookieExtractor = req => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies['cookieToken'];
+    }
+    return token;
 }
 
 export default initializePassport;

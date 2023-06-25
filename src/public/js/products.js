@@ -1,22 +1,12 @@
 const btns = document.getElementsByClassName("add-btn");
 
-// Función que consulta con endpoint para obtener el cid de una cookie firmada
-const getCid = async () => {
-    const response = await fetch("/api/sessions/current", {
-        method: "GET"
-    })
-
-    const data = await response.json();
-
-    return data.payload.cartId
-}
-
 // Evento de los botones que agregan productos al carrito
 for (const btn of btns) {
     btn.addEventListener("click", async e => {
         e.preventDefault();
+        const user = await getUser();
         const pid = btn.value;
-        const cid = await getCid();
+        const cid = user.cart;
 
         fetch(`/api/carts/${cid}/products/${pid}`, {
             method: "POST",
@@ -26,7 +16,25 @@ for (const btn of btns) {
             }
         })
         .then(result => {
-            if(result.status === 200) window.location.replace(`/carts/${cid}`);
+            if(result.status === 200){
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: "Producto agregado al carrito",
+                    icon: "success"
+                })
+            } else {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: "El producto no pudo ser agregado",
+                    icon: "error"
+                })
+            }
         })
     })
 }

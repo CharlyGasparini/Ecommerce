@@ -1,6 +1,6 @@
 <div class="container my-5">
     <div class="mb-3 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
-        <h1 class="display-4">Bienvenido {{user.name}}</h1>
+        <h1 class="display-4">Bienvenido {{user.first_name}} {{user.last_name}}</h1>
         <p><strong>Email:</strong> {{user.email}}</p>
         {{#if user.age}}
             <p><strong>Edad:</strong> {{user.age}}</p>
@@ -39,3 +39,4 @@
 </div>
 
 <script src="/js/products.js"></script>
+<script src="js/getUser.js"></script>

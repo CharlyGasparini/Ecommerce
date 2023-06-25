@@ -3,6 +3,9 @@ import { dirname } from "path";
 import multer from "multer";
 import bcrypt from "bcrypt";
 import passport from "passport";
+import jwt from 'jsonwebtoken';
+
+const PRIVATE_KEY = 'secretCoder';
 
 // Convención nomenclatura: para temas de paths __nombre
 const __filename = fileURLToPath(import.meta.url);
@@ -26,6 +29,11 @@ const createHash = password => {
 
 const isValidPassword = (user, password) => {
     return bcrypt.compareSync(password, user.password);
+}
+
+const generateToken = (user) => {
+    const token = jwt.sign({ user }, PRIVATE_KEY, {expiresIn: "24h"} );
+    return token;
 }
 
 
@@ -62,23 +70,32 @@ const parseToNumber = (req, res, next) => {
     next();
 }
 
-const privateAccess = (req, res, next) => {
-    if(!req.session.user) return res.redirect("/login");
-    next();
+const authorization = (role) => {
+    return async (req, res, next) => {
+        if(req.user.role != role) return res.status(403).send({error: 'Not permissions'});
+        next();
+    }
 }
 
-const publicAccess = (req, res, next) => {
-    if(req.session?.user) return res.redirect("/products");
-    next();
-}
+// const privateAccess = (req, res, next) => {
+//     if(!req.session.user) return res.redirect("/login");
+//     next();
+// }
+
+// const publicAccess = (req, res, next) => {
+//     if(req.session?.user) return res.redirect("/products");
+//     next();
+// }
 
 export {
     __dirname,
     uploader,
     parseToNumber,
-    privateAccess,
-    publicAccess,
+    // privateAccess,
+    // publicAccess,
     createHash,
     isValidPassword, 
-    passportCall
+    passportCall,
+    authorization, 
+    generateToken
 };
