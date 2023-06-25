@@ -8,7 +8,7 @@ emptyBtn?.addEventListener("click", async e => {
         method: "DELETE"
     })
     .then(result => {
-        if(result.status === 200) window.location.replace(`/carts/${cartId}`);
+        if(result.status === 200) window.location.replace(`/carts/${cid}`);
     })
 })
 

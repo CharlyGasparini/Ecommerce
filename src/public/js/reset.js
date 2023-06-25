@@ -3,7 +3,7 @@ const form = document.getElementById("form-restore");
 form.addEventListener("submit", e => {
     e.preventDefault();
     const data = new FormData(form);
-    const isEmpty = hasEmptyValues();
+    const isEmpty = hasEmptyValues(data);
     if(!isEmpty){
         const obj = {};
         data.forEach((value, key) => obj[key]= value);

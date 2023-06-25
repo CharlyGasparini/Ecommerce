@@ -1,82 +1,103 @@
-import { Router } from "express";
+import Router from "./router.js";
 import dbProductManager from "../dao/dbManagers/dbProductManager.js";
 import { uploader, parseToNumber } from "../utils.js/";
-import { authorization, passportCall } from "../utils.js";
+import { passportStrategiesEnum } from "../config/enums.js";
 
-const router = Router();
 const manager = new dbProductManager();
 
-router.get("/", passportCall("jwt"), async (req, res) => {
-    const {query="{}", limit=10, page=1, sort="{}"} = req.query;
-    try {
-        const {docs:payload, totalPages, prevPage, nextPage, hasPrevPage, hasNextPage} = await manager.getProducts(query, Number(limit), page, sort); // Traigo el array de productos
-        res.send({
-            status: "success",
-            payload,
-            totalPages,
-            prevPage,
-            nextPage,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevLink: !hasPrevPage ? null : `/api/products?limit=${limit}&page=${prevPage}&query=${query}&sort=${sort}`,
-            nextLink: !hasNextPage ? null : `/api/products?limit=${limit}&page=${nextPage}&query=${query}&sort=${sort}`
-        })
-    } catch (error) {
-        res.status(500).send({status: "error", error});
+export default class ProductsRouter extends Router {
+    init() {
+        // Devuelve los productos en la DB
+        this.get("/", ["ADMIN"], passportStrategiesEnum.JWT, this.getProducts)
+        // Devuelve un producto de la DB que corresponda al id brindado
+        this.get("/:pid", ["ADMIN"], passportStrategiesEnum.JWT, this.getProductById)
+        // Agrega un producto a la DB
+        this.post("/", ["ADMIN"], passportStrategiesEnum.JWT, parseToNumber, uploader.array("files"), this.addProduct)
+        // Modifica un producto en la DB
+        this.put("/:pid", ["ADMIN"], passportStrategiesEnum.JWT, this.updateProduct)
+        // Modifica el status de un producto de la DB para que ya no se muestre (borrado lógico)
+        this.delete("/:pid", ["ADMIN"], passportStrategiesEnum.JWT, this.deleteProduct)
     }
-})
 
-router.get("/:pid", passportCall("jwt"), async (req, res) => {
-    const pid = req.params.pid; // Traigo el id del producto desde los parametros del path
-    try {
-        const product = await manager.getProductById(pid); // Busco el producto con el id correspondiente
-        res.send({status: "success", payload: product});
-    } catch (error) {
-        res.status(500).send({status: "error", error});
-    }
-})
+    async getProducts(req, res) {
+        try {
+            const {query="{}", limit=10, page=1, sort="{}"} = req.query;
+            const products = await manager.getProducts(query, Number(limit), page, sort); // Traigo el array de productos
+            const {docs:payload, hasPrevPage, hasNextPage, totalPages, prevPage, nextPage} = products;
+            let urlParams = "?";
 
-router.post("/", passportCall("jwt"), parseToNumber, uploader.array("files"), async (req, res) => {
-    const product = req.body;
-    const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
-    if(!title, !description, !price, !code, !stock, !category){
-        return res.status(400).send({status: "error", error: "Incomplete values"});
-    }
-    if(req.files){
-        product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
-    }
-    try {
-        const result = await manager.addProduct(product); // Agrego el producto
-        res.send({status: "success", payload: result});
-    } catch (error) {
-        res.status(500).send({status: "error", error});
-    }
-})
+            if(query) urlParams += `query=${query}&`;
+            if(limit) urlParams += `limit=${limit}&`;
+            if(sort) urlParams += `sort=${sort}&`;
 
-router.put("/:pid", passportCall("jwt"), authorization("admin"), async (req, res) => {
-    const pid = req.params.pid; // Traigo el id del producto de los parametros del path
-    const product = req.body; // Traigo los parametros a modificar desde el body
-    const {title, description, price, code, stock, category} = product;
-    if(!title, !description, !price, !code, !stock, !category){
-        return res.status(400).send({status: "error", error: "Incomplete values"});
-    }
-    try {
-        const result = await manager.updateProduct(pid, product); // Modifico el producto
-        res.send({status: "success", payload: result})
-    } catch (error) {
-        res.status(500).send({status: "error", error});
-    }
-})
+            const prevLink = hasPrevPage ? `${urlParams}page=${prevPage}` : null;
+            const nextLink = hasNextPage ? `${urlParams}page=${nextPage}` : null;
 
-router.delete("/:pid", passportCall("jwt"), authorization("admin"), async (req, res) => {
-    const pid = req.params.pid; // Traigo el id del producto de los parametros del path
-    try {
-        const result = await manager.deleteProduct(pid); // Borro el producto
-        res.send({status: "success", payload: result});
-    } catch (error) {
-        res.status(500).send({status: "error", error});
+            res.sendSuccess({
+                payload,
+                totalPages,
+                prevPage,
+                nextPage,
+                page,
+                hasPrevPage,
+                hasNextPage,
+                prevLink,
+                nextLink
+            })
+        } catch (error) {
+            res.sendServerError(error.message);
+        }
     }
-})
 
-export default router;
+    async getProductById(req, res) {
+        try {
+            const pid = req.params.pid; // Traigo el id del producto desde los parametros del path
+            const product = await manager.getProductById(pid); // Busco el producto con el id correspondiente
+            res.sendSuccess(product);
+        } catch (error) {
+            res.sendServerError(error.message);
+        }
+    }
+
+    async addProduct(req, res) {
+        try {
+            const product = req.body;
+            const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
+            if(!title || !description || !price || !code || !stock || !category){
+                return res.sendUserError("Valores incompletos");
+            }
+            if(req.files){
+                product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
+            }
+            const result = await manager.addProduct(product); // Agrego el producto
+            res.sendSuccess(result);
+        } catch (error) {
+            res.sendServerError(error.message);
+        }
+    }
+
+    async updateProduct(req, res) {
+        try {
+            const pid = req.params.pid; // Traigo el id del producto de los parametros del path
+            const product = req.body; // Traigo los parametros a modificar desde el body
+            const {title, description, price, code, stock, category} = product;
+            if(!title, !description, !price, !code, !stock, !category){
+                return res.status(400).send({status: "error", error: "Incomplete values"});
+            }
+            const result = await manager.updateProduct(pid, product); // Modifico el producto
+            res.send({status: "success", payload: result})
+        } catch (error) {
+            res.status(500).send({status: "error", error});
+        }
+    }
+
+    async deleteProduct(req, res) {
+        try {
+            const pid = req.params.pid; // Traigo el id del producto de los parametros del path
+            const result = await manager.deleteProduct(pid); // Borro el producto
+            res.sendSuccess(result);
+        } catch (error) {
+            res.sendServerError(error.message);
+        }
+    }
+}
