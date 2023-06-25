@@ -17,7 +17,7 @@ export default class Router{
     get(path, policies, passportStrategy, ...callbacks) {
         this.router.get(
             path,
-            this.applyCustomPassportCall(passportStrategy),
+            this.applyCustomPassportCall(passportStrategy, path),
             this.handlePolicies(policies),
             this.generateCustomReponse,
             this.applyCallbacks(callbacks)
@@ -27,7 +27,7 @@ export default class Router{
     post(path, policies, passportStrategy, ...callbacks){
         this.router.post(
             path,
-            this.applyCustomPassportCall(passportStrategy),
+            this.applyCustomPassportCall(passportStrategy, path),
             this.handlePolicies(policies), 
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -37,7 +37,7 @@ export default class Router{
     put(path, policies, passportStrategy, ...callbacks){
         this.router.put(
             path,
-            this.applyCustomPassportCall(passportStrategy),
+            this.applyCustomPassportCall(passportStrategy, path),
             this.handlePolicies(policies),
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -47,7 +47,7 @@ export default class Router{
     delete(path, policies, passportStrategy, ...callbacks){
         this.router.delete(
             path,
-            this.applyCustomPassportCall(passportStrategy),
+            this.applyCustomPassportCall(passportStrategy, path),
             this.handlePolicies(policies),
             this.generateCustomReponse, 
             this.applyCallbacks(callbacks)
@@ -59,12 +59,11 @@ export default class Router{
             try {
                 await callback.apply(this.params);
             } catch (error) {
-                params[1].status(500).send(error);
+                params[1].status(500).json({error: error.message});
             }
         })
     }
 
-    // revisar y adaptar a la forma de extraccion del token q estoy usando
     handlePolicies = (policies) => (req, res, next) => {
         if(policies[0] === 'PUBLIC') return next();
         
@@ -89,8 +88,7 @@ export default class Router{
         next();
     }
 
-    applyCustomPassportCall = (strategy) => {
-        return (req, res, next) => {
+    applyCustomPassportCall = (strategy, path) => (req, res, next) => {
             if(strategy === passportStrategiesEnum.JWT){
                 passport.authenticate(strategy, function (err, user, info) {
                     if(err) return next(err);
@@ -101,9 +99,14 @@ export default class Router{
                     req.user = user;
                     next();
                 }) (req, res, next);
-            } else {
+            } else if(strategy === passportStrategiesEnum.GITHUB){
+                if(path === "/github-callback") {
+                    passport.authenticate("github", {failureRedirect: "/login"})
+                } else {
+                    passport.authenticate(strategy, {scope: ["user:email"]})
+                }
+            } else  {
                 next();
             }
         }
     }
-}

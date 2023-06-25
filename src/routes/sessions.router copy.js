@@ -9,7 +9,7 @@ const manager = new dbUserManager();
 export default class SessionsRouter extends Router {
     init() {
         // Lógica de login
-        this.post("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, async (req, res) => {    
+        this.post("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, async (req, res) => {
             try {
                 const {email, password} = req.body;
                 
