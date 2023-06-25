@@ -1,6 +1,5 @@
 import Router from "./router.js";
-import passport from "passport";
-import { authorization, createHash, isValidPassword, passportCall } from "../utils.js";
+import { createHash, isValidPassword } from "../utils.js";
 import userModel from "../dao/models/users.models.js";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 import { generateToken } from "../utils.js";
