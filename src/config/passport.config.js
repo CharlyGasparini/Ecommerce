@@ -3,6 +3,7 @@ import jwt from 'passport-jwt';
 import GitHubStrategy from "passport-github2";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 import { PRIVATE_KEY } from "./constants.js";
+import * as usersServicesModule from "../services/users.service.js";
 
 const manager = new dbUserManager();
 const JWTStrategy = jwt.Strategy;
@@ -30,7 +31,7 @@ const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const email = profile.emails[0].value;
-            const user = await manager.getUser(email);
+            const user = await usersServicesModule.getUser(email);
             if(!user){
                 const newUser = {
                     first_name: profile._json.name || profile.username,
@@ -39,7 +40,7 @@ const initializePassport = () => {
                     age: 18,
                     password: ""
                 }
-                const result = await manager.createUser(newUser);
+                const result = await usersServicesModule.createUser(newUser);
                 done(null, result);
             } else {
                 done(null, user);

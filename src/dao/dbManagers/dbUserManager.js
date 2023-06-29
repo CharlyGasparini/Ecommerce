@@ -7,14 +7,14 @@ export default class dbUserManager {
         console.log("Working users with DB");
     }
 
-    getUser = async (email) => {
-        const user = await userModel.findOne({email});
+    get = async (email) => {
+        const user = await userModel.findOne({email}).lean();
         return user;
     }
 
-    createUser = async (data) => {
+    add = async (data) => {
         const {first_name, last_name, email, age, password} = data;
-        const cart = await new dbCartManager().addCart({});
+        const cart = await new dbCartManager().add({});
         const cartId = cart._id;
         const user = {
             first_name,
@@ -29,8 +29,13 @@ export default class dbUserManager {
         return await userModel.create(user);
     }
 
-    validateUser = async (email, password) => {
-        const user = await this.getUser(email);
+    update = async (email, newUser) => {
+        const result = await userModel.updateOne({email}, newUser);
+        return result;
+    }
+
+    validate = async (email, password) => {
+        const user = await this.get(email);
         
         if(!user) return false;
         

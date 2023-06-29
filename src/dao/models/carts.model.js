@@ -17,7 +17,11 @@ const cartSchema = new mongoose.Schema({
             }
         ],
         default: []
-    }    
+    },
+    admin: {
+        type: Boolean,
+        default: false
+    }
 })
 
 cartSchema.pre("find", function(){

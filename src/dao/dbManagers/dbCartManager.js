@@ -5,22 +5,22 @@ export default class dbCartManager {
         console.log("Working carts with DB");
     }
 
-    getCarts = async () => {
+    getAll = async () => {
         const carts = await cartsModel.find().lean();
         return carts;
     }
 
-    getCartById = async (cid) => {
-        const result = await cartsModel.find({_id: cid});
+    getById = async (cid) => {
+        const result = await cartsModel.find({_id: cid}).lean();
         return result;
     }
 
-    addCart = async (cart) => {
+    add = async (cart) => {
         const result = await cartsModel.create(cart);
         return result;
     }
 
-    addProductInCart = async (cid, pid) => {
+    addOne = async (cid, pid) => {
         let result;
         const cart = await cartsModel.find({_id: cid, products: {$elemMatch: {product: pid}}});
         if(cart.length === 0){
@@ -37,7 +37,7 @@ export default class dbCartManager {
         return result;
     }
 
-    deleteProductInCart = async (cid, pid) => {
+    deleteOne = async (cid, pid) => {
         const result = await cartsModel.updateOne(
             {_id: cid},
             {$pull: {products: {product: pid}}}
@@ -45,7 +45,7 @@ export default class dbCartManager {
         return result;
     }
 
-    fillCart = async (cid, products) => {
+    addMany = async (cid, products) => {
         const result = await cartsModel.updateOne(
             {_id: cid},
             {$set: {products: products}}
@@ -53,7 +53,7 @@ export default class dbCartManager {
         return result;
     }
 
-    setQuantityOfProduct = async (cid, pid, quantity) => {
+    updateQuantityOne = async (cid, pid, quantity) => {
         const result = await cartsModel.updateOne(
             {_id: cid, products: {$elemMatch: {product: pid}}},
             {$set: {"products.$.quantity": quantity}}
@@ -61,7 +61,7 @@ export default class dbCartManager {
         return result;
     }
 
-    emptyCart = async (cid) => {
+    deleteAll = async (cid) => {
         const result = await cartsModel.updateOne(
             {_id: cid},
             {$set: {products: []}}
