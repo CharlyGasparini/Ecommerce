@@ -4,6 +4,7 @@ import GitHubStrategy from "passport-github2";
 import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 import { PRIVATE_KEY } from "./constants.js";
 import * as usersServicesModule from "../services/users.service.js";
+import config from "../config/config.js";
 
 const manager = new dbUserManager();
 const JWTStrategy = jwt.Strategy;
@@ -26,7 +27,7 @@ const initializePassport = () => {
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.cd735444c94379d6",
         clientSecret: "32496b7687db27d5fdd6ab6b0d71b601d4a520d3",
-        callbackURL: "http://localhost:8080/api/sessions/github-callback",
+        callbackURL: `http://localhost:${config.port}/api/sessions/github-callback`,
         scope: ["user:email"]
     }, async (accessToken, refreshToken, profile, done) => {
         try {

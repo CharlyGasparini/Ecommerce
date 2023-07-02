@@ -11,10 +11,11 @@
     <h2 class="display-5">Productos en stock</h2>
     <a href="/carts/{{user.cart}}
 " class="btn btn-primary my-3">Ir al carrito</a>
-    <div class="row row-cols-4 text-center g-1" id="card-group">
+    <div class="row row-cols-3 text-center g-1" id="card-group">
         {{#each payload}}
             {{#if this.status}}
                 <div class="card">
+                    <img src="{{this.thumbnails}}" class="card-img-top">
                     <div class="card-body">
                         <h4 class="card-title">{{this.title}}</h4>
                         <p>{{this._id}}</p>
