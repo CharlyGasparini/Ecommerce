@@ -5,23 +5,23 @@ export default class dbProductManager {
         console.log("Working products with DB");
     }
 
-    getAll = async (query, limit, page, sort) => {
-        const products = await productsModel.paginate(JSON.parse(query), {limit, page, lean: true, sort: JSON.parse(sort)});
+    getAll = async () => {
+        const products = await productsModel.find();
         return products;
     }
 
-    add = async (product) => {
+    create = async (product) => {
         const result = await productsModel.create(product);
         return result;
     }
 
     getById = async (pid) => {
-        const result = await productsModel.find({_id: pid}).lean();
+        const result = await productsModel.findById(pid).lean();
         return result;
     }
 
     update = async (pid, product) => {
-        const result = await productsModel.updateOne({_id: pid}, product);
+        const result = await productsModel.findByIdAndUpdate(pid, product);
         return result;
     }
 

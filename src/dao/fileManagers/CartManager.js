@@ -1,11 +1,13 @@
 import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
 
 export default class CartManager {
     constructor(path) {
         this.path = path;
+        console.log("Working carts with Files");
     }
 
-    async getAll() {
+    getAll = async () => {
         if(fs.existsSync(this.path)){
             const data = await fs.promises.readFile(this.path, "utf-8");
             const carts = JSON.parse(data);
@@ -21,21 +23,15 @@ export default class CartManager {
         return cart;
     }
 
-    add = async (cart) => {
+    create = async (cart) => {
         const carts = await this.getAll();
-
-        if(carts.length === 0){
-            cart._id = 1;
-        } else {
-            cart.id = carts[carts.length - 1]._id + 1;
-        }
-
+        cart._id = uuidv4();
         carts.push(cart);
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     }
 
-    addOne = async (cid,pid) => {
+    addOne = async (cid, pid) => {
         const carts = await this.getAll();
         const cartIndex = carts.findIndex(cart => cart._id === cid);
         const productIndex = carts[cartIndex].products.findIndex(object => object.product._id === pid);
@@ -46,8 +42,8 @@ export default class CartManager {
             carts[cartIndex].products[productIndex].quantity++;
         }
 
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     }
 
     deleteOne = async (cid, pid) => {
@@ -55,16 +51,16 @@ export default class CartManager {
         const cartIndex = carts.findIndex(cart => cart._id === cid);
         const productIndex = carts[cartIndex].products.findIndex(object => object.product._id === pid);
         carts[cartIndex].products.splice(productIndex, 1);
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     }
 
     addMany = async (cid, products) => {
         const carts = await this.getAll();
         const cartIndex = carts.findIndex(cart => cart._id === cid);
-        cart[cartIndex].products = products;
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        carts[cartIndex].products = products;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     }
 
     updateQuantityOne = async (cid, pid, quantity) => {
@@ -72,15 +68,15 @@ export default class CartManager {
         const cartIndex = carts.findIndex(cart => cart._id === cid);
         const productIndex = carts[cartIndex].products.findIndex(object => object.product._id === pid);
         carts[cartIndex].products[productIndex].quantity = quantity;
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     } 
 
     deleteAll = async (cid) => {
         const carts = await this.getAll();
         const cartIndex = carts.findIndex(cart => cart._id === cid);
         carts[cartIndex].products = [];
-        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return true;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return result;
     }
 }

@@ -1,52 +1,52 @@
-import { CARTSDAO } from "../dao/index.js";
+import { cartsRepository } from "../repositories/index.js";
 
 const getCarts = async () => {
-    const carts = await CARTSDAO.getAll();
+    const carts = await cartsRepository.getCarts();
     return carts;
 }
 
 const getCartById = async (cid) => {
-    const result = await CARTSDAO.getById(cid);
+    const result = await cartsRepository.getCartById(cid);
     return result;
 }
 
-const addCart = async (cart) => {
-    const result = await CARTSDAO.add(cart);
+const createCart = async (cart) => {
+    const result = await cartsRepository.createCart(cart);
     return result;
 }
 
-const addProductInCart = async (cid, pid) => {
-    const result = await CARTSDAO.addOne(cid, pid);
+const addOneProductInCart = async (cid, pid) => {
+    const result = await cartsRepository.addOneProductInCart(cid, pid);
     return result;
 }
 
 const deleteProductInCart = async (cid, pid) => {
-    const result = await CARTSDAO.deleteOne(cid, pid);
+    const result = await cartsRepository.deleteProductInCart(cid, pid);
     return result;
 }
 
-const fillCart = async (cid, products) => {
-    const result = await CARTSDAO.addMany(cid, products);
+const addManyProductsInCart = async (cid, products) => {
+    const result = await cartsRepository.addManyProductsInCart(cid, products);
     return result;
 }
 
-const setQuantityOfProduct = async (cid, pid, quantity) => {
-    const result = await CARTSDAO.updateQuantityOne(cid, pid, quantity);
+const updateProductQuantity = async (cid, pid, quantity) => {
+    const result = await cartsRepository.updateProductQuantity(cid, pid, quantity);
     return result;
 }
 
 const emptyCart = async (cid) => {
-    const result = await CARTSDAO.deleteAll(cid);
+    const result = await cartsRepository.emptyCart(cid);
     return result;
 }
 
 export {
     getCarts,
     getCartById,
-    addCart,
-    addProductInCart,
+    createCart,
+    addOneProductInCart,
     deleteProductInCart,
-    fillCart,
-    setQuantityOfProduct,
+    addManyProductsInCart,
+    updateProductQuantity,
     emptyCart
 }

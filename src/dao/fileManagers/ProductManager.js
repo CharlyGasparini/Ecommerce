@@ -1,4 +1,5 @@
 import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
 
 export default class ProductManager {
     constructor(path) {
@@ -15,19 +16,12 @@ export default class ProductManager {
         }
     }
 
-    add = async (product) => {
+    create = async (product) => {
         const products = await this.getAll();
-        products.status = true;
-
-        if(products.length === 0){
-            product.id = 1;
-        } else {
-            product.id = products[products.length - 1].id + 1;
-        }
-        
         products.push(product);
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return true;
+        product._id = uuidv4();
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return result;
     }
 
     getById = async (pid) => {
@@ -41,16 +35,16 @@ export default class ProductManager {
         const productIndex = products.findIndex(prod => prod.id === pid);
         const productToModify = products[productIndex];
         const modifiedProduct = Object.assign(productToModify, product);
-        products.splice(productIndex, 1,modifiedProduct);
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return true;
+        products.splice(productIndex, 1, modifiedProduct);
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return result;
     }
 
     delete = async (pid) => {
         const products = await this.getAll();
         const productIndex = products.findIndex(prod => prod.id === pid);
-        products.splice(productIndex, 1);
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return true;
+        products[productIndex].status = false;
+        const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return result;
     }
 }

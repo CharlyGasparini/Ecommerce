@@ -3,6 +3,7 @@ import * as cartsServiceModule from "../services/carts.service.js";
 import config from "../config/config.js";
 import { generateToken } from "../utils.js";
 import { createHash, isValidPassword } from "../utils.js";
+import UserDto from "../dao/user.dto.js";
 
 const login = async (req, res) => {    
     try {
@@ -22,7 +23,7 @@ const login = async (req, res) => {
                 first_name: "Coder",
                 last_name: "House",
                 email,
-                cart: adminCart ? cid : (await cartsServiceModule.addCart({admin: true}))._id,
+                cart: adminCart ? cid : (await cartsServiceModule.createCart({admin: true}))._id,
                 role: "admin"
             })
 
@@ -98,7 +99,8 @@ const resetPassword = async (req, res) => {
 }
 
 const getCurrentUser = (req, res) => {
-    res.send({status: "success", payload: req.user});
+    const result = new UserDto(req.user);
+    res.send({status: "success", payload: result});
 }
 
 export {

@@ -1,9 +1,9 @@
 import * as serviceModule from "../services/carts.service.js";
 
-const addCart = async (req, res) => {
+const createCart = async (req, res) => {
     try {
         const cart = req.body; // Traigo el carrito a agregar desde el body
-        const result = await serviceModule.addCart(cart); // Agrego el carrito
+        const result = await serviceModule.createCart(cart); // Agrego el carrito
         res.sendUser(result);
     } catch (error) {
         res.sendServerError(error.message);
@@ -40,18 +40,18 @@ const deleteProductInCart = async (req, res) => {
     }
 }
 
-const fillCart = async (req, res) => {
+const addManyProductsInCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const products = req.body;
-        const result = await manager.fillCart(cid, products);
+        const result = await manager.addManyProductsInCart(cid, products);
         res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message);
     }
 }
 
-const setQuantityOfProduct = async (req, res) => {
+const updateProductQuantity = async (req, res) => {
     try {
         const {pid, cid} = req.params;
         const quantity = req.body.quantity;
@@ -73,11 +73,11 @@ const emptyCart = async (req, res) =>{
 }
 
 export {
-    addCart,
+    createCart,
     getCartById,
     addProductInCart,
     deleteProductInCart,
-    fillCart,
-    setQuantityOfProduct,
+    addManyProductsInCart,
+    updateProductQuantity,
     emptyCart
 }

@@ -11,11 +11,11 @@ export default class dbCartManager {
     }
 
     getById = async (cid) => {
-        const result = await cartsModel.find({_id: cid}).lean();
+        const result = await cartsModel.findById(cid).lean();
         return result;
     }
 
-    add = async (cart) => {
+    create = async (cart) => {
         const result = await cartsModel.create(cart);
         return result;
     }

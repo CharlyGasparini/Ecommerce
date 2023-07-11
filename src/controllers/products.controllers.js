@@ -2,29 +2,8 @@ import * as serviceModule from "../services/products.service.js";
 
 const getProducts = async (req, res) => {
     try {
-        const {query="{}", limit=10, page=1, sort="{}"} = req.query;
-        const products = await serviceModule.getProducts(query, Number(limit), page, sort); // Traigo el array de productos
-        const {docs:payload, hasPrevPage, hasNextPage, totalPages, prevPage, nextPage} = products;
-        let urlParams = "?";
-
-        if(query) urlParams += `query=${query}&`;
-        if(limit) urlParams += `limit=${limit}&`;
-        if(sort) urlParams += `sort=${sort}&`;
-
-        const prevLink = hasPrevPage ? `${urlParams}page=${prevPage}` : null;
-        const nextLink = hasNextPage ? `${urlParams}page=${nextPage}` : null;
-
-        res.sendSuccess({
-            payload,
-            totalPages,
-            prevPage,
-            nextPage,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevLink,
-            nextLink
-        })
+        const products = await serviceModule.getProducts(); // Traigo el array de productos
+        res.sendSuccess(products);
     } catch (error) {
         res.sendServerError(error.message);
     }

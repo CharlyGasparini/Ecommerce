@@ -1,5 +1,5 @@
 import express from "express";
-import "./dao/dbManagers/dbConfig.js"; // Conexión a base de datos con mongoose
+// import "./dao/dbManagers/dbConfig.js"; // Conexión a base de datos con mongoose
 // import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
@@ -13,6 +13,7 @@ import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./config/config.js";
+import cors from "cors";
 
 const app = express(); // Creación de server HTTP
 app.listen(config.port, () => console.log(`Listening on port ${config.port}`));
@@ -61,6 +62,7 @@ app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__dirname}/public`)); // Acceso a archivos estáticos
 app.use(cookieParser());
+app.use(cors());
 
 // Passport
 initializePassport();
