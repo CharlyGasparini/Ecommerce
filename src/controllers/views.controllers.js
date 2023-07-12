@@ -29,7 +29,6 @@ const renderCart = async (req, res) => {
         let products = [];
         let total = 0;
         const result = await cartsServiceModule.getCartById(cid);
-        console.log(result)
         // del resultado obtenido mapeo un array nuevo con los datos que necesito mostrar
         if(result[0].products.length > 0){
             products = result[0].products.map(item => {
