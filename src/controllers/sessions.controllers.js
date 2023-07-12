@@ -1,5 +1,4 @@
 import * as usersServiceModule from "../services/users.service.js";
-import * as cartsServiceModule from "../services/carts.service.js";
 import config from "../config/config.js";
 import { generateToken } from "../utils.js";
 import { createHash, isValidPassword } from "../utils.js";
@@ -10,20 +9,11 @@ const login = async (req, res) => {
         const {email, password} = req.body;
         
         if(email === config.adminName && password === config.adminPassword){
-            // Verificación de existencia del carrito del admin
-            const carts = await cartsServiceModule.getCarts();
-            const adminCart = carts.find(cart => cart.admin === true);
-            let cid;
-
-            if(adminCart) {
-                cid = adminCart._id
-            }
             // Generación del token
             const accessToken = generateToken({
                 first_name: "Coder",
                 last_name: "House",
                 email,
-                cart: adminCart ? cid : (await cartsServiceModule.createCart({admin: true}))._id,
                 role: "admin"
             })
 

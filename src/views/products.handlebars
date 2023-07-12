@@ -1,6 +1,6 @@
 <div class="container my-5">
     <div class="mb-3 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
-        <h1 class="display-4">Bienvenido {{user.first_name}} {{user.last_name}}</h1>
+        <h1 class="display-4">Bienvenido {{user.name}}</h1>
         <p><strong>Email:</strong> {{user.email}}</p>
         {{#if user.age}}
             <p><strong>Edad:</strong> {{user.age}}</p>
@@ -9,10 +9,12 @@
         <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
     </div>
     <h2 class="display-5">Productos en stock</h2>
-    <a href="/carts/{{user.cart}}
-" class="btn btn-primary my-3">Ir al carrito</a>
+    {{#if isUser}}
+        <a href="/carts/{{user.cart}}
+    " class="btn btn-primary my-3">Ir al carrito</a>
+    {{/if}}
     <div class="row row-cols-3 text-center g-1" id="card-group">
-        {{#each payload}}
+        {{#each products}}
             {{#if this.status}}
                 <div class="card">
                     <img src="{{this.thumbnails}}" class="card-img-top">
@@ -27,15 +29,6 @@
                 </div>
             {{/if}}
         {{/each}}
-    </div>
-    <div class="my-3">
-        {{#if hasPrevPage}}
-            <a href={{prevLink}} class="btn btn-primary">Anterior</a>
-        {{/if}}
-        <span>{{page}} de {{totalPages}}</span>
-        {{#if hasNextPage}}
-            <a href={{nextLink}} class="btn btn-primary">Posterior</a>
-        {{/if}}
     </div>
 </div>
 

@@ -1,12 +1,10 @@
 import passport from "passport";
 import jwt from 'passport-jwt';
 import GitHubStrategy from "passport-github2";
-import dbUserManager from "../dao/dbManagers/dbUserManager.js";
 import { PRIVATE_KEY } from "./constants.js";
 import * as usersServicesModule from "../services/users.service.js";
 import config from "../config/config.js";
 
-const manager = new dbUserManager();
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 

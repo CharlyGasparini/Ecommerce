@@ -9,14 +9,14 @@ export default class CartsRouter extends Router {
         // Busca un carrito en la DB por su id
         this.get("/:cid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.getCartById)
         // Agrega un producto a un carrito
-        this.post("/:cid/products/:pid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.addProductInCart)
+        this.post("/:cid/products/:pid", ["USER"], passportStrategiesEnum.JWT, controllerModule.addProductInCart)
         // Elimina un producto a un carrito
-        this.delete("/:cid/products/:pid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.deleteProductInCart)
+        this.delete("/:cid/products/:pid", ["USER"], passportStrategiesEnum.JWT, controllerModule.deleteProductInCart)
         // Agrega un arreglo de productos a un carrito
-        this.put("/:cid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.addManyProductsInCart)
+        this.put("/:cid", ["USER"], passportStrategiesEnum.JWT, controllerModule.addManyProductsInCart)
         // Agrega una cantidad determinada de ejemplares de un producto a un carrito
-        this.put("/:cid/products/:pid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.updateProductQuantity)
+        this.put("/:cid/products/:pid", ["USER"], passportStrategiesEnum.JWT, controllerModule.updateProductQuantity)
         // Vacia el carrito
-        this.delete("/:cid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.emptyCart)
+        this.delete("/:cid", ["USER"], passportStrategiesEnum.JWT, controllerModule.emptyCart)
     }
 }

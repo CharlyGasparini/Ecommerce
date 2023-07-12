@@ -2,3 +2,5 @@
 package-lock.json
 .env.production
 .env.development
+/tests
+/views

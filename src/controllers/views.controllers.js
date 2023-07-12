@@ -1,5 +1,6 @@
 import * as productsServiceModule from "../services/products.service.js";
 import * as cartsServiceModule from "../services/carts.service.js";
+import UserDto from "../dao/user.dto.js";
 
 const redirectLogin = (req, res) => {
     if(req.cookies["cookieToken"]) return res.redirect("/products")
@@ -8,26 +9,11 @@ const redirectLogin = (req, res) => {
 
 const renderProducts = async (req, res) => {
     try {
-        const {query="{}", limit= 10, page= 1, sort="{}"} = req.query;
-        const result = await productsServiceModule.getProducts(query, Number(limit), page, sort);
-        const {docs:payload, hasPrevPage, hasNextPage, totalPages, prevPage, nextPage} = result;
-        let urlParams = "?";
-        if(query) urlParams += `query=${query}&`;
-        if(limit) urlParams += `limit=${limit}&`;
-        if(sort) urlParams += `sort=${sort}&`;
-        const prevLink = hasPrevPage ? `${urlParams}page=${prevPage}` : null;
-        const nextLink = hasNextPage ? `${urlParams}page=${nextPage}` : null;
+        const products = await productsServiceModule.getProducts();
         res.render("products", {
-            payload,
-            totalPages,
-            prevPage,
-            nextPage,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevLink,
-            nextLink,
-            user: req.user
+            products,
+            user: new UserDto(req.user),
+            isUser: req.user.role === "user" ? true : false
         })
     } catch (error) {
         res.render("error", {
@@ -43,6 +29,7 @@ const renderCart = async (req, res) => {
         let products = [];
         let total = 0;
         const result = await cartsServiceModule.getCartById(cid);
+        console.log(result)
         // del resultado obtenido mapeo un array nuevo con los datos que necesito mostrar
         if(result[0].products.length > 0){
             products = result[0].products.map(item => {
