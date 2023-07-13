@@ -10,27 +10,56 @@
     </div>
     <h2 class="display-5">Productos en stock</h2>
     {{#if isUser}}
-        <a href="/carts/{{user.cart}}
-    " class="btn btn-primary my-3">Ir al carrito</a>
-    {{/if}}
-    <div class="row row-cols-3 text-center g-1" id="card-group">
-        {{#each products}}
-            {{#if this.status}}
-                <div class="card">
-                    <img src="{{this.thumbnails}}" class="card-img-top">
-                    <div class="card-body">
-                        <h4 class="card-title">{{this.title}}</h4>
-                        <p>{{this._id}}</p>
-                        <p class="card-text">{{this.category}}</p>
-                        <p class="card-text">{{this.description}}</p>
-                        <p class="card-text fw-bold">${{this.price}}</p>
-                        <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
+        <a href="/carts/{{user.cart}}" class="btn btn-primary my-3">Ir al carrito</a>
+        <a href="/chat" class="btn btn-primary my-3">Ir al chat</a>
+        <div class="row row-cols-3 text-center g-1" id="card-group">
+            {{#each products}}
+                {{#if this.status}}
+                    <div class="card">
+                        <img src="{{this.thumbnails}}" class="card-img-top">
+                        <div class="card-body">
+                            <h4 class="card-title">{{this.title}}</h4>
+                            <p>{{this._id}}</p>
+                            <p class="card-text">{{this.category}}</p>
+                            <p class="card-text">{{this.description}}</p>
+                            <p class="card-text fw-bold">${{this.price}}</p>
+                            <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
+                        </div>
                     </div>
-                </div>
-            {{/if}}
-        {{/each}}
-    </div>
+                {{/if}}
+            {{/each}}
+        </div>
+        {{else}}
+        <h2 class="my-3">Formulario</h2>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="post">
+            <label class="form-check-label" for="inlineRadio1">POST</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="delete">
+            <label class="form-check-label" for="inlineRadio2">DELETE</label>
+        </div>
+        <form id="form" class="my-3">
+
+        </form>
+        <h2 class="my-3">Listado</h2>
+        <table class="table">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Code</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+    {{/if}}
 </div>
 
+<script src="/js/addProducts.js"></script>
 <script src="/js/products.js"></script>
 <script src="js/getUser.js"></script>

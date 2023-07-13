@@ -29,9 +29,10 @@ const renderCart = async (req, res) => {
         let products = [];
         let total = 0;
         const result = await cartsServiceModule.getCartById(cid);
+        console.log(result)
         // del resultado obtenido mapeo un array nuevo con los datos que necesito mostrar
-        if(result[0].products.length > 0){
-            products = result[0].products.map(item => {
+        if(result.products.length > 0){
+            products = result.products.map(item => {
                 const result = {};
                 result._id = item.product._id;
                 result.title = item.product.title;
@@ -71,11 +72,16 @@ const renderReset = (req, res) => {
     res.render("reset", {title: "Formulario de recuperación de clave"})
 }
 
+const renderChat = (req, res) => {
+    res.render("chat", {title: "Chat"})
+}
+
 export {
     redirectLogin,
     renderProducts,
     renderCart,
     renderLogin,
     renderRegister,
-    renderReset
+    renderReset,
+    renderChat
 }

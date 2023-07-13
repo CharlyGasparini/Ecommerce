@@ -10,7 +10,7 @@ export default class ProductsRouter extends Router {
         // Devuelve un producto de la DB que corresponda al id brindado
         this.get("/:pid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.getProductById)
         // Agrega un producto a la DB
-        this.post("/", ["ADMIN"], passportStrategiesEnum.JWT, parseToNumber, uploader.array("files"), controllerModule.addProduct)
+        this.post("/", ["ADMIN"], passportStrategiesEnum.JWT, parseToNumber, uploader.array("files"), controllerModule.createProduct)
         // Modifica un producto en la DB
         this.put("/:pid", ["ADMIN"], passportStrategiesEnum.JWT, controllerModule.updateProduct)
         // Modifica el status de un producto de la DB para que ya no se muestre (borrado lógico)
