@@ -19,7 +19,7 @@ const getProductById = async (req, res) => {
     }
 }
 
-const addProduct = async (req, res) => {
+const createProduct = async (req, res) => {
     try {
         const product = req.body;
         const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
@@ -29,7 +29,7 @@ const addProduct = async (req, res) => {
         if(req.files){
             product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
         }
-        const result = await serviceModule.addProduct(product); // Agrego el producto
+        const result = await serviceModule.createProduct(product); // Agrego el producto
         res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message);
@@ -64,7 +64,7 @@ const deleteProduct = async (req, res) => {
 export {
     getProducts,
     getProductById,
-    addProduct,
+    createProduct,
     updateProduct,
     deleteProduct
 }

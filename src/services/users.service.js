@@ -1,4 +1,4 @@
-import { usersRepository } from "../repositories/index.js";
+import { usersRepository, cartsRepository } from "../repositories/index.js";
 import { createHash } from "../utils.js";
 
 const getUser = async (email) => {
@@ -8,7 +8,6 @@ const getUser = async (email) => {
 
 const createUser = async (data) => {
     const {first_name, last_name, email, age, password} = data;
-    const cartsRepository = await import("../repositories/cart.repositories.js");
     const cartId = cartsRepository.createCart({})._id;
     const user = {
         first_name,

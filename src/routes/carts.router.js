@@ -18,5 +18,7 @@ export default class CartsRouter extends Router {
         this.put("/:cid/products/:pid", ["USER"], passportStrategiesEnum.JWT, controllerModule.updateProductQuantity)
         // Vacia el carrito
         this.delete("/:cid", ["USER"], passportStrategiesEnum.JWT, controllerModule.emptyCart)
+        // Realiza la compra
+        this.get("/:cid/purchase", ["USER"], passportStrategiesEnum.JWT, controllerModule.makePurchase)
     }
 }

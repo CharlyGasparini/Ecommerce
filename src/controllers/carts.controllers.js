@@ -44,7 +44,7 @@ const addManyProductsInCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const products = req.body;
-        const result = await manager.addManyProductsInCart(cid, products);
+        const result = await serviceModule.addManyProductsInCart(cid, products);
         res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message);
@@ -55,7 +55,7 @@ const updateProductQuantity = async (req, res) => {
     try {
         const {pid, cid} = req.params;
         const quantity = req.body.quantity;
-        const result = await manager.setQuantityOfProduct(cid, pid, quantity)
+        const result = await serviceModule.updateProductQuantity(cid, pid, quantity);
         res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message);
@@ -65,8 +65,19 @@ const updateProductQuantity = async (req, res) => {
 const emptyCart = async (req, res) =>{
     try {
         const cid = req.params.cid;
-        const result = await manager.emptyCart(cid);
+        const result = await serviceModule.emptyCart(cid);
         res.sendSuccess(result);
+    } catch (error) {
+        res.sendServerError(error.message);
+    }
+}
+
+const makePurchase = async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const purchaser = req.user.email;
+        const result = await serviceModule.makePurchase(cid, purchaser);
+        res.sendSuccess(result)
     } catch (error) {
         res.sendServerError(error.message);
     }
@@ -79,5 +90,6 @@ export {
     deleteProductInCart,
     addManyProductsInCart,
     updateProductQuantity,
-    emptyCart
+    emptyCart,
+    makePurchase
 }
