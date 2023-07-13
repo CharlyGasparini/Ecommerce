@@ -1,3 +1,4 @@
+import transporter from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -78,8 +79,14 @@ const makePurchase = async (cid, purchaser) => {
         amount,
         purchaser
     }
-
     const result = await ticketsRepository.createTicket(ticket);
+    // Envio de mail
+    await transporter.sendMail({
+        from: "coderHouse 39760",
+        to: purchaser,
+        subject: "Confirmación de compra",
+        html: `<div class="col"><img src="./src/public/img/logo.png"><h1>Muchas gracias por su compra.</h1><p>Se ha confirmado su compra por un importe de $${amount}</p></div>`
+    })
     return result;
 }
 
