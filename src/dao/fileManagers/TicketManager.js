@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 export default class dbTicketManager {
     constructor (path) {
         this.path = path;
-        console.log("Working tickets with DB");
+        console.log("Working tickets with Files");
     }
 
     #getAll = async () => {

@@ -1,6 +1,6 @@
 import config from "../config/config.js";
 
-let CartsDao, ProductsDao, UsersDao;
+let CartsDao, ProductsDao, UsersDao, TicketsDao;
 
 switch (config.persistance) {
     case "MONGO":

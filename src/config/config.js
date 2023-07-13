@@ -17,7 +17,7 @@ dotenv.config({
 });
 
 export default {
-    mongoUrl: process.env.MONGO_URL,
+    mongoUrl: environment === "PRODUCTION" ? process.env.MONGO_URL : "",
     port: process.env.PORT,
     adminName: process.env.ADMIN_NAME,
     adminPassword: process.env.ADMIN_PASSWORD,
