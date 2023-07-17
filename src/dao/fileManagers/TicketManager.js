@@ -19,9 +19,9 @@ export default class dbTicketManager {
 
     create = async (ticket) => {
         const tickets = await this.#getAll();
-        tickets.push(ticket);
         ticket._id = uuidv4();
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(tickets, null, "\t"));
-        return result;
+        tickets.push(ticket);
+        await fs.promises.writeFile(this.path, JSON.stringify(tickets, null, "\t"));
+        return ticket;
     }
 }

@@ -23,7 +23,7 @@ const getCartById = async (req, res) => {
 const addProductInCart = async (req, res) => {
     try {
         const {pid, cid} = req.params; // Traigo los id del carrito y del producto de los parametros del path
-        const result = await serviceModule.addProductInCart(cid, pid); // Agrego el producto al carrito
+        const result = await serviceModule.addOneProductInCart(cid, pid); // Agrego el producto al carrito
         res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message); 

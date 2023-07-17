@@ -1,82 +1,132 @@
 [
 	{
-		"title": "producto1",
-		"description": "lorem ipsum",
-		"price": 65.11,
-		"code": "abc120",
+		"title": "The Legend of Zelda: Breath of the Wild",
+		"description": "Explora un vasto mundo abierto y descubre los secretos de Hyrule.",
+		"price": 59.99,
+		"code": "ABC123",
 		"stock": 10,
-		"category": "lorem",
+		"category": "juegos",
 		"status": true,
-		"id": 1
+		"thumbnails": [
+			"https://sm.ign.com/ign_es/screenshot/default/caratulaalemana_1dhc.jpg"
+		],
+		"_id": "0dd00161-0116-4759-ae9e-399fa26681cd"
 	},
 	{
-		"title": "producto2",
-		"description": "lorem ipsum",
-		"price": 70.94,
-		"code": "abc121",
-		"stock": 10,
-		"category": "lorem",
+		"title": "PlayStation 5",
+		"description": "La última consola de Sony con gráficos de alta calidad y un rendimiento excepcional.",
+		"price": 499.99,
+		"code": "DEF456",
+		"stock": 3,
+		"category": "consolas",
 		"status": true,
-		"id": 2
+		"thumbnails": [
+			"https://media.tycsports.com/files/2021/05/21/284788/playstation-5_416x234.jpg"
+		],
+		"_id": "ff68bdd7-ae7b-45ea-bb5e-24d8e94c5fa2"
 	},
 	{
-		"title": "titulo modificado",
-		"description": "lorem ipsum",
-		"price": 32.5,
-		"code": "abc122",
-		"stock": 2,
-		"category": "lorem",
+		"title": "Xbox Series X",
+		"description": "La consola más potente de Xbox que ofrece una experiencia de juego inmersiva.",
+		"price": 549.99,
+		"code": "GHI789",
+		"stock": 6,
+		"category": "consolas",
 		"status": true,
-		"id": 3
+		"thumbnails": [
+			"https://http2.mlstatic.com/D_NQ_NP_963862-MLA45041918050_032021-O.jpg"
+		],
+		"_id": "2aad3eae-7c09-43a8-91ad-090dbacccb42"
 	},
 	{
-		"title": "producto4",
-		"description": "lorem ipsum",
-		"price": 85.58,
-		"code": "abc123",
-		"stock": 2,
-		"category": "lorem",
+		"title": "DualShock 4 Controller",
+		"description": "Un controlador inalámbrico para PlayStation 4 con funciones innovadoras.",
+		"price": 59.99,
+		"code": "JKL012",
+		"stock": 15,
+		"category": "accesorios",
 		"status": true,
-		"id": 4
+		"thumbnails": [
+			"https://arsonyb2c.vtexassets.com/arquivos/ids/292249/dualshockblack1.jpg?v=637105416256400000"
+		],
+		"_id": "12b383ae-23e7-49b1-ac05-3363ed66ec2c"
 	},
 	{
-		"title": "producto5",
-		"description": "lorem ipsum",
-		"price": 80.95,
-		"code": "abc124",
-		"stock": 2,
-		"category": "lorem",
+		"title": "Super Mario Odyssey",
+		"description": "Acompaña a Mario en una aventura por diferentes reinos para rescatar a la princesa Peach.",
+		"price": 49.99,
+		"code": "MNO345",
+		"stock": 3,
+		"category": "juegos",
 		"status": true,
-		"id": 5
+		"thumbnails": [
+			"https://media.vandal.net/m/43395/super-mario-odyssey-2017102611035_25.jpg"
+		],
+		"_id": "0af6f60d-09fa-4815-a7b0-6de8bfb5e9e7"
 	},
 	{
-		"title": "producto6",
-		"description": "lorem ipsum",
-		"price": 16.57,
-		"code": "abc125",
+		"title": "Nintendo Switch",
+		"description": "Una consola híbrida que permite jugar tanto en la televisión como en modo portátil.",
+		"price": 299.99,
+		"code": "PQR678",
 		"stock": 1,
-		"category": "lorem",
+		"category": "consolas",
 		"status": true,
-		"id": 6
+		"thumbnails": [
+			"https://http2.mlstatic.com/D_NQ_NP_803086-MLA47920649105_102021-O.webp"
+		],
+		"_id": "c68c716a-1f27-445c-bb42-73fcc51241fe"
 	},
 	{
-		"title": "producto7",
-		"description": "lorem ipsum",
-		"price": 40.4,
-		"code": "abc126",
-		"stock": 8,
-		"category": "lorem",
+		"title": "Xbox Wireless Controller",
+		"description": "Un controlador inalámbrico para Xbox Series X/S y Xbox One.",
+		"price": 49.99,
+		"code": "STU901",
+		"stock": 12,
+		"category": "accesorios",
 		"status": true,
-		"id": 7
+		"thumbnails": [
+			"https://http2.mlstatic.com/D_Q_NP_734635-MLA54147001787_032023-O.webp"
+		],
+		"_id": "fb4de3d8-8dfa-486a-8f75-95f5c30ec553"
 	},
 	{
-		"title": "producto 8",
-		"price": 70.32,
-		"description": "lorem ipsum",
-		"code": "abc127",
-		"stock": 2,
-		"category": "cosa",
+		"title": "FIFA 22",
+		"description": "Disfruta del popular simulador de fútbol con mejoras gráficas y nuevas características.",
+		"price": 59.99,
+		"code": "VWX234",
+		"stock": 6,
+		"category": "juegos",
 		"status": true,
-		"id": 8
+		"thumbnails": [
+			"https://areajugones.sport.es/wp-content/uploads/2021/07/captura-portada-fifa-22-ps4.jpg"
+		],
+		"_id": "e8823b97-0c44-4e36-af90-8a37635dfb5a"
+	},
+	{
+		"title": "Nintendo Switch Lite",
+		"description": "Una versión compacta y ligera de la consola Nintendo Switch.",
+		"price": 199.99,
+		"code": "YZA567",
+		"stock": 6,
+		"category": "consolas",
+		"status": true,
+		"thumbnails": [
+			"https://metajuego1.com/assets/uploads/product_EryG4UXzcR98pdStveDo.jpg"
+		],
+		"_id": "4f268bef-291b-4275-b277-de991b42f4dc"
+	},
+	{
+		"title": "Razer DeathAdder Elite",
+		"description": "Un mouse ergonómico para juegos con sensor óptico de alta precisión.",
+		"price": 69.99,
+		"code": "BCD890",
+		"stock": 9,
+		"category": "accesorios",
+		"status": true,
+		"thumbnails": [
+			"https://katech.com.ar/wp-content/uploads/MOU031_1-jpg.webp"
+		],
+		"_id": "847a7c56-e3c3-4d7a-9dbc-ceb31dc911fd"
 	}
 ]

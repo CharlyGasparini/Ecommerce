@@ -1,6 +1,7 @@
 import Router from "./router.js";
 import { passportStrategiesEnum } from "../config/enums.js";
 import * as controllerModule from "../controllers/sessions.controllers.js";
+import { parseToNumber } from "../utils.js";
 
 export default class SessionsRouter extends Router{
     init() {
@@ -9,7 +10,7 @@ export default class SessionsRouter extends Router{
         // Lógica de logout
         this.get("/logout", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.logout)
         // Lógica de registro
-        this.post("/register", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.register)
+        this.post("/register", ["PUBLIC"], passportStrategiesEnum.NOTHING, parseToNumber, controllerModule.register)
         // Lógica de github strategy
         this.get("/github", ["PUBLIC"], passportStrategiesEnum.GITHUB, controllerModule.githubLogin)
         // Lógica de github strategy / callback

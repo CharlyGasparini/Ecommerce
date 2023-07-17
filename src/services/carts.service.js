@@ -43,40 +43,53 @@ const emptyCart = async (cid) => {
 }
 
 const makePurchase = async (cid, purchaser) => {
-    const cartProducts = await cartsRepository.getCartById(cid).products;
-    
-    const { amounts, notEnoughStock } = cartProducts.reduce(
-        async (acc, elem) => {
-            const pid = elem.product._id;
-            const quantity = elem.quantity;
-            const product = await productsRepository.getProductById(pid);
-            const stock = product.stock;
-            const price = product.price;
+    const cart = await cartsRepository.getCartById(cid);
+    const cartProducts = cart.products;
+    let amount = 0;
+    const notEnoughStock = [];
+    const enoughStock = [];
 
-            if(quantity > stock) {
-                acc.notEnoughStock.push(pid);
-                await cartsRepository.updateProductQuantity(cid, pid, stock);
-            } else {
-                acc.amounts.push(quantity*price);
-                product.stock -= quantity;
-
-                if(product.stock === 0) product.status = false;
-
-                await productsRepository.updateProduct(pid, product);
-                await cartsRepository.deleteProductInCart(cid, pid);
-            }
+    cartProducts.filter(prod => {
+        const quantity = prod.quantity;
+        const stock = prod.product.stock;
+        if(quantity > stock) {
+            notEnoughStock.push(prod);
+        } else {
+            enoughStock.push(prod);
         }
-    )
+    })
 
     if(notEnoughStock.length > 0){
-        return notEnoughStock;
+        const result = [];
+        notEnoughStock.forEach(async prod => {
+            const pid = prod.product._id;
+            const stock = prod.product.stock;
+            result.push(prod.product.title);
+            await cartsRepository.updateProductQuantity(cid, pid, stock);
+        })
+        return result;
     }
-    
-    const amount = amounts.reduce((acc, curr) => acc + curr, 0);
+
+    enoughStock.forEach(async prod => {
+        const pid = prod.product._id;
+        const price = prod.product.price;
+        const quantity = prod.quantity;
+        amount += (price * quantity);
+        prod.product.stock -= quantity;
+
+        if(prod.product.stock <= 0 ){
+            prod.product.stock = 0;
+            prod.product.status = false;
+        }
+
+        await productsRepository.updateProduct(pid, prod.product);
+        await cartsRepository.deleteProductInCart(cid, pid);
+    })
+
     const ticket = {
         code: uuidv4(),
         purchase_datetime: new Date(),
-        amount,
+        amount: parseFloat(amount.toFixed(2)),
         purchaser
     }
     const result = await ticketsRepository.createTicket(ticket);
@@ -85,7 +98,7 @@ const makePurchase = async (cid, purchaser) => {
         from: "coderHouse 39760",
         to: purchaser,
         subject: "Confirmación de compra",
-        html: `<div class="col"><img src="./src/public/img/logo.png"><h1>Muchas gracias por su compra.</h1><p>Se ha confirmado su compra por un importe de $${amount}</p></div>`
+        html: `<div class="col"><h1>Muchas gracias por su compra.</h1><p>Se ha confirmado su compra por un importe de $${amount}</p></div>`
     })
     return result;
 }

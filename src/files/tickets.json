@@ -1,9 +1,16 @@
 [
 	{
-		"code": "4e5aff23-1e95-4aa9-93f1-f90993c59869",
-		"purchase_datetime": "2023-07-13T05:49:45.708Z",
-		"amount": 382,
-		"purchaser": "crg@gmail.com",
-		"_id": "182455ef-2193-4289-a9f5-0c40ed8902c2"
+		"code": "1577b64d-8449-4e73-b279-a76193458f35",
+		"purchase_datetime": "2023-07-17T14:31:40.446Z",
+		"amount": 59.99,
+		"purchaser": "crgasparini32@gmail.com",
+		"_id": "ae0349cc-b2db-416a-aa2d-ff8190a9d8c5"
+	},
+	{
+		"code": "fc353949-ace2-4ac3-8218-d8b6a65bb314",
+		"purchase_datetime": "2023-07-17T14:31:41.085Z",
+		"amount": 0,
+		"purchaser": "crgasparini32@gmail.com",
+		"_id": "1e3a7212-0bb1-40a4-8d37-706a303894d3"
 	}
 ]

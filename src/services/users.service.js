@@ -8,13 +8,14 @@ const getUser = async (email) => {
 
 const createUser = async (data) => {
     const {first_name, last_name, email, age, password} = data;
-    const cartId = cartsRepository.createCart({})._id;
+    const cart = await cartsRepository.createCart({products: []});
+    const cid = cart._id;
     const user = {
         first_name,
         last_name,
         email,
         age,
-        cart: cartId,
+        cart: cid,
         password: createHash(password),
         role: "user"
     }

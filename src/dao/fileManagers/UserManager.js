@@ -27,15 +27,15 @@ export default class UserManager {
         const users = await this.#getAll();
         user._id = uuidv4();
         users.push(user);
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(users, null, "\t"));
-        return result;
+        await fs.promises.writeFile(this.path, JSON.stringify(users, null, "\t"));
+        return user;
     }
 
     update = async (email, newUser) => {
         const users = await this.#getAll();
         const userIndex = users.findIndex(user => user.email === email);
         users.splice(userIndex, 1, newUser);
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(users, null, "\t"));
-        return result;
+        await fs.promises.writeFile(this.path, JSON.stringify(users, null, "\t"));
+        return newUser;
     }
 }

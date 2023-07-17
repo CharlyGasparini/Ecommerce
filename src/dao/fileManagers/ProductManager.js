@@ -19,26 +19,26 @@ export default class ProductManager {
 
     create = async (product) => {
         const products = await this.getAll();
-        products.push(product);
         product._id = uuidv4();
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return result;
+        products.push(product);
+        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return product;
     }
 
     getById = async (pid) => {
         const products = await this.getAll();
-        const product = products.find(prod => prod.id === pid);
+        const product = products.find(prod => prod._id === pid);
         return product;
     }
 
     update = async (pid, product) => {
         const products = await this.getAll();
-        const productIndex = products.findIndex(prod => prod.id === pid);
+        const productIndex = products.findIndex(prod => prod._id === pid);
         const productToModify = products[productIndex];
         const modifiedProduct = Object.assign(productToModify, product);
         products.splice(productIndex, 1, modifiedProduct);
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return result;
+        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return modifiedProduct;
     }
 
     delete = async (pid) => {

@@ -25,7 +25,7 @@
                     </th>
                 {{/if}}
             </tr>
-            </thead>
+        </thead>
         <tbody>
             {{#each products}}
                 {{#if this.status}}
@@ -54,6 +54,9 @@
             </tr>
         </tfoot>
     </table>
+    {{#if isFull}}
+        <button id="purchase-btn" class="btn btn-success">Iniciar compra</button>
+    {{/if}}
 </div>
 
 <script src="/js/carts.js"></script>

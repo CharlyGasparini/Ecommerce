@@ -11,8 +11,8 @@ export default class dbCartManager {
     }
 
     getById = async (cid) => {
-        const result = await cartsModel.findById(cid).populate("products.product");
-        return result;
+        const cart = await cartsModel.findOne({_id: cid}).lean();
+        return cart;
     }
 
     create = async (cart) => {

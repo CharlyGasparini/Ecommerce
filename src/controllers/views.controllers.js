@@ -1,6 +1,6 @@
 import * as productsServiceModule from "../services/products.service.js";
 import * as cartsServiceModule from "../services/carts.service.js";
-import UserDto from "../dao/user.dto.js";
+import UserDto from "../dao/DTOs/user.dto.js";
 
 const redirectLogin = (req, res) => {
     if(req.cookies["cookieToken"]) return res.redirect("/products")
@@ -26,24 +26,21 @@ const renderProducts = async (req, res) => {
 const renderCart = async (req, res) => {
     try {
         const cid = req.params.cid;
-        let products = [];
-        let total = 0;
-        const result = await cartsServiceModule.getCartById(cid);
-        console.log(result)
-        // del resultado obtenido mapeo un array nuevo con los datos que necesito mostrar
-        if(result.products.length > 0){
-            products = result.products.map(item => {
-                const result = {};
-                result._id = item.product._id;
-                result.title = item.product.title;
-                result.quantity = item.quantity;
-                result.price = item.product.price;
-                result.status = item.product.status;
-                result.subtotal = (result.quantity * result.price).toFixed(2);
-                return result;
-            })
-            total = products.map(prod => Number(prod.subtotal)).reduce((acc, curr) => acc + curr).toFixed(2);
-        }
+        const cart = await cartsServiceModule.getCartById(cid);
+        const products = cart.products.map(prod => {
+            const subtotal = parseFloat((prod.product.price * prod.quantity).toFixed(2));
+            return {
+                _id: prod.product._id,
+                title: prod.product.title,
+                price: prod.product.price,
+                quantity: prod.quantity,
+                status: prod.product.status,
+                subtotal
+            }
+        })
+        const total = parseFloat(products.reduce((acc, prod) => {
+            return acc + prod.subtotal;
+        }, 0).toFixed(2));
         res.render("carts", {
             title: "Carrito de compras",
             cid,
@@ -73,7 +70,10 @@ const renderReset = (req, res) => {
 }
 
 const renderChat = (req, res) => {
-    res.render("chat", {title: "Chat"})
+    res.render("chat", {
+        title: "Chat",
+        user: req.user
+    })
 }
 
 export {

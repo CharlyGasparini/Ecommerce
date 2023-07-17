@@ -1,11 +1,17 @@
-<h1>Bienvenidos al coder chat comunitario</h1>
-
-<div>
-    <input type="text" id="chatBox">
-</div>
-<div>
-    <p id="messageLogs"></p>
+<div class="container mt-5">
+    <div class="mb-3 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
+        <h1 class="display-4">Bienvenido {{user.first_name}} {{user.last_name}}</h1>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        {{#if user.age}}
+            <p><strong>Edad:</strong> {{user.age}}</p>
+        {{/if}}
+        <p><strong>Rol:</strong> {{user.role}}</p>
+        <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+    </div>
+    <h2 class="display-5">Bienvenidos al coder chat comunitario</h2>
     <a href="/products" class="btn btn-primary my-3">Ir al listado de productos</a>
+    <p id="messageLogs"></p>
+    <input type="text" id="chatBox">
 </div>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

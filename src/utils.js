@@ -46,11 +46,11 @@ const uploader = multer({
 });
 
 const parseToNumber = (req, res, next) => {
-    if(typeof req.body.price === "string"){
-        req.body.price === Number(req.body.price);
-    }
-    if(typeof req.body.stock === "string"){
-        req.body.stock === Number(req.body.stock);
+    const keys = ["price", "stock", "age"];
+    for(let key in req.body){
+        if(keys.includes(key)) {
+            req.body[key] = Number(req.body[key]);
+        }
     }
     next();
 }

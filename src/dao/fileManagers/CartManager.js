@@ -1,5 +1,7 @@
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
+import ProductManager from "./ProductManager.js";
+
 
 export default class CartManager {
     constructor(path) {
@@ -27,17 +29,18 @@ export default class CartManager {
         const carts = await this.getAll();
         cart._id = uuidv4();
         carts.push(cart);
-        const result = await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-        return result;
+        await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+        return cart;
     }
 
     addOne = async (cid, pid) => {
         const carts = await this.getAll();
         const cartIndex = carts.findIndex(cart => cart._id === cid);
         const productIndex = carts[cartIndex].products.findIndex(object => object.product._id === pid);
-        
+        const productManager = new ProductManager("./src/files/products.json");
+        const product = await productManager.getById(pid);
         if(productIndex === -1) {
-            carts[cartIndex].products.push({product:{_id:pid}, quantity: 1})
+            carts[cartIndex].products.push({product, quantity: 1})
         } else {
             carts[cartIndex].products[productIndex].quantity++;
         }

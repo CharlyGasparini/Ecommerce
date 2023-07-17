@@ -6,7 +6,7 @@ export default class dbProductManager {
     }
 
     getAll = async () => {
-        const products = await productsModel.find();
+        const products = await productsModel.find().lean();
         return products;
     }
 

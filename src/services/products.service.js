@@ -6,7 +6,7 @@ const getProducts = async () => {
 }
 
 const getProductById = async (pid) => {
-    const result = await productsRepository.getProductById();
+    const result = await productsRepository.getProductById(pid);
     return result;
 }
 

@@ -1,8 +1,5 @@
 const getUser = async () => {
-    const response = await fetch("/api/sessions/current", {
-        method: "GET"
-    })
-
-    const data = await response.json();
-    return data.payload;
+    const data = await fetch("/api/sessions/current");
+    const user = await data.json();
+    return user.data;
 }

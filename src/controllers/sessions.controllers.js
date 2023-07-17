@@ -2,7 +2,7 @@ import * as usersServiceModule from "../services/users.service.js";
 import config from "../config/config.js";
 import { generateToken } from "../utils.js";
 import { createHash, isValidPassword } from "../utils.js";
-import UserDto from "../dao/user.dto.js";
+import UserDto from "../dao/DTOs/user.dto.js";
 
 const login = async (req, res) => {    
     try {
@@ -21,19 +21,19 @@ const login = async (req, res) => {
         }
 
         const user = await usersServiceModule.getUser(email);
-
-        if(!user) return res.status(400).send({status: "error", message: "Credenciales incorrectas"});
+        
+        if(!user) return res.sendClientError("Credenciales incorrectas");
         
         const comparePassword = isValidPassword(user, password);
-
+        
         if(!comparePassword) {
-            return res.status(400).send({status: "error", message: "Credenciales incorrectas"});
+            return res.sendClientError("Credenciales incorrectas");
         }
-
+        
         const accessToken = generateToken(user);
         res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
     } catch (error) {
-        res.status(500).send({status: "error", error});
+        res.sendServerError(error);
     }
 }
 
@@ -46,17 +46,17 @@ const register = async (req, res) => {
         const { first_name, last_name, age, email, password} = req.body;
 
         if(!first_name || !last_name || !age || !email || !password)
-            return res.send(400).status({status: "error", message: "Valores incompletos"})
+            return res.sendClientError("Valores incompletos");
+        
+        req.body.age = Number(req.body.age);
+        const userExist = await usersServiceModule.getUser(email);
 
-        const user = await usersServiceModule.getUser(email);
-
-        if(user) return res.status(400).status({status: "error", message: "El usuario ya existe"});
-
+        if(userExist) return res.sendClientError("Ya existe un usuario registrado con el email");
+        
         const result = await usersServiceModule.createUser(req.body);
-
-        res.send({status: "success", payload: result});
+        res.sendSuccess(result);
     } catch (error) {
-        res.status(500).send({status: "error", error});
+        res.sendServerError(error);
     }
 }
 
@@ -72,25 +72,25 @@ const githubLoginCallback = (req, res) => {
 const resetPassword = async (req, res) => {
     const {email, password} = req.body;
     try {
-        if(!email || !password) return res.status(400).send({status: "error", message: "No puede haber campos vacios"});
+        if(!email || !password) return res.sendClientError("No puede haber campos vacios");
 
         const user = await usersServiceModule.getUser(email);
 
-        if(!user) return res.status(400).send({status: "error", message: "El usuario no existe"});
+        if(!user) return res.sendClientError("El usuario no existe");
 
         user.password = createHash(password);
 
-        await usersServiceModule.updateUser(email, user);
+        const result = await usersServiceModule.updateUser(email, user);
 
-        res.send({status: "success", message: "Modificación exitosa"});
+        res.sendSuccess(result);
     } catch (error) {
-        res.status(500).send({status: "error", error});
+        res.sendServerError(error);
     }
 }
 
 const getCurrentUser = (req, res) => {
     const result = new UserDto(req.user);
-    res.send({status: "success", payload: result});
+    res.sendSuccess(result);
 }
 
 export {

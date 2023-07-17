@@ -6,7 +6,7 @@ export default class dbUserManager {
     }
 
     get = async (email) => {
-        const user = await userModel.findOne({email}).lean();
+        const user = await userModel.findOne({email});
         return user;
     }
 

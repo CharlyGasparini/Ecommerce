@@ -5,12 +5,12 @@ export default class dbMessageManager {
         console.log("Working messages with DB");
     }
 
-    getMessages = async () => {
+    getAll = async () => {
         const messages = await messageModel.find().lean();
         return messages;
     }
 
-    addMessage = async (message) => {
+    create = async (message) => {
         const result = await messageModel.create(message);
         return result;
     }
