@@ -10,7 +10,7 @@ export default class dbMessageManager {
         return messages;
     }
 
-    create = async (message) => {
+    save = async (message) => {
         const result = await messageModel.create(message);
         return result;
     }

@@ -16,8 +16,32 @@
 					"_id": "12b383ae-23e7-49b1-ac05-3363ed66ec2c"
 				},
 				"quantity": 1
+			},
+			{
+				"product": {
+					"title": "The Legend of Zelda: Breath of the Wild",
+					"description": "Explora un vasto mundo abierto y descubre los secretos de Hyrule.",
+					"price": 59.99,
+					"code": "ABC123",
+					"stock": 10,
+					"category": "juegos",
+					"status": true,
+					"thumbnails": [
+						"https://sm.ign.com/ign_es/screenshot/default/caratulaalemana_1dhc.jpg"
+					],
+					"_id": "0dd00161-0116-4759-ae9e-399fa26681cd"
+				},
+				"quantity": 1
 			}
 		],
 		"_id": "ff51004d-1c0c-46e7-b562-db8013d1395a"
+	},
+	{
+		"products": [],
+		"_id": "62ac76b2-c274-46fa-beac-4e59b92efba8"
+	},
+	{
+		"products": [],
+		"_id": "5f05e666-7f3a-469d-bfd5-bdfb0ea90dd0"
 	}
 ]

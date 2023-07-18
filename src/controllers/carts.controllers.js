@@ -4,7 +4,7 @@ const createCart = async (req, res) => {
     try {
         const cart = req.body; // Traigo el carrito a agregar desde el body
         const result = await serviceModule.createCart(cart); // Agrego el carrito
-        res.sendUser(result);
+        res.sendSuccess(result);
     } catch (error) {
         res.sendServerError(error.message);
     }

@@ -20,35 +20,19 @@ const cartsRouter = new CartsRouter();
 const productsRouter = new ProductsRouter();
 const viewsRouter = new ViewsRouter();
 
-app.set("socketio", io);
-
 // Handshake entre servidor y socket del cliente
 io.on("connection", async socket => {
     console.log("Nuevo cliente conectado");
-    const productManager = new dbProductManager();
-    const messageManager = new dbMessageManager();
     try {
-        socket.emit("showProducts", await productManager.getProducts()); // Envia los productos al socket del cliente
-        // Recibe el producto recopilado del form y lo agrega al array de productos
-        socket.on("post", async data => {
-            const product = data;
-            await productManager.addProduct(product);
-            socket.emit("showProducts", await productManager.getProducts());
-        })
-        // Recibe el id del producto y lo elimina del array de productos
-        socket.on("delete", async data => {
-            const pid = data;
-            await productManager.deleteProduct(pid);
-            socket.emit("showProducts", await productManager.getProducts());
-        })
+        const messagesModule = await import("./services/messages.service.js");
 
         socket.on("message", async data => {
-            await messageManager.addMessage(data);
-            io.emit("messageLogs", await messageManager.getMessages());
+            await messagesModule.saveMessage(data);
+            io.emit("messageLogs", await messagesModule.getMessages());
         });
 
         socket.on("authenticated", async data => {
-            const messages = await messageManager.getMessages();
+            const messages = await messagesModule.getMessages();
             socket.emit("messageLogs", messages);
             socket.broadcast.emit("newUserConnected", data);
         })
@@ -57,6 +41,7 @@ io.on("connection", async socket => {
     }
 })
 
+app.set("socketio", io);
 app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__dirname}/public`)); // Acceso a archivos estáticos

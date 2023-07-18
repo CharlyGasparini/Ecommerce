@@ -9,8 +9,8 @@ export default class MessagesRepository {
         return result;
     }
 
-    createProduct = async (message) => {
-        const result = await this.dao.create(message);
+    saveMessage = async (message) => {
+        const result = await this.dao.save(message);
         return result;
     }
 }

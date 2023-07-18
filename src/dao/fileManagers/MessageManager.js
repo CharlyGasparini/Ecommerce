@@ -17,7 +17,7 @@ export default class MessageManager {
         }
     }
 
-    create = async (message) => {
+    save = async (message) => {
         const messages = await this.getAll();
         message._id = uuidv4();
         messages.push(message);
