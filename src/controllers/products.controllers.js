@@ -23,12 +23,16 @@ const createProduct = async (req, res) => {
     try {
         const product = req.body;
         const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
+
         if(!title || !description || !price || !code || !stock || !category){
-            return res.sendUserError("Valores incompletos");
+            return res.sendClientError("Valores incompletos");
         }
+
         if(req.files){
             product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
         }
+
+        product.status = true;
         const result = await serviceModule.createProduct(product); // Agrego el producto
         res.sendSuccess(result);
     } catch (error) {

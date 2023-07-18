@@ -1,6 +1,23 @@
 [
 	{
-		"products": [],
+		"products": [
+			{
+				"product": {
+					"title": "DualShock 4 Controller",
+					"description": "Un controlador inalámbrico para PlayStation 4 con funciones innovadoras.",
+					"price": 59.99,
+					"code": "JKL012",
+					"stock": 15,
+					"category": "accesorios",
+					"status": true,
+					"thumbnails": [
+						"https://arsonyb2c.vtexassets.com/arquivos/ids/292249/dualshockblack1.jpg?v=637105416256400000"
+					],
+					"_id": "12b383ae-23e7-49b1-ac05-3363ed66ec2c"
+				},
+				"quantity": 1
+			}
+		],
 		"_id": "ff51004d-1c0c-46e7-b562-db8013d1395a"
 	}
 ]

@@ -26,7 +26,7 @@ export default class dbProductManager {
     }
 
     delete = async (pid) => {
-        const result = await productsModel.updateOne({_id: pid}, {$set: {status: false}}); // Borrado lógico: modifico el valor del parametro status
+        const result = await productsModel.deleteOne({_id: pid});
         return result;
     }
 }

@@ -44,7 +44,7 @@ export default class ProductManager {
     delete = async (pid) => {
         const products = await this.getAll();
         const productIndex = products.findIndex(prod => prod.id === pid);
-        products[productIndex].status = false;
+        products.splice(productIndex,1);
         const result = await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
         return result;
     }
