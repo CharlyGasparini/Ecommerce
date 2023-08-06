@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
 import { PRIVATE_KEY } from "../config/constants.js";
+import { logger } from "./logger.js";
 
 faker.locale = "es";
 
@@ -42,7 +43,7 @@ const generateToken = (user) => {
 const uploader = multer({
     storage,
     onError: (err, next) => {
-        console.log(err),
+        logger.error(err),
         next();
     }
 });

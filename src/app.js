@@ -1,28 +1,32 @@
 import express from "express";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
-import { __dirname } from "./utils.js";
+import { __dirname } from "./path.js";
 import ProductsRouter from "./routes/products.router.js";
 import CartsRouter from "./routes/carts.router.js";
 import ViewsRouter from "./routes/views.router.js";
 import SessionsRouter from "./routes/sessions.router.js";
+import LogsRouter from "./routes/logs.router.js";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./config/config.js";
 import cors from "cors";
+import compression from "express-compression";
+import { logger, addLogger } from "./utils/logger.js";
 
 const app = express(); // Creación de server HTTP
-const httpServer = app.listen(config.port, () => console.log(`Listening on port ${config.port}`));
+const httpServer = app.listen(config.port, () => logger.info(`Listening on port ${config.port}`));
 const io = new Server(httpServer); // Creación de server Websockets
 const sessionsRouter = new SessionsRouter();
 const cartsRouter = new CartsRouter();
 const productsRouter = new ProductsRouter();
 const viewsRouter = new ViewsRouter();
+const logsRouter = new LogsRouter();
 
 // Handshake entre servidor y socket del cliente
 io.on("connection", async socket => {
-    console.log("Nuevo cliente conectado");
+    logger.info("Nuevo cliente conectado");
     try {
         const messagesModule = await import("./services/messages.service.js");
 
@@ -37,7 +41,7 @@ io.on("connection", async socket => {
             socket.broadcast.emit("newUserConnected", data);
         })
     } catch (error) {
-        console.log(error);
+        logger.error(error.message);
     }
 })
 
@@ -47,6 +51,10 @@ app.use(express.urlencoded({ extended: true })); // Soporte para params varios e
 app.use(express.static(`${__dirname}/public`)); // Acceso a archivos estáticos
 app.use(cookieParser());
 app.use(cors());
+app.use(compression({
+    brotli: { enabled: true, zlib: {} }
+})); // aplicacion de compresion con brotli
+app.use(addLogger);
 
 // Passport
 initializePassport();
@@ -62,4 +70,5 @@ app.use("/", viewsRouter.getRouter());
 app.use("/api/products", productsRouter.getRouter());
 app.use("/api/carts", cartsRouter.getRouter());
 app.use("/api/sessions", sessionsRouter.getRouter());
+app.use("/api/logs", logsRouter.getRouter());
 

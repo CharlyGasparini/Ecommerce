@@ -6,7 +6,7 @@ import ProductManager from "./ProductManager.js";
 export default class CartManager {
     constructor(path) {
         this.path = path;
-        console.log("Working carts with Files");
+        logger.info("Working carts with Files");
     }
 
     getAll = async () => {

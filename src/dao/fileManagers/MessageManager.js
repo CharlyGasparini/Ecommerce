@@ -1,10 +1,11 @@
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from "../../utils/logger";
 
 export default class MessageManager {
     constructor (path) {
         this.path = path;
-        console.log("Working messages with Files");
+        logger.info("Working messages with Files");
     }
 
     getAll = async () => {

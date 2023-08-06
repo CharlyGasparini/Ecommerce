@@ -1,10 +1,11 @@
 import config from "../config/config.js";
+import { logger } from "../utils/logger.js";
 
 let CartsDao, ProductsDao, UsersDao, TicketsDao, MessagesDao;
 
 switch (config.persistance) {
     case "MONGO":
-        console.log("Working on DB");
+        logger.info("Working on DB");
         const mongoose = await import("mongoose");
         await mongoose.connect(config.mongoUrl);
         const { default: CartsMongo } = await import("./dbManagers/dbCartManager.js");
@@ -20,7 +21,7 @@ switch (config.persistance) {
         break;
 
     case "FILES":
-        console.log("Working on Files");
+        logger.info("Working on Files");
         const { default: CartsFiles } = await import("./fileManagers/CartManager.js");
         const { default: ProductsFiles } = await import("./fileManagers/ProductManager.js");
         const { default: UsersFiles } = await import("./fileManagers/UserManager.js");

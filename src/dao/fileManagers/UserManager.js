@@ -1,10 +1,11 @@
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from "../../utils/logger";
 
 export default class UserManager {
     constructor(path) {
         this.path = path;
-        console.log("Working users with Files");
+        logger.info("Working users with Files");
     }
 
     #getAll = async () => {

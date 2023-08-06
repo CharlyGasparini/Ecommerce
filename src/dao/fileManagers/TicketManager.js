@@ -1,10 +1,11 @@
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from "../../utils/logger";
 
 export default class dbTicketManager {
     constructor (path) {
         this.path = path;
-        console.log("Working tickets with Files");
+        logger.info("Working tickets with Files");
     }
 
     #getAll = async () => {

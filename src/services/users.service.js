@@ -67,7 +67,6 @@ const register = async (data) => {
     }
 
     const result = await createUser(data);
-    console.log(result)
     return result;
 }
 

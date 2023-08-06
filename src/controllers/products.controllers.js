@@ -4,6 +4,7 @@ import { generateProducts } from "../utils/utils.js";
 
 const getProducts = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const products = await serviceModule.getProducts(); // Traigo el array de productos
         res.sendSuccess(products);
     } catch (error) {
@@ -13,6 +14,7 @@ const getProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const pid = req.params.pid; // Traigo el id del producto desde los parametros del path
         const product = await serviceModule.getProductById(pid); // Busco el producto con el id correspondiente
         res.sendSuccess(product);
@@ -31,6 +33,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const product = req.body;
         const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
 
@@ -61,6 +64,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const pid = req.params.pid; // Traigo el id del producto de los parametros del path
         const product = req.body; // Traigo los parametros a modificar desde el body
         const {title, description, price, code, stock, category} = product;
@@ -85,6 +89,7 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const pid = req.params.pid; // Traigo el id del producto de los parametros del path
         const result = await serviceModule.deleteProduct(pid); // Borro el producto
         res.sendSuccess(result);
@@ -94,11 +99,16 @@ const deleteProduct = async (req, res) => {
 }
 
 const getMockingProducts = async (req, res) => {
-    let products = [];
-    for (let i = 0; i < 100; i++) {
-        products.push(generateProducts());
+    try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
+        let products = [];
+        for (let i = 0; i < 100; i++) {
+            products.push(generateProducts());
+        }
+        res.sendSuccess(products);
+    } catch (error) {
+        res.sendServerError(error.message);
     }
-    res.sendSuccess(products);
 }
 
 export {

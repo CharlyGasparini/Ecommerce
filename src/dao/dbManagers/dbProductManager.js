@@ -1,8 +1,9 @@
+import { logger } from "../../utils/logger.js";
 import productsModel from "../models/products.model.js";
 
 export default class dbProductManager {
     constructor () {
-        console.log("Working products with DB");
+        logger.info("Working products with DB");
     }
 
     getAll = async () => {
