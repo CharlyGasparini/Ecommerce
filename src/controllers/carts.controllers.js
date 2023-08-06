@@ -1,4 +1,5 @@
 import * as serviceModule from "../services/carts.service.js";
+import { CartNotFound } from "../utils/custom-exceptions.js";
 
 const createCart = async (req, res) => {
     try {
@@ -16,6 +17,14 @@ const getCartById = async (req, res) => {
         const cart = await serviceModule.getCartById(cid); // Busco el carrito
         res.sendSuccess(cart);
     } catch (error) {
+        if(error instanceof CartNotFound) {
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
         res.sendServerError(error.message);   
     }
 }

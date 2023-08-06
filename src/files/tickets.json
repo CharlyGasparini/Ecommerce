@@ -12,5 +12,19 @@
 		"amount": 0,
 		"purchaser": "crgasparini32@gmail.com",
 		"_id": "1e3a7212-0bb1-40a4-8d37-706a303894d3"
+	},
+	{
+		"code": "bbcaff23-8014-47bc-abee-9ec7555ddc27",
+		"purchase_datetime": "2023-08-06T00:24:37.257Z",
+		"amount": 59.99,
+		"purchaser": "jp-perez@gmail.com",
+		"_id": "2fb56e1b-1897-455c-9eae-c2a3b9babb01"
+	},
+	{
+		"code": "cda8b95a-b066-4500-a8da-3269585fa8c3",
+		"purchase_datetime": "2023-08-06T00:24:38.131Z",
+		"amount": 0,
+		"purchaser": "jp-perez@gmail.com",
+		"_id": "c0b67d2d-32e4-4741-9872-7a9639c31ae8"
 	}
 ]

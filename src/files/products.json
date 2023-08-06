@@ -4,7 +4,7 @@
 		"description": "Explora un vasto mundo abierto y descubre los secretos de Hyrule.",
 		"price": 59.99,
 		"code": "ABC123",
-		"stock": 10,
+		"stock": 9,
 		"category": "juegos",
 		"status": true,
 		"thumbnails": [

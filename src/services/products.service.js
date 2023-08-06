@@ -1,4 +1,5 @@
 import { productsRepository } from "../repositories/index.js";
+import { ProductNotFound } from "../utils/custom-exceptions.js";
 
 const getProducts = async () => {
     const products = await productsRepository.getProducts();
@@ -7,6 +8,9 @@ const getProducts = async () => {
 
 const getProductById = async (pid) => {
     const result = await productsRepository.getProductById(pid);
+    if(!result){
+        throw new ProductNotFound("No se encontró el producto");
+    }
     return result;
 }
 

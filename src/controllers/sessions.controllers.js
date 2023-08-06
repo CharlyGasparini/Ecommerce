@@ -1,38 +1,34 @@
 import * as usersServiceModule from "../services/users.service.js";
-import config from "../config/config.js";
-import { generateToken } from "../utils.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { generateToken, createHash } from "../utils/utils.js";
 import UserDto from "../dao/DTOs/user.dto.js";
+import { UserNotFound, IncorrectCredentials, UserAlreadyExists, IncompleteValues } from "../utils/custom-exceptions.js";
 
 const login = async (req, res) => {    
     try {
         const {email, password} = req.body;
-        
-        if(email === config.adminName && password === config.adminPassword){
-            // Generación del token
-            const accessToken = generateToken({
-                first_name: "Coder",
-                last_name: "House",
-                email,
-                role: "admin"
-            })
 
-            return res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
-        }
-
-        const user = await usersServiceModule.getUser(email);
+        const accessToken = await usersServiceModule.login(email, password);
         
-        if(!user) return res.sendClientError("Credenciales incorrectas");
-        
-        const comparePassword = isValidPassword(user, password);
-        
-        if(!comparePassword) {
-            return res.sendClientError("Credenciales incorrectas");
-        }
-        
-        const accessToken = generateToken(user);
-        res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
+        return res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
     } catch (error) {
+        if(error instanceof UserNotFound){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
+
+        if(error instanceof IncorrectCredentials){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
+
         res.sendServerError(error);
     }
 }
@@ -46,17 +42,30 @@ const register = async (req, res) => {
         const { first_name, last_name, age, email, password} = req.body;
 
         if(!first_name || !last_name || !age || !email || !password)
-            return res.sendClientError("Valores incompletos");
-        
-        req.body.age = Number(req.body.age);
-        const userExist = await usersServiceModule.getUser(email);
+            throw new IncompleteValues("Valores incompletos. No puede haber datos sin completar");
 
-        if(userExist) return res.sendClientError("Ya existe un usuario registrado con el email");
-        
-        const result = await usersServiceModule.createUser(req.body);
+        const result = await usersServiceModule.register(req.body);
         res.sendSuccess(result);
     } catch (error) {
-        res.sendServerError(error);
+        if(error instanceof UserAlreadyExists){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
+
+        if(error instanceof IncompleteValues){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        }
+
+        res.sendServerError(error.message);
     }
 }
 

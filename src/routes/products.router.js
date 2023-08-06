@@ -1,10 +1,12 @@
 import Router from "./router.js";
-import { uploader, parseToNumber } from "../utils.js/";
+import { uploader, parseToNumber } from "../utils/utils.js";
 import { passportStrategiesEnum } from "../config/enums.js";
 import * as controllerModule from "../controllers/products.controllers.js";
 
 export default class ProductsRouter extends Router {
     init() {
+        // Devuelve un mock de 100 productos generados aleatoriamente
+        this.get("/mockingproducts", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.getMockingProducts)
         // Devuelve los productos en la DB
         this.get("/", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.getProducts)
         // Devuelve un producto de la DB que corresponda al id brindado

@@ -1,4 +1,6 @@
 import * as serviceModule from "../services/products.service.js";
+import { ProductNotFound, IncompleteValues } from "../utils/custom-exceptions.js";
+import { generateProducts } from "../utils/utils.js";
 
 const getProducts = async (req, res) => {
     try {
@@ -15,6 +17,14 @@ const getProductById = async (req, res) => {
         const product = await serviceModule.getProductById(pid); // Busco el producto con el id correspondiente
         res.sendSuccess(product);
     } catch (error) {
+        if(error instanceof ProductNotFound){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
         res.sendServerError(error.message);
     }
 }
@@ -25,7 +35,7 @@ const createProduct = async (req, res) => {
         const {title, description, price, code, stock, category} = product; // Traigo el producto a agregar desde el body
 
         if(!title || !description || !price || !code || !stock || !category){
-            return res.sendClientError("Valores incompletos");
+            throw new IncompleteValues("Valores incompletos. No puede haber datos sin completar");
         }
 
         if(req.files){
@@ -36,6 +46,15 @@ const createProduct = async (req, res) => {
         const result = await serviceModule.createProduct(product); // Agrego el producto
         res.sendSuccess(result);
     } catch (error) {
+        if(error instanceof IncompleteValues){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        }
+
         res.sendServerError(error.message);
     }
 }
@@ -46,12 +65,21 @@ const updateProduct = async (req, res) => {
         const product = req.body; // Traigo los parametros a modificar desde el body
         const {title, description, price, code, stock, category} = product;
         if(!title, !description, !price, !code, !stock, !category){
-            return res.status(400).send({status: "error", error: "Incomplete values"});
+            throw new IncompleteValues("Valores incompletos. No puede haber datos sin completar");
         }
         const result = await serviceModule.updateProduct(pid, product); // Modifico el producto
-        res.send({status: "success", payload: result})
+        res.sendSuccess(result);
     } catch (error) {
-        res.status(500).send({status: "error", error});
+        if(error instanceof IncompleteValues){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        }
+        
+        res.sendServerError(error.message);
     }
 }
 
@@ -65,10 +93,19 @@ const deleteProduct = async (req, res) => {
     }
 }
 
+const getMockingProducts = async (req, res) => {
+    let products = [];
+    for (let i = 0; i < 100; i++) {
+        products.push(generateProducts());
+    }
+    res.sendSuccess(products);
+}
+
 export {
     getProducts,
     getProductById,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getMockingProducts
 }

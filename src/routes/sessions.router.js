@@ -1,7 +1,7 @@
 import Router from "./router.js";
 import { passportStrategiesEnum } from "../config/enums.js";
 import * as controllerModule from "../controllers/sessions.controllers.js";
-import { parseToNumber } from "../utils.js";
+import { parseToNumber } from "../utils/utils.js";
 
 export default class SessionsRouter extends Router{
     init() {

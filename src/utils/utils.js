@@ -2,10 +2,11 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import multer from "multer";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
+import { PRIVATE_KEY } from "../config/constants.js";
 
-const PRIVATE_KEY = 'secretCoder';
+faker.locale = "es";
 
 // Convención nomenclatura: para temas de paths __nombre
 const __filename = fileURLToPath(import.meta.url);

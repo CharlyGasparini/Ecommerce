@@ -1,22 +1,12 @@
 [
 	{
-		"first_name": "CharlyGasparini",
-		"last_name": "",
-		"email": "crgasparini32@gmail.com",
-		"age": 18,
-		"cart": "ff51004d-1c0c-46e7-b562-db8013d1395a",
-		"password": "$2b$10$Er2ZWO2GLvmVfPGr8aaDm.NHK3Nui4ilu4SDKjKVeea.CpbmlCt0m",
-		"role": "user",
-		"_id": "7103c8d3-5728-409b-8bfc-2ae3899dd2eb"
-	},
-	{
 		"first_name": "Juan Pablo",
 		"last_name": "Perez",
 		"email": "jp-perez@gmail.com",
 		"age": 28,
-		"cart": "5f05e666-7f3a-469d-bfd5-bdfb0ea90dd0",
-		"password": "$2b$10$0QkHM2a4FHyBRGso9CvmiewdTW5IJSxAaLswkHF72wyyVFeXAa66q",
+		"cart": "29f278f2-0787-4998-a26e-6266fa3d9be9",
+		"password": "$2b$10$de9f0mRT.iRS0CHISAaYoOs0AxGREVapwGWbeJnFdUM4WQql340Ba",
 		"role": "user",
-		"_id": "7cb31648-3260-4a2a-9032-04416df7b966"
+		"_id": "6a7f8628-a893-421f-93b1-e410e081cfeb"
 	}
 ]

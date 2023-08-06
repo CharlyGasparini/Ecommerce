@@ -1,5 +1,7 @@
 import { usersRepository, cartsRepository } from "../repositories/index.js";
-import { createHash } from "../utils.js";
+import { createHash, isValidPassword, generateToken } from "../utils/utils.js";
+import config from "../config/config.js";
+import { IncorrectCredentials, UserNotFound, UserAlreadyExists } from "../utils/custom-exceptions.js";
 
 const getUser = async (email) => {
     const user = await usersRepository.getUser(email);
@@ -28,9 +30,52 @@ const updateUser = async (email, newUser) => {
     return result;
 }
 
+const login = async (email, password) => {
+    if(email === config.adminName && password === config.adminPassword){
+        // Generación del token
+        const accessToken = generateToken({
+            first_name: "Coder",
+            last_name: "House",
+            email,
+            role: "admin"
+        })
+
+        return accessToken;
+    }
+
+    const user = await getUser(email);
+    
+    if(!user) {
+        throw new UserNotFound("El usuario no existe");
+    }
+    
+    const comparePassword = isValidPassword(user, password);
+    
+    if(!comparePassword) {
+        throw new IncorrectCredentials("Contraseña incorrecta");
+    }
+    
+    const accessToken = generateToken(user);
+    return accessToken;
+}
+
+const register = async (data) => {
+    const userExists = await getUser(data.email);
+
+    if(userExists) {
+        throw new UserAlreadyExists(`Ya existe un usuario registrado con el mail ${data.email}`);
+    }
+
+    const result = await createUser(data);
+    console.log(result)
+    return result;
+}
+
 
 export {
     getUser,
     createUser,
-    updateUser
+    updateUser,
+    login,
+    register
 }

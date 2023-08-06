@@ -8,6 +8,11 @@ program
         "--mode <mode>", 
         "Modo de trabajo", 
         "DEVELOPMENT")
+    .option(
+        "--persistance <persistance>",
+        "Modo de persistencia de datos",
+        "MONGO"
+    )
 
 program.parse();
 
@@ -17,11 +22,12 @@ dotenv.config({
 });
 
 export default {
-    mongoUrl: environment === "PRODUCTION" ? process.env.MONGO_URL : "",
+    mongoUrl: process.env.MONGO_URL,
     port: process.env.PORT,
     adminName: process.env.ADMIN_NAME,
     adminPassword: process.env.ADMIN_PASSWORD,
     nodemailerUser: process.env.NODEMAILER_USER,
     nodemailerPass: process.env.NODEMAILER_PASS,
-    persistance: process.env.PERSISTANCE
+    environment: process.env.NODE_ENV,
+    persistance: program.opts().persistance
 }

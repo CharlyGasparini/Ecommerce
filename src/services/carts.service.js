@@ -1,6 +1,7 @@
 import transporter from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { v4 as uuidv4 } from 'uuid';
+import { CartNotFound } from "../utils/custom-exceptions.js";
 
 const getCarts = async () => {
     const carts = await cartsRepository.getCarts();
@@ -9,6 +10,9 @@ const getCarts = async () => {
 
 const getCartById = async (cid) => {
     const result = await cartsRepository.getCartById(cid);
+    if(!result) {
+        throw new CartNotFound("No se encontró el carrito");
+    } 
     return result;
 }
 
