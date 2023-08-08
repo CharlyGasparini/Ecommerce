@@ -1,7 +1,9 @@
 import * as usersServiceModule from "../services/users.service.js";
-import { generateToken, createHash } from "../utils/utils.js";
+import { generateToken, createHash, isValidPassword } from "../utils/utils.js";
 import UserDto from "../dao/DTOs/user.dto.js";
-import { UserNotFound, IncorrectCredentials, UserAlreadyExists, IncompleteValues } from "../utils/custom-exceptions.js";
+import { UserNotFound, IncorrectCredentials, UserAlreadyExists, IncompleteValues, SamePassword } from "../utils/custom-exceptions.js";
+import transporter from "../config/nodemailer.config.js";
+import config from "../config/config.js";
 
 const login = async (req, res) => {    
     try {
@@ -9,7 +11,7 @@ const login = async (req, res) => {
 
         const accessToken = await usersServiceModule.login(email, password);
         
-        return res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).send({status: "success", message: "Login exitoso, bienvenido"});
+        return res.cookie("authToken", accessToken, { maxAge: 1000, httpOnly: true}).sendSuccess("Login exitoso, bienvenido");
     } catch (error) {
         if(error instanceof UserNotFound){
             return res.sendClientError(
@@ -34,7 +36,7 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    res.clearCookie("cookieToken").redirect("/login");
+    res.clearCookie("authToken").redirect("/login");
 }
 
 const register = async (req, res) => {
@@ -70,36 +72,93 @@ const register = async (req, res) => {
 }
 
 const githubLogin = (req, res) => {
-    res.send({status: "success", message: "Usuario registrado"});
+    res.sendSuccess("Usuario registrado");
 }
 
 const githubLoginCallback = (req, res) => {
     const accessToken = generateToken(req.user);
-    res.cookie("cookieToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
+    res.cookie("authToken", accessToken, { maxAge: 1000, httpOnly: true});
 }
 
 const resetPassword = async (req, res) => {
-    const {email, password} = req.body;
     try {
-        if(!email || !password) return res.sendClientError("No puede haber campos vacios");
+        const email = req.body.email;
+        
+        if(!email) {
+            throw new IncompleteValues("Valores incompletos. No puede haber datos sin completar");
+        }
 
         const user = await usersServiceModule.getUser(email);
 
-        if(!user) return res.sendClientError("El usuario no existe");
+        if(!user) {
+            throw new UserNotFound("El usuario no existe");
+        }
 
-        user.password = createHash(password);
-
-        const result = await usersServiceModule.updateUser(email, user);
-
-        res.sendSuccess(result);
+        // Envio de mail
+        await transporter.sendMail({
+            from: "coderHouse 39760",
+            to: email,
+            subject: "Restaurar contraseña",
+            html: `<div class="col"><h1>Enlace de restauración de contraseña</h1><a href="http://localhost:${config.port}/changePassword">Para restaurar su contraseña ingrese aqui</a></div>`
+        })
+        
+        user.role = "pass";
+        const accessToken = generateToken(user);
+        res.cookie("passToken", accessToken, { maxAge: 1000, httpOnly: true}).sendSuccess("Email enviado");
     } catch (error) {
-        res.sendServerError(error);
+        if(error instanceof IncompleteValues){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        }
+
+        if(error instanceof UserNotFound){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        }
+
+        res.sendServerError(error.message);
     }
 }
 
 const getCurrentUser = (req, res) => {
     const result = new UserDto(req.user);
     res.sendSuccess(result);
+}
+
+const changePassword = async (req, res) => {
+    try {
+        const newPassword = req.body.password;
+        const user = req.user;
+        
+        if(isValidPassword(user, newPassword)){
+            throw new SamePassword("El password ingresado es el mismo que el ya existente");
+        }
+
+        user.role = "user";
+        user.password = createHash(newPassword);
+
+        await usersServiceModule.updateUser(user.email, user);
+        res.clearCookie("passToken").sendSuccess("Contraseña restaurada");
+    } catch (error) {
+        if(error instanceof SamePassword){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        };
+
+        res.sendServerError(error.message);
+    }
 }
 
 export {
@@ -109,5 +168,6 @@ export {
     githubLogin,
     githubLoginCallback,
     resetPassword,
-    getCurrentUser
+    getCurrentUser,
+    changePassword
 }

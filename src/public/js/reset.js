@@ -15,17 +15,35 @@ form.addEventListener("submit", e => {
             }
         })
         .then(async result => {
+            const error = await result.json();
             if(result.status === 200){
-                window.location.replace("/login");
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    title: "Se envió un correo a su email",
+                    icon: "success"
+                })
+            } else if(error.error.name === "UserNotFound") {
+
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    title: "El email ingresado no pertenece a ningun usuario registrado",
+                    icon: "error"
+                })
             } 
         })
     } else{
         Swal.fire({
             toast: true,
-            position: "center",
+            position: "top-end",
             showConfirmButton: false,
             timer: 1500,
-            title: "No puede haber campos vacios",
+            title: "Debe ingresar su email",
             icon: "error"
         })
     }

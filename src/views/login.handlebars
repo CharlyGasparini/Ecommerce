@@ -10,6 +10,10 @@
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese su contraseña" autocomplete="current-password">
             </div>
+            <div class="mb-3 text-end">
+                <span>Olvidaste tu contraseña?</span>
+                <a href="/reset" class="my-auto" style="text-decoration: none;">Ingresa aquí</a>
+            </div>
             <div class="mb-3 d-flex justify-content-between align-item-center">
                 <button type="submit" class="btn btn-primary">Ingresar</button>
                 <a href="/register" class="my-auto" style="text-decoration: none;">Registrarse</a>
@@ -17,14 +21,12 @@
         </form>
         <h5 class="text-center">O ingresa con:</h5>
         <div class="mb-3 text-center">
+            <p>GitHub</p>
             <a href="/api/sessions/github">
                 <button class="btn btn-primary">
                     <i class="fa-brands fa-github" style="font-size: 2rem;"></i>
                 </button>
             </a>
-        </div>
-        <div class="mb-3 text-end">
-            <a href="/reset" class="my-auto" style="text-decoration: none;">Restaurar contraseña</a>
         </div>
     </div>
 </div>

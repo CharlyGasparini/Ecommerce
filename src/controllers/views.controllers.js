@@ -3,7 +3,7 @@ import * as cartsServiceModule from "../services/carts.service.js";
 import UserDto from "../dao/DTOs/user.dto.js";
 
 const redirectLogin = (req, res) => {
-    if(req.cookies["cookieToken"]) return res.redirect("/products")
+    if(req.cookies["authToken"]) return res.redirect("/products");
     res.redirect("/login");
 }
 
@@ -76,6 +76,12 @@ const renderChat = (req, res) => {
     })
 }
 
+const renderChangePassword = (req, res) => {
+    res.render("changePassword", {
+        title: "Restaurar contraseña",
+    })
+}
+
 export {
     redirectLogin,
     renderProducts,
@@ -83,5 +89,6 @@ export {
     renderLogin,
     renderRegister,
     renderReset,
-    renderChat
+    renderChat,
+    renderChangePassword
 }

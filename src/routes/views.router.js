@@ -15,6 +15,8 @@ export default class ViewsRouter extends Router {
         this.get("/register", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderRegister)
         
         this.get("/reset", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderReset)
+        
+        this.get("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.renderChangePassword)
 
         this.get("/chat", ["USER"], passportStrategiesEnum.JWT, controllerModule.renderChat)
     }

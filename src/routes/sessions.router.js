@@ -15,8 +15,10 @@ export default class SessionsRouter extends Router{
         this.get("/github", ["PUBLIC"], passportStrategiesEnum.GITHUB, controllerModule.githubLogin)
         // Lógica de github strategy / callback
         this.get("/github-callback", ["USER"], passportStrategiesEnum.GITHUB, controllerModule.githubLoginCallback)
-        // Lógica de reseteo de clave
+        // Lógica de inicio de reseteo de clave
         this.post("/reset", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.resetPassword)
+        // Lógica de final de reseteo de clave
+        this.post("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.changePassword)
         // Lógica que retorna contenido del token
         this.get("/current", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.getCurrentUser)
     }
