@@ -1,7 +1,7 @@
 import transporter from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { v4 as uuidv4 } from 'uuid';
-import { CartNotFound } from "../utils/custom-exceptions.js";
+import { CartNotFound, SameOwner } from "../utils/custom-exceptions.js";
 
 const getCarts = async () => {
     const carts = await cartsRepository.getCarts();
@@ -21,7 +21,13 @@ const createCart = async (cart) => {
     return result;
 }
 
-const addOneProductInCart = async (cid, pid) => {
+const addOneProductInCart = async (cid, pid, user) => {
+    const product = await productsRepository.getProductById(pid);
+    
+    if(user.email === product.owner) {
+        throw new SameOwner("No se puede agregar al carrito tus propios productos");
+    }
+
     const result = await cartsRepository.addOneProductInCart(cid, pid);
     return result;
 }
@@ -31,7 +37,13 @@ const deleteProductInCart = async (cid, pid) => {
     return result;
 }
 
-const addManyProductsInCart = async (cid, products) => {
+const addManyProductsInCart = async (cid, products, user) => {
+    const product = products.findIndex(product => product.owner === user.email);
+    
+    if(product === -1) {
+        throw new SameOwner("No se puede agregar al carrito tus propios productos");
+    }
+    
     const result = await cartsRepository.addManyProductsInCart(cid, products);
     return result;
 }

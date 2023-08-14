@@ -2,7 +2,6 @@ import { usersRepository, cartsRepository } from "../repositories/index.js";
 import { createHash, isValidPassword, generateToken } from "../utils/utils.js";
 import config from "../config/config.js";
 import { IncorrectCredentials, UserNotFound, UserAlreadyExists } from "../utils/custom-exceptions.js";
-import transporter from "../config/nodemailer.config.js";
 
 const getUser = async (email) => {
     const user = await usersRepository.getUser(email);
@@ -71,10 +70,25 @@ const register = async (data) => {
     return result;
 }
 
+const changeRole = async (user) => {
+    const email = user.email;
+    
+    if(user.role === "user") {
+        user.role = "premium";
+    } else {
+        user.role = "user";
+    }
+    
+    await updateUser(email, user);
+    const accessToken = generateToken(user);
+    return accessToken;
+}
+
 export {
     getUser,
     createUser,
     updateUser,
     login,
-    register
+    register, 
+    changeRole
 }

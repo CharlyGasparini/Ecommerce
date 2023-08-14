@@ -6,9 +6,9 @@ export default class ViewsRouter extends Router {
     init() {
         this.get("/", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.redirectLogin)
 
-        this.get("/products", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.renderProducts)
+        this.get("/products", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderProducts)
         
-        this.get("/carts/:cid", ["USER", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.renderCart)
+        this.get("/carts/:cid", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderCart)
         
         this.get("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderLogin)
         
@@ -18,6 +18,6 @@ export default class ViewsRouter extends Router {
         
         this.get("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.renderChangePassword)
 
-        this.get("/chat", ["USER"], passportStrategiesEnum.JWT, controllerModule.renderChat)
+        this.get("/chat", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderChat)
     }
 }

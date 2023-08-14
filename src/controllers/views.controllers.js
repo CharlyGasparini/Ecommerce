@@ -13,7 +13,8 @@ const renderProducts = async (req, res) => {
         res.render("products", {
             products,
             user: new UserDto(req.user),
-            isUser: req.user.role === "user" ? true : false
+            isAdmin: req.user.role === "admin" ? true : false,
+            isPremium: req.user.role === "premium" ? true : false
         })
     } catch (error) {
         res.render("error", {

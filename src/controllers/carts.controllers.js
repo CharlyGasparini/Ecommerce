@@ -1,5 +1,5 @@
 import * as serviceModule from "../services/carts.service.js";
-import { CartNotFound } from "../utils/custom-exceptions.js";
+import { CartNotFound, SameOwner } from "../utils/custom-exceptions.js";
 
 
 const createCart = async (req, res) => {
@@ -36,9 +36,18 @@ const addProductInCart = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const {pid, cid} = req.params; // Traigo los id del carrito y del producto de los parametros del path
-        const result = await serviceModule.addOneProductInCart(cid, pid); // Agrego el producto al carrito
+        const result = await serviceModule.addOneProductInCart(cid, pid, req.user); // Agrego el producto al carrito
         res.sendSuccess(result);
     } catch (error) {
+        if(error instanceof SameOwner) {
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        };
+
         res.sendServerError(error.message); 
     }
 }
@@ -58,9 +67,18 @@ const addManyProductsInCart = async (req, res) => {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const cid = req.params.cid;
         const products = req.body;
-        const result = await serviceModule.addManyProductsInCart(cid, products);
+        const result = await serviceModule.addManyProductsInCart(cid, products, req.user);
         res.sendSuccess(result);
     } catch (error) {
+        if(error instanceof SameOwner) {
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        };
+
         res.sendServerError(error.message);
     }
 }

@@ -1,5 +1,5 @@
 import { productsRepository } from "../repositories/index.js";
-import { ProductNotFound } from "../utils/custom-exceptions.js";
+import { NotOwnProduct, ProductNotFound } from "../utils/custom-exceptions.js";
 
 const getProducts = async () => {
     const products = await productsRepository.getProducts();
@@ -24,7 +24,15 @@ const updateProduct = async (pid, product) => {
     return result;
 }
 
-const deleteProduct = async (pid) => {
+const deleteProduct = async (pid, user) => {
+    if(user.role === "premium") {
+        const product = await getProductById(pid);
+        
+        if(!product.owner === user.email) {
+            throw new NotOwnProduct("No puede borrar un producto creado por otro usuario o el administador");
+        }
+    }
+
     const result = await productsRepository.deleteProduct(pid);
     return result;
 }

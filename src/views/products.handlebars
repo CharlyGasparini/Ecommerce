@@ -7,30 +7,20 @@
         {{/if}}
         <p><strong>Rol:</strong> {{user.role}}</p>
         <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+        <a href="/api/sessions/premium/{{user._id}}">
+            <button class="btn btn-success">
+                {{#if isPremium}}
+                    Volver al plan BASICO
+                {{else}}    
+                    Volverse usuario PREMIUM
+                {{/if}}
+            </button>
+        </a>
     </div>
     <h2 class="display-5">Productos en stock</h2>
-    {{#if isUser}}
+    {{#if isPremium}}
         <a href="/carts/{{user.cart}}" class="btn btn-primary my-3">Ir al carrito</a>
         <a href="/chat" class="btn btn-primary my-3">Ir al chat</a>
-        <div class="row row-cols-4 text-center g-2" id="card-group">
-            {{#each products}}
-                {{#if this.status}}
-                    <div>
-                        <div class="card" style="height:400px;">
-                            <div class="card-body d-flex flex-column justify-content-between" style="position: relative; width:100%;">
-                                <h4 class="card-title">{{this.title}}</h4>
-                                <p>{{this._id}}</p>
-                                <p class="card-text">{{this.category}}</p>
-                                <p class="card-text">{{this.description}}</p>
-                                <p class="card-text fw-bold">${{this.price}}</p>
-                                <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
-                            </div>
-                        </div>
-                    </div>
-                {{/if}}
-            {{/each}}
-        </div>
-        {{else}}
         <h3 class="my-3">Formulario</h3>
         <form id="form" class="my-3">
             <div class="row my-3">
@@ -101,6 +91,118 @@
                 {{/each}}
             </tbody>
         </table>
+        <div class="row row-cols-4 text-center g-2" id="card-group">
+            {{#each products}}
+                {{#if this.status}}
+                    <div>
+                        <div class="card" style="height:400px;">
+                            <div class="card-body d-flex flex-column justify-content-between" style="position: relative; width:100%;">
+                                <h4 class="card-title">{{this.title}}</h4>
+                                <p>{{this._id}}</p>
+                                <p class="card-text">{{this.category}}</p>
+                                <p class="card-text">{{this.description}}</p>
+                                <p class="card-text fw-bold">${{this.price}}</p>
+                                <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}
+            {{/each}}
+        </div>
+    {{else}}
+        {{#if isAdmin}}
+            <h3 class="my-3">Formulario</h3>
+            <form id="form" class="my-3">
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="title">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Price</span>
+                            <input type="number" step="0.01" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="price">
+                        </div>            
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="description">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Code</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="code">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Stock</span>
+                            <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="stock">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Category</span>
+                            <select class="form-select" aria-label="Default select example" name="category">
+                                <option selected>Selecciona la categoría</option>
+                                <option value="consolas">consolas</option>
+                                <option value="juegos">juegos</option>
+                                <option value="accesorios">accesorios</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Cargar</button>
+            </form>
+            <h2 class="my-3">Listado</h2>
+            <table class="table">
+                <thead class="table-primary">
+                    <tr>
+                        <th>_ID</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Code</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    {{#each products}}
+                        <tr>
+                            <td>{{this._id}}</td>
+                            <td>{{this.title}}</td>
+                            <td>{{this.price}}</td>
+                            <td>{{this.category}}</td>
+                            <td>{{this.stock}}</td>
+                            <td>{{this.code}}</td>
+                            <td>
+                                <button type="submit" class="btn btn-danger status" value="{{this._id}}">
+                                    <i class="fa-sharp fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <a href="/carts/{{user.cart}}" class="btn btn-primary my-3">Ir al carrito</a>
+            <a href="/chat" class="btn btn-primary my-3">Ir al chat</a>
+            <div class="row row-cols-4 text-center g-2" id="card-group">
+                {{#each products}}
+                    {{#if this.status}}
+                        <div>
+                            <div class="card" style="height:400px;">
+                                <div class="card-body d-flex flex-column justify-content-between" style="position: relative; width:100%;">
+                                    <h4 class="card-title">{{this.title}}</h4>
+                                    <p>{{this._id}}</p>
+                                    <p class="card-text">{{this.category}}</p>
+                                    <p class="card-text">{{this.description}}</p>
+                                    <p class="card-text fw-bold">${{this.price}}</p>
+                                    <button type="submit" class="btn btn-primary add-btn" value="{{this._id}}">Agregar al carrito</button>
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/each}}
+            </div>
+        {{/if}}
     {{/if}}
 </div>
 

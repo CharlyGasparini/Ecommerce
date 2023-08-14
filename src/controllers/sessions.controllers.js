@@ -7,11 +7,12 @@ import config from "../config/config.js";
 
 const login = async (req, res) => {    
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const {email, password} = req.body;
 
         const accessToken = await usersServiceModule.login(email, password);
         
-        return res.cookie("authToken", accessToken, { maxAge: 1000, httpOnly: true}).sendSuccess("Login exitoso, bienvenido");
+        return res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Login exitoso, bienvenido");
     } catch (error) {
         if(error instanceof UserNotFound){
             return res.sendClientError(
@@ -36,11 +37,13 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
+    req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
     res.clearCookie("authToken").redirect("/login");
 }
 
 const register = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const { first_name, last_name, age, email, password} = req.body;
 
         if(!first_name || !last_name || !age || !email || !password)
@@ -77,11 +80,12 @@ const githubLogin = (req, res) => {
 
 const githubLoginCallback = (req, res) => {
     const accessToken = generateToken(req.user);
-    res.cookie("authToken", accessToken, { maxAge: 1000, httpOnly: true});
+    res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true});
 }
 
 const resetPassword = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const email = req.body.email;
         
         if(!email) {
@@ -104,7 +108,7 @@ const resetPassword = async (req, res) => {
         
         user.role = "pass";
         const accessToken = generateToken(user);
-        res.cookie("passToken", accessToken, { maxAge: 1000, httpOnly: true}).sendSuccess("Email enviado");
+        res.cookie("passToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
     } catch (error) {
         if(error instanceof IncompleteValues){
             return res.sendClientError(
@@ -129,12 +133,14 @@ const resetPassword = async (req, res) => {
 }
 
 const getCurrentUser = (req, res) => {
+    req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
     const result = new UserDto(req.user);
     res.sendSuccess(result);
 }
 
 const changePassword = async (req, res) => {
     try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const newPassword = req.body.password;
         const user = req.user;
         
@@ -161,6 +167,31 @@ const changePassword = async (req, res) => {
     }
 }
 
+const changeRole = async (req, res) => {
+    try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
+        const uid = req.params.uid;
+
+        if(!req.user._id === uid) {
+            throw new UserNotFound("El usuario no coincide");
+        }
+
+        const newToken = await usersServiceModule.changeRole(req.user);
+        res.cookie("authToken", newToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
+    } catch (error) {
+        if(error instanceof UserNotFound){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        };
+
+        res.sendServerError(error.message);
+    }
+}
+
 export {
     login,
     logout,
@@ -169,5 +200,6 @@ export {
     githubLoginCallback,
     resetPassword,
     getCurrentUser,
-    changePassword
+    changePassword, 
+    changeRole
 }

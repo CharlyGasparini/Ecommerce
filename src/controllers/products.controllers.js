@@ -1,5 +1,5 @@
 import * as serviceModule from "../services/products.service.js";
-import { ProductNotFound, IncompleteValues } from "../utils/custom-exceptions.js";
+import { ProductNotFound, IncompleteValues, NotOwnProduct } from "../utils/custom-exceptions.js";
 import { generateProducts } from "../utils/utils.js";
 
 const getProducts = async (req, res) => {
@@ -45,7 +45,9 @@ const createProduct = async (req, res) => {
             product.thumbnails = req.files.map(file => file.path); // Si hay thumbnails los agrego al producto
         }
 
+        product.owner = req.user.role === "admin" ? "admin" : req.user.email;
         product.status = true;
+
         const result = await serviceModule.createProduct(product); // Agrego el producto
         res.sendSuccess(result);
     } catch (error) {
@@ -91,9 +93,18 @@ const deleteProduct = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const pid = req.params.pid; // Traigo el id del producto de los parametros del path
-        const result = await serviceModule.deleteProduct(pid); // Borro el producto
+        const result = await serviceModule.deleteProduct(pid, req.user); // Borro el producto
         res.sendSuccess(result);
     } catch (error) {
+        if(error instanceof NotOwnProduct){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            )
+        };
+
         res.sendServerError(error.message);
     }
 }
