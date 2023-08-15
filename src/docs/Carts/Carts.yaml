@@ -1,0 +1,199 @@
+paths:
+  /api/carts:
+    post:
+      summary: Agrega un carrito a la BDD
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createCart"
+      responses:
+        "200":
+          description: El carrito se agregó satisfactoriamente a la BDD
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito a partir de su cid en la BDD
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El carrito fue obtenido satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "400":
+          description: El producto con id indicado no se encontró
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+    delete:
+      summary: Elimina todos los productos de un carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El carrito fue vaciado satisfactoriamente
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+  /api/carts/{cid}/purchase:
+    get:
+      summary: Ejecuta la compra del carrito y devuelve el ticket de compra
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: La compra se ejecutó con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Ticket"
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto a un carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue agregado al carrito satisfactoriamente
+        "400":
+          description: El producto no puede agregarse porque pertenece al usuario
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+    delete:
+      summary: Elimina un producto de un carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue agregado al carrito satisfactoriamente
+        "400":
+          description: El producto no puede agregarse porque pertenece al usuario
+        "500":
+          description: Error interno del servidor, usualmente generado por una query defectuosa o fallo en la conexión a la BDD
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongodb
+        products:
+          type: Array
+          description: Los productos que están dentro del carrito
+      example:
+        _id: ObjectId("fgrer887136cwq874gr8e641vf5148gr6e")
+        products: [
+          {
+            product: {
+              _id: ObjectId("jigreopkoefwniogreuoihr")
+            },
+            quantity: 2
+          },
+          {
+            product: {
+              _id: ObjectId("5465fews64grwegr86456r")
+            },
+            quantity: 1
+          }
+        ]
+    Ticket:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongodb
+        code:
+          type: String
+          description: Código alfanumérico único de identificación de la compra
+        purchase_datetime:
+          type: String
+          description: Fecha de realización de la operación
+        amount:
+          type: Number
+          description: Importe total de la compra
+        purchaser:
+          type: String
+          description: email del comprador
+      example:
+        _id: ObjectId("fd4s564f8d4s51d5s64g8df4sg68fsd4")
+        code: bbcaff23-8014-47bc-abee-9ec7555ddc27
+        purchase_datetime: 2023-08-06T00:24:37.257Z
+        amount: 156
+        purchaser: crg@gmail.com
+  requestBodies:
+    createCart:
+      type: object
+      properties:
+        products:
+          type: Array
+          description: Los productos que están dentro del carrito
+      example:
+        products: [
+          {
+            product: {
+              _id: ObjectId("jigreopkoefwniogreuoihr")
+            },
+            quantity: 2
+          },
+          {
+            product: {
+              _id: ObjectId("5465fews64grwegr86456r")
+            },
+            quantity: 1
+          }
+        ]
