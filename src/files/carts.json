@@ -3,80 +3,49 @@
 		"products": [
 			{
 				"product": {
-					"id": 1
-				},
-				"quantity": 6
-			},
-			{
-				"product": {
-					"id": 7
-				},
-				"quantity": 4
-			},
-			{
-				"product": {
-					"id": 4
-				},
-				"quantity": 1
-			}
-		],
-		"id": 1
-	},
-	{
-		"products": [
-			{
-				"product": {
-					"id": 7
-				},
-				"quantity": 10
-			},
-			{
-				"product": {
-					"id": 5
-				},
-				"quantity": 1
-			}
-		],
-		"id": 2
-	},
-	{
-		"products": [
-			{
-				"product": {
-					"id": 2
+					"title": "DualShock 4 Controller",
+					"description": "Un controlador inalámbrico para PlayStation 4 con funciones innovadoras.",
+					"price": 59.99,
+					"code": "JKL012",
+					"stock": 15,
+					"category": "accesorios",
+					"status": true,
+					"thumbnails": [
+						"https://arsonyb2c.vtexassets.com/arquivos/ids/292249/dualshockblack1.jpg?v=637105416256400000"
+					],
+					"_id": "12b383ae-23e7-49b1-ac05-3363ed66ec2c"
 				},
 				"quantity": 1
 			},
 			{
 				"product": {
-					"id": 9
+					"title": "The Legend of Zelda: Breath of the Wild",
+					"description": "Explora un vasto mundo abierto y descubre los secretos de Hyrule.",
+					"price": 59.99,
+					"code": "ABC123",
+					"stock": 10,
+					"category": "juegos",
+					"status": true,
+					"thumbnails": [
+						"https://sm.ign.com/ign_es/screenshot/default/caratulaalemana_1dhc.jpg"
+					],
+					"_id": "0dd00161-0116-4759-ae9e-399fa26681cd"
 				},
-				"quantity": 20
+				"quantity": 1
 			}
 		],
-		"id": 3
+		"_id": "ff51004d-1c0c-46e7-b562-db8013d1395a"
 	},
 	{
-		"products": [
-			{
-				"product": {
-					"id": 1
-				},
-				"quantity": 4
-			},
-			{
-				"product": {
-					"id": 3
-				},
-				"quantity": 5
-			},
-			{
-				"product": {
-					"id": 5
-				},
-				"quantity": 10
-			}
-		],
-		"id": 4
+		"products": [],
+		"_id": "62ac76b2-c274-46fa-beac-4e59b92efba8"
+	},
+	{
+		"products": [],
+		"_id": "5f05e666-7f3a-469d-bfd5-bdfb0ea90dd0"
+	},
+	{
+		"products": [],
+		"_id": "29f278f2-0787-4998-a26e-6266fa3d9be9"
 	}
 ]

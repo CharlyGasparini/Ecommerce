@@ -1,19 +1,23 @@
-import { Router } from "express";
-import ProductManager from "../managers/ProductManager.js";
+import Router from "./router.js";
+import { passportStrategiesEnum } from "../config/enums.js";
+import * as controllerModule from "../controllers/views.controllers.js";
 
-const router = Router();
+export default class ViewsRouter extends Router {
+    init() {
+        this.get("/", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.redirectLogin)
 
-router.get("/", async (req, res) => {
-    res.render("index", {
-        title: "Planilla de productos",
-        products: await new ProductManager("./src/files/products.json").getProducts()
-    });
-});
+        this.get("/products", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderProducts)
+        
+        this.get("/carts/:cid", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderCart)
+        
+        this.get("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderLogin)
+        
+        this.get("/register", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderRegister)
+        
+        this.get("/reset", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.renderReset)
+        
+        this.get("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.renderChangePassword)
 
-router.get("/realtimeproducts", async (req, res) => {
-    res.render("realTimeProducts", {
-        title: "Planilla de productos (tiempo real)"
-    })
-})
-
-export default router;
+        this.get("/chat", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderChat)
+    }
+}

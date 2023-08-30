@@ -1,35 +1,24 @@
-import { Router } from "express";
-import CartManager from "../managers/CartManager.js";
+import Router from "./router.js";
+import { passportStrategiesEnum } from "../config/enums.js";
+import * as controllerModule from "../controllers/carts.controllers.js";
 
-const router = Router();
-const cartManager = new CartManager("./src/files/carts.json");
-
-router.post("/", async (req, res) => {
-    const cart = req.body; // Traigo el carrito a agregar desde el body
-    await cartManager.addCart(cart); // Agrego el carrito
-    res.send({status: "success", message: "El carrito se agregó correctamente"});
-})
-
-router.get("/:cid", async (req, res) => {
-    const cid = Number(req.params.cid); // Traigo el id del carrito desde los parametros del path
-    const cart = await cartManager.getCartById(cid); // Busco el carrito
-    if(!cart){
-        res.status(404).send({status: "error", message: "Error, el carrito no existe"});
-    } else {
-        const products = cart.products; // Muestro los productos del carrito
-        res.send({status: "success", products});
+export default class CartsRouter extends Router {
+    init() {
+        // Agrega un carrito a la DB
+        this.post("/", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.createCart)
+        // Busca un carrito en la DB por su id
+        this.get("/:cid", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.getCartById)
+        // Agrega un producto a un carrito
+        this.post("/:cid/products/:pid", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.addProductInCart)
+        // Elimina un producto a un carrito
+        this.delete("/:cid/products/:pid", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.deleteProductInCart)
+        // Agrega un arreglo de productos a un carrito
+        this.put("/:cid", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.addManyProductsInCart)
+        // Agrega una cantidad determinada de ejemplares de un producto a un carrito
+        this.put("/:cid/products/:pid", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.updateProductQuantity)
+        // Vacia el carrito
+        this.delete("/:cid", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.emptyCart)
+        // Realiza la compra
+        this.get("/:cid/purchase", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.makePurchase)
     }
-})
-
-router.post("/:cid/product/:pid", async (req, res) => {
-    const cid = Number(req.params.cid); // Traigo los id del carrito y del producto de los parametros del path
-    const pid = Number(req.params.pid);
-    const result = await cartManager.addProductInCart(cid, pid); // Agrego el producto al carrito
-    if(result === true){
-        res.send({status: "success", message: "El producto se agregó correctamente al carrito"});
-    } else {
-        res.status(404).send({status: "error", message: result});
-    }
-})
-
-export default router;
+}

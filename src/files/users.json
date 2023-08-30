@@ -1,0 +1,12 @@
+[
+	{
+		"first_name": "Juan Pablo",
+		"last_name": "Perez",
+		"email": "jp-perez@gmail.com",
+		"age": 28,
+		"cart": "29f278f2-0787-4998-a26e-6266fa3d9be9",
+		"password": "$2b$10$de9f0mRT.iRS0CHISAaYoOs0AxGREVapwGWbeJnFdUM4WQql340Ba",
+		"role": "user",
+		"_id": "6a7f8628-a893-421f-93b1-e410e081cfeb"
+	}
+]

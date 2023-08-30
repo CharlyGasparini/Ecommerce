@@ -1,0 +1,19 @@
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
+    <div class="w-25 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
+        <form id="form-restore">
+            <h1 class="display-6 text-center">Restaurar contraseña</h1>
+            <p>Ingrese su email, se le enviará un correo de confirmación para restaurar su contraseña</p>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Ingrese su email" autocomplete="email">
+            </div>
+            <div class="mb-3 d-flex justify-content-between align-item-center">
+                <button type="submit" class="btn btn-primary">Enviar email</button>
+                <a href="/login" class="my-auto" style="text-decoration: none;">Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/reset.js"></script>
+<script src="/js/hasEmptyValues.js"></script>

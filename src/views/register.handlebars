@@ -1,0 +1,32 @@
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
+    <form id="register-form" class="w-50 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
+        <h1 class="display-6 text-center">Formulario de registro</h1>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre/s</label>
+            <input type="text" name="first_name" id="name" class="form-control" placeholder="Ingrese su nombre/s">
+        </div>
+        <div class="mb-3">
+            <label for="last-name" class="form-label">Apellido/s</label>
+            <input type="text" name="last_name" id="last-name" class="form-control" placeholder="Ingrese su apellido/s">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Ingrese su email">
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">Edad</label>
+            <input type="number" name="age" id="age" class="form-control" placeholder="Ingrese su edad" min="0" max="999">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese su contraseña">
+        </div>
+        <div class="mb-3 d-flex justify-content-between align-item-center">
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+            <a href="/login" class="my-auto" style="text-decoration: none;">Login</a>
+        </div>
+    </form>
+</div>
+
+<script src="/js/register.js"></script>
+<script src="/js/hasEmptyValues.js"></script>

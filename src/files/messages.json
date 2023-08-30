@@ -1,0 +1,42 @@
+[
+	{
+		"user": "crgasparini32@gmail.com",
+		"message": "hola",
+		"_id": "0c6fa7fa-ac15-4b4c-8c6a-ca4efeb02a0b"
+	},
+	{
+		"user": "jp-perez@gmail.com",
+		"message": "como te va?",
+		"_id": "07a3cdb3-3fb6-47d7-9b61-8db44347efb2"
+	},
+	{
+		"user": "crgasparini32@gmail.com",
+		"message": "todo bien y vos?",
+		"_id": "ed3bbfb4-7109-4295-8b8a-2ecd4592cb57"
+	},
+	{
+		"user": "jp-perez@gmail.com",
+		"message": "bien, aca, comprando unas cosas",
+		"_id": "ae185151-50ff-44d7-b5d2-306063a23f3c"
+	},
+	{
+		"user": "crgasparini32@gmail.com",
+		"message": "el otro dia te vi",
+		"_id": "d3139ff4-e048-4009-8efe-cd34a1b31350"
+	},
+	{
+		"user": "jp-perez@gmail.com",
+		"message": "a si? donde fue?",
+		"_id": "55599b5b-86f0-4272-80bb-381f1bbe1082"
+	},
+	{
+		"user": "crgasparini32@gmail.com",
+		"message": "no me acuerdo bien",
+		"_id": "4f33c070-68ab-4e2a-88fa-6f19a6ee1f0c"
+	},
+	{
+		"user": "jp-perez@gmail.com",
+		"message": "hola",
+		"_id": "dda33d3e-6c78-4c00-809e-d3afffc95d85"
+	}
+]
