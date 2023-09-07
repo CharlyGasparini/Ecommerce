@@ -19,6 +19,7 @@ const renderProducts = async (req, res) => {
             isPremium: req.user.role === "premium" ? true : false
         })
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.render("error", {
             title: "Error",
             message: error
@@ -53,6 +54,7 @@ const renderCart = async (req, res) => {
             user: req.user
         })
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.render("error", {
             title: "Error",
             message: error
