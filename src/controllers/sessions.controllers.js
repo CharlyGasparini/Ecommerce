@@ -15,6 +15,7 @@ const login = async (req, res) => {
         return res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Login exitoso, bienvenido");
     } catch (error) {
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -24,6 +25,7 @@ const login = async (req, res) => {
         }
 
         if(error instanceof IncorrectCredentials){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -32,6 +34,7 @@ const login = async (req, res) => {
             );
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error);
     }
 }
@@ -53,6 +56,7 @@ const register = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof UserAlreadyExists){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -62,6 +66,7 @@ const register = async (req, res) => {
         }
 
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -70,6 +75,7 @@ const register = async (req, res) => {
             )
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -113,6 +119,7 @@ const resetPassword = async (req, res) => {
         res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
     } catch (error) {
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -122,6 +129,7 @@ const resetPassword = async (req, res) => {
         }
 
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -130,6 +138,7 @@ const resetPassword = async (req, res) => {
             );
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -157,6 +166,7 @@ const changePassword = async (req, res) => {
         res.clearCookie("passToken").sendSuccess("Contraseña restaurada");
     } catch (error) {
         if(error instanceof SamePassword){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -165,6 +175,7 @@ const changePassword = async (req, res) => {
             )
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -182,6 +193,7 @@ const changeRole = async (req, res) => {
         res.cookie("authToken", newToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
     } catch (error) {
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -190,6 +202,7 @@ const changeRole = async (req, res) => {
             )
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }

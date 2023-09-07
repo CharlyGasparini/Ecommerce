@@ -9,6 +9,7 @@ const createCart = async (req, res) => {
         const result = await serviceModule.createCart(cart); // Agrego el carrito
         res.sendSuccess(result);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -21,6 +22,7 @@ const getCartById = async (req, res) => {
         res.sendSuccess(cart);
     } catch (error) {
         if(error instanceof CartNotFound) {
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -28,6 +30,8 @@ const getCartById = async (req, res) => {
                 }
             );
         }
+        
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);   
     }
 }
@@ -40,6 +44,7 @@ const addProductInCart = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof SameOwner) {
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -48,6 +53,7 @@ const addProductInCart = async (req, res) => {
             );
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message); 
     }
 }
@@ -58,6 +64,7 @@ const deleteProductInCart = async (req, res) => {
         const result = await serviceModule.deleteProductInCart(cid, pid);
         res.sendSuccess(result);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -71,6 +78,7 @@ const addManyProductsInCart = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof SameOwner) {
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -79,6 +87,7 @@ const addManyProductsInCart = async (req, res) => {
             );
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -91,6 +100,7 @@ const updateProductQuantity = async (req, res) => {
         const result = await serviceModule.updateProductQuantity(cid, pid, quantity);
         res.sendSuccess(result);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -102,6 +112,7 @@ const emptyCart = async (req, res) =>{
         const result = await serviceModule.emptyCart(cid);
         res.sendSuccess(result);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -115,6 +126,7 @@ const makePurchase = async (req, res) => {
         res.sendSuccess(result)
     } catch (error) {
         if(error instanceof NotEnoughStock){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -123,6 +135,7 @@ const makePurchase = async (req, res) => {
             );
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
