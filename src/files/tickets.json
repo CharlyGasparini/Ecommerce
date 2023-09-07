@@ -1,30 +1,49 @@
 [
 	{
-		"code": "1577b64d-8449-4e73-b279-a76193458f35",
-		"purchase_datetime": "2023-07-17T14:31:40.446Z",
+		"code": "29ffa430-d195-4104-811a-ed7a3c2fa990",
+		"purchase_datetime": "2023-09-07T04:16:46.099Z",
+		"items": [
+			{
+				"title": "The Legend of Zelda: Breath of the Wild",
+				"quantity": 1
+			},
+			{
+				"title": "PlayStation 5",
+				"quantity": 2
+			}
+		],
+		"amount": 1059.97,
+		"purchaser": "crgasparini32@gmail.com",
+		"_id": "aa90f2c7-ba32-4f31-8f27-53ebb1c77179"
+	},
+	{
+		"code": "1c1acd9f-032d-476f-a61d-f17337fa9d8e",
+		"purchase_datetime": "2023-09-07T04:19:38.382Z",
+		"items": [
+			{
+				"title": "Super Mario Odyssey",
+				"quantity": 2
+			},
+			{
+				"title": "FIFA 22",
+				"quantity": 1
+			}
+		],
+		"amount": 159.97,
+		"purchaser": "crgasparini32@gmail.com",
+		"_id": "aa62ff5a-65b0-437c-982e-8286ab3bb95f"
+	},
+	{
+		"code": "a3e9102f-a395-4930-8514-d1d713abb7b4",
+		"purchase_datetime": "2023-09-07T04:20:36.588Z",
+		"items": [
+			{
+				"title": "DualShock 4 Controller",
+				"quantity": 1
+			}
+		],
 		"amount": 59.99,
 		"purchaser": "crgasparini32@gmail.com",
-		"_id": "ae0349cc-b2db-416a-aa2d-ff8190a9d8c5"
-	},
-	{
-		"code": "fc353949-ace2-4ac3-8218-d8b6a65bb314",
-		"purchase_datetime": "2023-07-17T14:31:41.085Z",
-		"amount": 0,
-		"purchaser": "crgasparini32@gmail.com",
-		"_id": "1e3a7212-0bb1-40a4-8d37-706a303894d3"
-	},
-	{
-		"code": "bbcaff23-8014-47bc-abee-9ec7555ddc27",
-		"purchase_datetime": "2023-08-06T00:24:37.257Z",
-		"amount": 59.99,
-		"purchaser": "jp-perez@gmail.com",
-		"_id": "2fb56e1b-1897-455c-9eae-c2a3b9babb01"
-	},
-	{
-		"code": "cda8b95a-b066-4500-a8da-3269585fa8c3",
-		"purchase_datetime": "2023-08-06T00:24:38.131Z",
-		"amount": 0,
-		"purchaser": "jp-perez@gmail.com",
-		"_id": "c0b67d2d-32e4-4741-9872-7a9639c31ae8"
+		"_id": "63b9c546-00a4-4b7f-9085-b375b7eafd70"
 	}
 ]

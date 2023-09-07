@@ -1,7 +1,7 @@
 import transporter from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { v4 as uuidv4 } from 'uuid';
-import { CartNotFound, SameOwner } from "../utils/custom-exceptions.js";
+import { CartNotFound, SameOwner, NotEnoughStock } from "../utils/custom-exceptions.js";
 
 const getCarts = async () => {
     const carts = await cartsRepository.getCarts();
@@ -62,6 +62,7 @@ const makePurchase = async (cid, purchaser) => {
     const cart = await cartsRepository.getCartById(cid);
     const cartProducts = cart.products;
     let amount = 0;
+    let itemList = "";
     const notEnoughStock = [];
     const enoughStock = [];
 
@@ -76,46 +77,66 @@ const makePurchase = async (cid, purchaser) => {
     })
 
     if(notEnoughStock.length > 0){
-        const result = [];
         notEnoughStock.forEach(async prod => {
             const pid = prod.product._id;
             const stock = prod.product.stock;
-            result.push(prod.product.title);
             await cartsRepository.updateProductQuantity(cid, pid, stock);
         })
-        return result;
+        throw new NotEnoughStock("No hay stock suficiente de algunos productos, se modificarán las cantidades en el carrito");
     }
 
-    enoughStock.forEach(async prod => {
-        const pid = prod.product._id;
+    enoughStock.forEach(prod => {
         const price = prod.product.price;
         const quantity = prod.quantity;
         amount += (price * quantity);
-        prod.product.stock -= quantity;
 
-        if(prod.product.stock <= 0 ){
-            prod.product.stock = 0;
-            prod.product.status = false;
+        itemList += `<p>${prod.product.title} x ${quantity}</p>`;
+    })
+
+    const items = enoughStock.map(prod => {
+        const item = {
+            title: prod.product.title,
+            quantity: prod.quantity
         }
-
-        await productsRepository.updateProduct(pid, prod.product);
-        await cartsRepository.deleteProductInCart(cid, pid);
+        return item;
     })
 
     const ticket = {
         code: uuidv4(),
         purchase_datetime: new Date(),
+        items,
         amount: parseFloat(amount.toFixed(2)),
         purchaser
     }
-    const result = await ticketsRepository.createTicket(ticket);
+
     // Envio de mail
     await transporter.sendMail({
         from: "coderHouse 39760",
         to: purchaser,
         subject: "Confirmación de compra",
-        html: `<div class="col"><h1>Muchas gracias por su compra.</h1><p>Se ha confirmado su compra por un importe de $${amount}</p></div>`
+        html: 
+            `<div class="col">
+                <h1>Muchas gracias por su compra.</h1>
+                <h3>Items</h3>
+                ${itemList}
+                <p>Se ha confirmado su compra por un importe de $${amount}</p>
+            </div>`
     })
+
+    const result = await ticketsRepository.createTicket(ticket);
+
+    enoughStock.forEach(async prod => {
+        const pid = prod.product._id;
+        const quantity = prod.quantity;
+        prod.product.stock -= quantity;
+
+        if(prod.product.stock === 0 ) 
+            prod.product.status = false
+
+        await productsRepository.updateProduct(pid, prod.product);
+    })
+
+    await cartsRepository.emptyCart(cid);
     return result;
 }
 

@@ -17,7 +17,7 @@
 		"description": "La última consola de Sony con gráficos de alta calidad y un rendimiento excepcional.",
 		"price": 499.99,
 		"code": "DEF456",
-		"stock": 3,
+		"stock": 1,
 		"category": "consolas",
 		"status": true,
 		"thumbnails": [
@@ -30,7 +30,7 @@
 		"description": "La consola más potente de Xbox que ofrece una experiencia de juego inmersiva.",
 		"price": 549.99,
 		"code": "GHI789",
-		"stock": 6,
+		"stock": 5,
 		"category": "consolas",
 		"status": true,
 		"thumbnails": [
@@ -43,7 +43,7 @@
 		"description": "Un controlador inalámbrico para PlayStation 4 con funciones innovadoras.",
 		"price": 59.99,
 		"code": "JKL012",
-		"stock": 15,
+		"stock": 13,
 		"category": "accesorios",
 		"status": true,
 		"thumbnails": [
@@ -69,9 +69,9 @@
 		"description": "Una consola híbrida que permite jugar tanto en la televisión como en modo portátil.",
 		"price": 299.99,
 		"code": "PQR678",
-		"stock": 1,
+		"stock": 0,
 		"category": "consolas",
-		"status": true,
+		"status": false,
 		"thumbnails": [
 			"https://http2.mlstatic.com/D_NQ_NP_803086-MLA47920649105_102021-O.webp"
 		],
@@ -95,7 +95,7 @@
 		"description": "Disfruta del popular simulador de fútbol con mejoras gráficas y nuevas características.",
 		"price": 59.99,
 		"code": "VWX234",
-		"stock": 6,
+		"stock": 3,
 		"category": "juegos",
 		"status": true,
 		"thumbnails": [
