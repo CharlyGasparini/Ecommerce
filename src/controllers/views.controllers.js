@@ -1,6 +1,7 @@
 import * as productsServiceModule from "../services/products.service.js";
 import * as cartsServiceModule from "../services/carts.service.js";
 import UserDto from "../dao/DTOs/user.dto.js";
+import { ticketsRepository } from "../repositories/index.js";
 
 const redirectLogin = (req, res) => {
     if(req.cookies["authToken"]) return res.redirect("/products");
@@ -11,6 +12,7 @@ const renderProducts = async (req, res) => {
     try {
         const products = await productsServiceModule.getProducts();
         res.render("products", {
+            title: "Productos en stock",
             products,
             user: new UserDto(req.user),
             isAdmin: req.user.role === "admin" ? true : false,
@@ -83,6 +85,16 @@ const renderChangePassword = (req, res) => {
     })
 }
 
+const renderTickets = async (req, res) => {
+    const user = new UserDto(req.user);
+    const tickets = await ticketsRepository.getByPurchaser(user.email);
+    res.render("tickets", {
+        title: "Historial de compras",
+        user,
+        tickets
+    })
+}
+
 export {
     redirectLogin,
     renderProducts,
@@ -91,5 +103,6 @@ export {
     renderRegister,
     renderReset,
     renderChat,
-    renderChangePassword
+    renderChangePassword,
+    renderTickets
 }

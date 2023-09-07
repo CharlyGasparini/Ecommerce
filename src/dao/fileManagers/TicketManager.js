@@ -18,6 +18,12 @@ export default class dbTicketManager {
         }
     }
 
+    getByPurchaser = async (purchaser) => {
+        const tickets = await this.#getAll();
+        const purchaserTickets = tickets.filter(ticket => ticket.purchaser === purchaser);
+        return purchaserTickets.reverse();
+    }
+
     create = async (ticket) => {
         const tickets = await this.#getAll();
         ticket._id = uuidv4();

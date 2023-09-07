@@ -19,5 +19,7 @@ export default class ViewsRouter extends Router {
         this.get("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.renderChangePassword)
 
         this.get("/chat", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderChat)
+        
+        this.get("/tickets", ["USER", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.renderTickets)
     }
 }
