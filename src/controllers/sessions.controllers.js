@@ -98,6 +98,8 @@ const resetPassword = async (req, res) => {
             throw new UserNotFound("El usuario no existe");
         }
 
+        const userDto = new UserDto(user);
+
         // Envio de mail
         await transporter.sendMail({
             from: "coderHouse 39760",
@@ -106,9 +108,9 @@ const resetPassword = async (req, res) => {
             html: `<div class="col"><h1>Enlace de restauración de contraseña</h1><a href="http://localhost:${config.port}/changePassword">Para restaurar su contraseña ingrese aqui</a></div>`
         })
         
-        user.role = "pass";
-        const accessToken = generateToken(user);
-        res.cookie("passToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
+        userDto.role = "pass";
+        const accessToken = generateToken(userDto);
+        res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
     } catch (error) {
         if(error instanceof IncompleteValues){
             return res.sendClientError(
@@ -142,7 +144,7 @@ const changePassword = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const newPassword = req.body.password;
-        const user = req.user;
+        const user = await usersServiceModule.getUser(req.user.email);
         
         if(isValidPassword(user, newPassword)){
             throw new SamePassword("El password ingresado es el mismo que el ya existente");
