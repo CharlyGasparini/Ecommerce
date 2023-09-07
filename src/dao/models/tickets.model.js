@@ -13,6 +13,10 @@ const ticketSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
+        items: {
+            type: Array,
+            required: true
+        },
         amount: {
             type: Number,
             required: true

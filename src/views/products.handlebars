@@ -21,6 +21,7 @@
     {{#if isPremium}}
         <a href="/carts/{{user.cart}}" class="btn btn-primary my-3">Ir al carrito</a>
         <a href="/chat" class="btn btn-primary my-3">Ir al chat</a>
+        <a href="/purchase" class="btn btn-primary my-3">Historial de compras</a>
         <h3 class="my-3">Formulario</h3>
         <form id="form" class="my-3">
             <div class="row my-3">
@@ -184,6 +185,7 @@
         {{else}}
             <a href="/carts/{{user.cart}}" class="btn btn-primary my-3">Ir al carrito</a>
             <a href="/chat" class="btn btn-primary my-3">Ir al chat</a>
+            <a href="/tickets" class="btn btn-primary my-3">Historial de compras</a>
             <div class="row row-cols-4 text-center g-2" id="card-group">
                 {{#each products}}
                     {{#if this.status}}

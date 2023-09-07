@@ -1,5 +1,5 @@
 import * as serviceModule from "../services/carts.service.js";
-import { CartNotFound, SameOwner } from "../utils/custom-exceptions.js";
+import { CartNotFound, NotEnoughStock, SameOwner } from "../utils/custom-exceptions.js";
 
 
 const createCart = async (req, res) => {
@@ -114,6 +114,15 @@ const makePurchase = async (req, res) => {
         const result = await serviceModule.makePurchase(cid, purchaser);
         res.sendSuccess(result)
     } catch (error) {
+        if(error instanceof NotEnoughStock){
+            return res.sendClientError(
+                {
+                    ...error,
+                    message: error.message
+                }
+            );
+        };
+
         res.sendServerError(error.message);
     }
 }
