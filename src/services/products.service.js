@@ -28,7 +28,7 @@ const deleteProduct = async (pid, user) => {
     if(user.role === "premium") {
         const product = await getProductById(pid);
         
-        if(!product.owner === user.email) {
+        if(product.owner !== user.email) {
             throw new NotOwnProduct("No puede borrar un producto creado por otro usuario o el administador");
         }
     }

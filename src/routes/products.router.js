@@ -15,7 +15,7 @@ export default class ProductsRouter extends Router {
         this.post("/", ["ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, parseToNumber, uploader.array("files"), controllerModule.createProduct)
         // Modifica un producto en la DB
         this.put("/:pid", ["ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.updateProduct)
-        // Modifica el status de un producto de la DB para que ya no se muestre (borrado lógico)
+        // Modifica el status de un producto de la DB para que ya no se muestre
         this.delete("/:pid", ["ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.deleteProduct)
     }
 }

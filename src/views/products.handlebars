@@ -6,16 +6,20 @@
             <p><strong>Edad:</strong> {{user.age}}</p>
         {{/if}}
         <p><strong>Rol:</strong> {{user.role}}</p>
-        <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
-        <a href="/api/sessions/premium/{{user._id}}">
-            <button class="btn btn-success">
-                {{#if isPremium}}
-                    Volver al plan BASICO
-                {{else}}    
-                    Volverse usuario PREMIUM
-                {{/if}}
-            </button>
-        </a>
+        {{#if isAdmin}}
+            <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+            {{else}}
+                <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+                <a href="/api/sessions/premium/{{user._id}}">
+                    <button class="btn btn-success">
+                        {{#if isPremium}}
+                            Volver al plan BASICO
+                        {{else}}    
+                            Volverse usuario PREMIUM
+                        {{/if}}
+                    </button>
+                </a>
+        {{/if}}
     </div>
     <h2 class="display-5">Productos en stock</h2>
     {{#if isPremium}}
