@@ -11,7 +11,6 @@ import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./config/config.js";
-import cors from "cors";
 import compression from "express-compression";
 import { logger, addLogger } from "./utils/logger.js";
 import swaggerJsdoc from "swagger-jsdoc";
@@ -54,7 +53,6 @@ app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__mainDirname}/public`)); // Acceso a archivos estáticos
 app.use(cookieParser());
-app.use(cors());
 app.use(
   compression({
     brotli: { enabled: true, zlib: {} },
