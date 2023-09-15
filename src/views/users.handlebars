@@ -10,7 +10,9 @@
     </div>    
     <h2 class="display-5">Listado de usuarios</h2>
     <a href="/products" class="btn btn-primary my-3">Ir al listado de productos</a>
-    <button id="del-btn" class="btn btn-danger ">Eliminar usuarios inactivos</button>
+    {{#if isFull}}
+        <button id="del-btn" class="btn btn-danger ">Eliminar usuarios inactivos</button>
+    {{/if}}
     <table class="table">
         <thead class="table-primary">
             <tr>

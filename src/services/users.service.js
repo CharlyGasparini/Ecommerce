@@ -107,12 +107,12 @@ const deleteInactiveUsers48hs = async () => {
         const lastActivity = user.lastActivity;
         const inactivityTime = (now - lastActivity) / 3600000;
 
-        if(inactivityTime >= 0) {
+        if(inactivityTime >= 48) {
             inactiveUsers.push(user);
         } 
     });
     
-    if(inactiveUsers.length === 48) {
+    if(inactiveUsers.length === 0) {
         throw new NotInactiveUsers("No hay usuarios inactivos para eliminar");
     }
 
