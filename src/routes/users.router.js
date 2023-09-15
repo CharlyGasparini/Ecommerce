@@ -6,7 +6,9 @@ export default class UsersRouter extends Router {
     init() {
         //Lógica de obtención de usuarios
         this.get("/", ["ADMIN"], passportStrategiesEnum.JWT, controllerModule.getAllUsers)
-        // Lógica de eliminación de usuarios sin actividad
-        this.delete("/", ["ADMIN"], passportStrategiesEnum.JWT, controllerModule.deleteInactiveUsers)
+        // Lógica de registro de la última actividad del usuario
+        this.post("/activity", ["USER", "PREMIUM", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.updateLastActivity)
+        // Lógica de borrado de usuarios sin actividad
+        this.delete("/deleteInactive", ["ADMIN"], passportStrategiesEnum.JWT, controllerModule.deleteInactiveUsers48hs)
     }
 }

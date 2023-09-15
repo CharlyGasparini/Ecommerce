@@ -1,5 +1,6 @@
 import * as productsServiceModule from "../services/products.service.js";
 import * as cartsServiceModule from "../services/carts.service.js";
+import * as usersServiceModule from "../services/users.service.js";
 import UserDto from "../dao/DTOs/user.dto.js";
 import { ticketsRepository } from "../repositories/index.js";
 
@@ -51,7 +52,7 @@ const renderCart = async (req, res) => {
             products,
             total,
             isFull: products.length > 0 ? true : false,
-            user: req.user
+            user: new UserDto(req.user)
         })
     } catch (error) {
         req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
@@ -77,7 +78,7 @@ const renderReset = (req, res) => {
 const renderChat = (req, res) => {
     res.render("chat", {
         title: "Chat",
-        user: req.user
+        user: new UserDto(req.user)
     })
 }
 
@@ -97,6 +98,18 @@ const renderTickets = async (req, res) => {
     })
 }
 
+const renderUsers = async (req, res) => {
+    const users = await usersServiceModule.getAllUsers();
+    const usersDTO = users.map(user => {
+        return new UserDto(user);
+    });
+    res.render("users", {
+        title: "Listado de usuarios",
+        user: new UserDto(req.user),
+        users: usersDTO
+    })
+}
+
 export {
     redirectLogin,
     renderProducts,
@@ -106,5 +119,6 @@ export {
     renderReset,
     renderChat,
     renderChangePassword,
-    renderTickets
+    renderTickets,
+    renderUsers
 }
