@@ -80,15 +80,6 @@ const register = async (req, res) => {
     }
 }
 
-const githubLogin = (req, res) => {
-    res.sendSuccess("Usuario registrado");
-}
-
-const githubLoginCallback = (req, res) => {
-    const accessToken = generateToken(req.user);
-    res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true});
-}
-
 const resetPassword = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
@@ -184,8 +175,6 @@ export {
     login,
     logout,
     register,
-    githubLogin,
-    githubLoginCallback,
     resetPassword,
     getCurrentUser,
     changePassword

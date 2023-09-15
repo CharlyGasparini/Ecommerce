@@ -5,12 +5,8 @@ import { parseToNumber } from "../utils/utils.js";
 
 export default class SessionsRouter extends Router{
     init() {
-        // Lógica de github strategy
-        this.get("/github", ["PUBLIC"], passportStrategiesEnum.GITHUB, controllerModule.githubLogin)
         // Lógica de login
         this.post("/login", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.login)
-        // Lógica de github strategy / callback
-        this.get("/github-callback", ["USER", "PREMIUM"], passportStrategiesEnum.GITHUB, controllerModule.githubLoginCallback)
         // Lógica de logout
         this.get("/logout", ["USER", "ADMIN", "PREMIUM"], passportStrategiesEnum.JWT, controllerModule.logout)
         // Lógica que retorna contenido del token
