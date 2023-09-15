@@ -1,0 +1,41 @@
+<div class="container my-5">
+    <div class="mb-3 p-4 bg-primary bg-gradient text-dark bg-opacity-25 rounded-5">
+        <h1 class="display-4">Bienvenido {{user.name}}</h1>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        {{#if user.age}}
+            <p><strong>Edad:</strong> {{user.age}}</p>
+        {{/if}}
+        <p><strong>Rol:</strong> {{user.role}}</p>
+        <a href="/api/sessions/logout"><button class="btn btn-danger">Logout</button></a>
+    </div>    
+    <h2 class="display-5">Listado de usuarios</h2>
+    <a href="/products" class="btn btn-primary my-3">Ir al listado de productos</a>
+    {{#if isFull}}
+        <button id="del-btn" class="btn btn-danger ">Eliminar usuarios inactivos</button>
+    {{/if}}
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>_ID</th>
+                <th>Name</th>
+                <th>Age</th> 
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            {{#each users}}
+                <tr>
+                    <td>{{this._id}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.age}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.role}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script src="/js/getUser.js"></script>
+<script src="/js/users.js"></script>

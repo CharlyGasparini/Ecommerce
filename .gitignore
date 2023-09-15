@@ -2,4 +2,4 @@
 package-lock.json
 .env.production
 .env.development
-/views
+Dockerfile

@@ -15,6 +15,7 @@ const login = async (req, res) => {
         return res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Login exitoso, bienvenido");
     } catch (error) {
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -24,6 +25,7 @@ const login = async (req, res) => {
         }
 
         if(error instanceof IncorrectCredentials){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -32,6 +34,7 @@ const login = async (req, res) => {
             );
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error);
     }
 }
@@ -53,6 +56,7 @@ const register = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof UserAlreadyExists){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -62,6 +66,7 @@ const register = async (req, res) => {
         }
 
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -70,6 +75,7 @@ const register = async (req, res) => {
             )
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -98,6 +104,8 @@ const resetPassword = async (req, res) => {
             throw new UserNotFound("El usuario no existe");
         }
 
+        const userDto = new UserDto(user);
+
         // Envio de mail
         await transporter.sendMail({
             from: "coderHouse 39760",
@@ -106,11 +114,12 @@ const resetPassword = async (req, res) => {
             html: `<div class="col"><h1>Enlace de restauración de contraseña</h1><a href="http://localhost:${config.port}/changePassword">Para restaurar su contraseña ingrese aqui</a></div>`
         })
         
-        user.role = "pass";
-        const accessToken = generateToken(user);
-        res.cookie("passToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
+        userDto.role = "pass";
+        const accessToken = generateToken(userDto);
+        res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true}).sendSuccess("Email enviado");
     } catch (error) {
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -120,6 +129,7 @@ const resetPassword = async (req, res) => {
         }
 
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -128,6 +138,7 @@ const resetPassword = async (req, res) => {
             );
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -142,7 +153,7 @@ const changePassword = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
         const newPassword = req.body.password;
-        const user = req.user;
+        const user = await usersServiceModule.getUser(req.user.email);
         
         if(isValidPassword(user, newPassword)){
             throw new SamePassword("El password ingresado es el mismo que el ya existente");
@@ -155,6 +166,7 @@ const changePassword = async (req, res) => {
         res.clearCookie("passToken").sendSuccess("Contraseña restaurada");
     } catch (error) {
         if(error instanceof SamePassword){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -163,6 +175,7 @@ const changePassword = async (req, res) => {
             )
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -180,6 +193,7 @@ const changeRole = async (req, res) => {
         res.cookie("authToken", newToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
     } catch (error) {
         if(error instanceof UserNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -188,6 +202,7 @@ const changeRole = async (req, res) => {
             )
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }

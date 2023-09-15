@@ -8,6 +8,7 @@ const getProducts = async (req, res) => {
         const products = await serviceModule.getProducts(); // Traigo el array de productos
         res.sendSuccess(products);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -20,6 +21,7 @@ const getProductById = async (req, res) => {
         res.sendSuccess(product);
     } catch (error) {
         if(error instanceof ProductNotFound){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -27,6 +29,7 @@ const getProductById = async (req, res) => {
                 }
             );
         }
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -52,6 +55,7 @@ const createProduct = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -60,6 +64,7 @@ const createProduct = async (req, res) => {
             )
         }
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -77,6 +82,7 @@ const updateProduct = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof IncompleteValues){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -85,6 +91,7 @@ const updateProduct = async (req, res) => {
             )
         }
         
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -97,6 +104,7 @@ const deleteProduct = async (req, res) => {
         res.sendSuccess(result);
     } catch (error) {
         if(error instanceof NotOwnProduct){
+            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
             return res.sendClientError(
                 {
                     ...error,
@@ -105,6 +113,7 @@ const deleteProduct = async (req, res) => {
             )
         };
 
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }
@@ -118,6 +127,7 @@ const getMockingProducts = async (req, res) => {
         }
         res.sendSuccess(products);
     } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
         res.sendServerError(error.message);
     }
 }

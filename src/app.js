@@ -7,11 +7,11 @@ import CartsRouter from "./routes/carts.router.js";
 import ViewsRouter from "./routes/views.router.js";
 import SessionsRouter from "./routes/sessions.router.js";
 import LogsRouter from "./routes/logs.router.js";
+import UsersRouter from "./routes/users.router.js";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import config from "./config/config.js";
-import cors from "cors";
 import compression from "express-compression";
 import { logger, addLogger } from "./utils/logger.js";
 import swaggerJsdoc from "swagger-jsdoc";
@@ -27,6 +27,7 @@ const cartsRouter = new CartsRouter();
 const productsRouter = new ProductsRouter();
 const viewsRouter = new ViewsRouter();
 const logsRouter = new LogsRouter();
+const usersRouter = new UsersRouter();
 
 // Handshake entre servidor y socket del cliente
 io.on("connection", async (socket) => {
@@ -54,7 +55,6 @@ app.use(express.json()); // Soporte para .json
 app.use(express.urlencoded({ extended: true })); // Soporte para params varios en las rutas
 app.use(express.static(`${__mainDirname}/public`)); // Acceso a archivos estáticos
 app.use(cookieParser());
-app.use(cors());
 app.use(
   compression({
     brotli: { enabled: true, zlib: {} },
@@ -91,3 +91,5 @@ app.use("/api/products", productsRouter.getRouter());
 app.use("/api/carts", cartsRouter.getRouter());
 app.use("/api/sessions", sessionsRouter.getRouter());
 app.use("/api/logs", logsRouter.getRouter());
+app.use("/api/users", usersRouter.getRouter());
+
