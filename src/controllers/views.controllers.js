@@ -106,7 +106,8 @@ const renderUsers = async (req, res) => {
     res.render("users", {
         title: "Listado de usuarios",
         user: new UserDto(req.user),
-        users: usersDTO
+        users: usersDTO,
+        isFull: users.length > 0 ? true : false,
     })
 }
 
