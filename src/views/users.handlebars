@@ -11,7 +11,7 @@
     <h2 class="display-5">Listado de usuarios</h2>
     <a href="/products" class="btn btn-primary my-3">Ir al listado de productos</a>
     {{#if isFull}}
-        <button id="del-btn" class="btn btn-danger ">Eliminar usuarios inactivos</button>
+        <button id="InactDel-btn" class="btn btn-danger ">Eliminar usuarios inactivos</button>
     {{/if}}
     <table class="table">
         <thead class="table-primary">
@@ -21,6 +21,8 @@
                 <th>Age</th> 
                 <th>Email</th>
                 <th>Role</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="tbody">
@@ -31,6 +33,14 @@
                     <td>{{this.age}}</td>
                     <td>{{this.email}}</td>
                     <td>{{this.role}}</td>
+                    <td>
+                        <button class="btn btn-danger del-btn">
+                            <i class="fa-sharp fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-success upgrade-btn"></button>
+                    </td>
                 </tr>
             {{/each}}
         </tbody>

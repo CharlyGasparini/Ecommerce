@@ -2,7 +2,8 @@ const productsEnv = async () => {
     const form = document.getElementById("form");
     const statusBtns = document.getElementsByClassName("status");
     const btns = document.getElementsByClassName("add-btn");
-    
+    const upgradeBtn = document.getElementById("upgrade-btn");
+
     // Evento submit que envia los datos recopilados del form al servidor
     form?.addEventListener("submit", async e => {
         try {
@@ -126,6 +127,21 @@ const productsEnv = async () => {
             }
         })
     }
+
+    upgradeBtn.addEventListener("click", async e => {
+        const user = await getUser();
+        const email = user.email;
+        const request = await fetch(`/api/users/premium`, {
+            method: "POST",
+            body: JSON.stringify({email}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if(request.status === 200) {
+            window.location.replace("/products");
+        }
+    })
 }
 
 productsEnv();

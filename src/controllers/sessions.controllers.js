@@ -80,15 +80,6 @@ const register = async (req, res) => {
     }
 }
 
-const githubLogin = (req, res) => {
-    res.sendSuccess("Usuario registrado");
-}
-
-const githubLoginCallback = (req, res) => {
-    const accessToken = generateToken(req.user);
-    res.cookie("authToken", accessToken, { maxAge: 60*60*1000, httpOnly: true});
-}
-
 const resetPassword = async (req, res) => {
     try {
         req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
@@ -180,41 +171,11 @@ const changePassword = async (req, res) => {
     }
 }
 
-const changeRole = async (req, res) => {
-    try {
-        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
-        const uid = req.params.uid;
-
-        if(!req.user._id === uid) {
-            throw new UserNotFound("El usuario no coincide");
-        }
-
-        const newToken = await usersServiceModule.changeRole(req.user);
-        res.cookie("authToken", newToken, { maxAge: 60*60*1000, httpOnly: true}).redirect("/products");
-    } catch (error) {
-        if(error instanceof UserNotFound){
-            req.logger.error(`${error.name}: ${error.message} - ${new Date().toString()}`);
-            return res.sendClientError(
-                {
-                    ...error,
-                    message: error.message
-                }
-            )
-        };
-
-        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
-        res.sendServerError(error.message);
-    }
-}
-
 export {
     login,
     logout,
     register,
-    githubLogin,
-    githubLoginCallback,
     resetPassword,
     getCurrentUser,
-    changePassword, 
-    changeRole
+    changePassword
 }
