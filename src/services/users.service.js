@@ -99,6 +99,28 @@ const updateLastActivity = async (activity) => {
     return result;
 }
 
+const deleteUser = async (email) => {
+    const user = await usersRepository.getUser(email);
+
+    if(!user) {
+        throw new UserNotFound("El usuario no existe");
+    }
+
+    await transporter.sendMail({
+        from: "coderHouse 39760",
+        to: user.email,
+        subject: "Su usuario ha sido borrado",
+        html: 
+            `<div class="col">
+                <h1>Usuario borrado</h1>
+                <p>El administrador ha borrado su usuario</p>
+            </div>`
+    })
+
+    await cartsRepository.deleteCart(user.cart);
+    await usersRepository.deleteUser(email);
+}
+
 const deleteInactiveUsers48hs = async () => {
     const now = new Date().getTime();
     const users = await usersRepository.getAllUsers();
@@ -143,6 +165,7 @@ export {
     login,
     register, 
     changeRole, 
-    updateLastActivity, 
+    updateLastActivity,
+    deleteUser, 
     deleteInactiveUsers48hs
 }
