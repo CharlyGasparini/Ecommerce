@@ -16,6 +16,7 @@ form.addEventListener("submit", e =>{
         })
         .then(async result => {
             if(result.status === 200){
+                await updateLastActivity();
                 window.location.replace("/products");
             } else{
                 Swal.fire({

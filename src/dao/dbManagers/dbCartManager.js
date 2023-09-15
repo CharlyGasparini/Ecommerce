@@ -69,4 +69,9 @@ export default class dbCartManager {
         )
         return result;
     }
+
+    delete = async (cid) => {
+        const result = await cartsModel.deleteOne({_id: cid});
+        return result;
+    }
 }

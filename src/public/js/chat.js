@@ -6,8 +6,9 @@ const chatEnv = async () => {
 
     socket.emit("authenticated", email);
     
-    chatBox.addEventListener("keyup", e => {
+    chatBox.addEventListener("keyup", async e => {
         if(e.key === "Enter"){
+            await updateLastActivity();
             if(chatBox.value.trim().length > 0){
                 socket.emit("message", {user: email, message: chatBox.value});
                 chatBox.value = "";

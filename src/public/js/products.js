@@ -6,6 +6,7 @@ const productsEnv = async () => {
     // Evento submit que envia los datos recopilados del form al servidor
     form?.addEventListener("submit", async e => {
         try {
+            await updateLastActivity();
             e.preventDefault();
             const data = new FormData(form);
             const isEmpty = hasEmptyValues(data);
@@ -53,6 +54,7 @@ const productsEnv = async () => {
     for (const btn of statusBtns) {
         btn?.addEventListener("click", async e => {
             try {
+                await updateLastActivity();
                 e.preventDefault();
                 const pid = btn.value;
 
@@ -84,6 +86,7 @@ const productsEnv = async () => {
     for (const btn of btns) {
         btn?.addEventListener("click", async e => {
             try {
+                await updateLastActivity();
                 e.preventDefault();
                 const user = await getUser();
                 const pid = btn.value;

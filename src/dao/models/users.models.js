@@ -33,7 +33,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "user",
         enum: ["user", "admin", "premium"]
-    }
+    },
+    lastActivity: {
+        type: Number,
+        default: new Date().getTime(),
+        required: true    }
 });
 
 userSchema.pre("find", function(){
