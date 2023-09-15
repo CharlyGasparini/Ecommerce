@@ -207,6 +207,34 @@ const changeRole = async (req, res) => {
     }
 }
 
+const updateLastActivity = async (req, res) => {
+    try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
+        const {user, time} = req.body
+
+        if(!user || !time)
+            throw new IncompleteValues("Valores incompletos. No puede haber datos sin completar");
+
+        const result = await usersServiceModule.updateLastActivity(req.body);
+        res.sendSuccess(result);
+
+    } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
+        res.sendServerError(error.message);
+    }
+}
+
+const deleteInactiveUsers48hs = async (req, res) => {
+    try {
+        req.logger.http(`${req.method} en ${req.url} - ${new Date().toString()}`);
+        const result = await usersServiceModule.deleteInactiveUsers48hs();
+        res.sendSuccess(`Se borraron ${result} usuario/s`);
+    } catch (error) {
+        req.logger.fatal(`${error.name}: ${error.message} - ${new Date().toString()}`);
+        res.sendServerError(error.message);
+    }
+}
+
 export {
     login,
     logout,
@@ -216,5 +244,7 @@ export {
     resetPassword,
     getCurrentUser,
     changePassword, 
-    changeRole
+    changeRole,
+    updateLastActivity,
+    deleteInactiveUsers48hs
 }

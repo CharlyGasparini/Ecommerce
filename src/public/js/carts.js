@@ -3,6 +3,7 @@ const deleteBtns = document.getElementsByClassName("del-btn");
 const purchaseBtn = document.getElementById("purchase-btn");
 
 emptyBtn?.addEventListener("click", async e => {
+    await updateLastActivity();
     const user = await getUser();
     const cid = user.cart;
     fetch(`/api/carts/${cid}`, {
@@ -15,6 +16,7 @@ emptyBtn?.addEventListener("click", async e => {
 
 for (const btn of deleteBtns) {
     btn.addEventListener("click", async e =>{
+        await updateLastActivity();
         const user = await getUser();
         const row = btn.parentElement.parentElement;
         const td = row.children[0];
@@ -30,6 +32,7 @@ for (const btn of deleteBtns) {
 }
 
 purchaseBtn?.addEventListener("click", async e => {
+    await updateLastActivity();
     const user = await getUser();
     const cid = user.cart;
     const resp = await fetch(`/api/carts/${cid}/purchase`);

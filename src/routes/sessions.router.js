@@ -23,5 +23,9 @@ export default class SessionsRouter extends Router{
         this.post("/reset", ["PUBLIC"], passportStrategiesEnum.NOTHING, controllerModule.resetPassword)
         // Lógica de final de reseteo de clave
         this.post("/changePassword", ["PASS"], passportStrategiesEnum.JWT, controllerModule.changePassword)
+        // Lógica de registro de la última actividad del usuario
+        this.post("/activity", ["USER", "PREMIUM", "ADMIN"], passportStrategiesEnum.JWT, controllerModule.updateLastActivity)
+        // Lógica de borrado de usuarios sin actividad
+        this.delete("/deleteInactive", ["ADMIN"], passportStrategiesEnum.JWT, controllerModule.deleteInactiveUsers48hs)
     }
 }
