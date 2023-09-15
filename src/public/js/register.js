@@ -22,10 +22,10 @@ form.addEventListener("submit", e =>{
             else{
                 Swal.fire({
                     toast: true,
-                    position: "center",
+                    position: "top-end",
                     showConfirmButton: false,
                     timer: 1500,
-                    title: `${res.message}`,
+                    title: `${res.error.message}`,
                     icon: "error"
                 })
             }
